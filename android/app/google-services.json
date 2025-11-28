@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "945051079027",
+    "project_id": "atsepete-4db6c",
+    "storage_bucket": "atsepete-4db6c.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:945051079027:android:b4f232a8ab5e3f32103506",
+        "android_client_info": {
+          "package_name": "com.anonymous.atsepete"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAsrO1SLI3f_ge4OaeOAj8K1ZkJ7IVKNJo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

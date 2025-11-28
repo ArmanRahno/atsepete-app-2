@@ -1,0 +1,94 @@
+const IS_DEV = process.env.APP_VARIANT === "development";
+
+export default {
+	"name": "AtSepete",
+	"slug": "atsepete",
+	"version": "1.1.0",
+	"orientation": "portrait",
+	"icon": "./assets/images/icon.png",
+	"scheme": "atsepete",
+	"userInterfaceStyle": "automatic",
+	"newArchEnabled": true,
+	"ios": {
+		"supportsTablet": true,
+		"bundleIdentifier": "com.anonymous.atsepete",
+		"infoPlist": {
+			"LSApplicationQueriesSchemes": ["fb", "instagram", "twitter", "tiktoksharesdk"],
+			"ITSAppUsesNonExemptEncryption": false
+		}
+	},
+	"android": {
+		"adaptiveIcon": {
+			"foregroundImage": "./assets/images/adaptive-icon.png",
+			"backgroundColor": "#ffffff"
+		},
+		"googleServicesFile": "./google-services.json",
+		"package": "com.anonymous.atsepete",
+		"blockedPermissions": [
+			"android.permission.RECEIVE_BOOT_COMPLETED",
+			"android.permission.SYSTEM_ALERT_WINDOW",
+			"android.permission.WAKE_LOCK",
+			"android.permission.VIBRATE"
+		]
+	},
+	"web": {
+		"bundler": "metro",
+		"output": "static",
+		"favicon": "./assets/images/favicon.png"
+	},
+	"plugins": [
+		"expo-router",
+		[
+			"expo-splash-screen",
+			{
+				"image": "./assets/images/splash-icon.png",
+				"imageWidth": 200,
+				"resizeMode": "contain",
+				"backgroundColor": "#7c3aed"
+			}
+		],
+		[
+			"react-native-share",
+			{
+				"ios": ["fb", "instagram", "twitter", "tiktoksharesdk"],
+				"android": [
+					"com.facebook.katana",
+					"com.instagram.android",
+					"com.twitter.android",
+					"com.zhiliaoapp.musically"
+				],
+				"enableBase64ShareAndroid": true
+			}
+		],
+		[
+			"expo-build-properties",
+			{
+				"android": {},
+				"ios": {}
+			}
+		],
+		[
+			"expo-camera",
+			{
+				"recordAudioAndroid": false
+			}
+		],
+		"expo-font",
+		"expo-web-browser"
+	],
+	"experiments": {
+		"typedRoutes": true
+	},
+	"runtimeVersion": "1.1.0",
+	"updates": {
+		"url": "https://u.expo.dev/d06355ea-e79c-4ea1-90b1-cfaee031fd22"
+	},
+	"extra": {
+		"router": {
+			"origin": false
+		},
+		"eas": {
+			"projectId": "cab9e15f-3e8e-4179-8432-d0e2dc1ee84c"
+		}
+	}
+};

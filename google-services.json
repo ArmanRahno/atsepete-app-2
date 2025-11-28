@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "945051079027",
+    "project_id": "atsepete-4db6c",
+    "storage_bucket": "atsepete-4db6c.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:945051079027:android:b4f232a8ab5e3f32103506",
+        "android_client_info": {
+          "package_name": "com.anonymous.atsepete"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "945051079027-bc3f7e4njr22skpi7r32vt28a14koklc.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.anonymous.atsepete",
+            "certificate_hash": "94fe3e22ec8b917b108a71b12fe37467af39fbca"
+          }
+        },
+        {
+          "client_id": "945051079027-qqfscvqf893kt5ae6fcng5fvpnm1orig.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.anonymous.atsepete",
+            "certificate_hash": "ad6a4e5f44c715380c89b6be89e70d47ba13970d"
+          }
+        },
+        {
+          "client_id": "945051079027-nin585a25at6q050vmk0sofllr0krs89.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAsrO1SLI3f_ge4OaeOAj8K1ZkJ7IVKNJo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "945051079027-nin585a25at6q050vmk0sofllr0krs89.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
