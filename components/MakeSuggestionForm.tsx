@@ -19,8 +19,7 @@ type MakeSuggestion = z.infer<typeof MakeSuggestionSchema>;
 
 type MakeSuggestionFormProps = {};
 
-const API_URL =
-	"https://atsepete-rework-6vep9h2qp-armans-projects-2ebbfea8.vercel.app/api/application/action/user-suggestion";
+const API_URL = "https://atsepete.net/api/application/action/user-suggestion";
 
 export default function MakeSuggestionForm({}: MakeSuggestionFormProps) {
 	const [isPending, setIsPending] = useState(false);

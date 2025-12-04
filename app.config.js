@@ -74,7 +74,21 @@ export default {
 			}
 		],
 		"expo-font",
-		"expo-web-browser"
+		"expo-web-browser",
+		"@react-native-google-signin/google-signin",
+		[
+			"react-native-share",
+			{
+				"ios": ["fb", "instagram", "twitter", "tiktoksharesdk"],
+				"android": [
+					"com.facebook.katana",
+					"com.instagram.android",
+					"com.twitter.android",
+					"com.zhiliaoapp.musically"
+				],
+				"enableBase64ShareAndroid": true
+			}
+		]
 	],
 	"experiments": {
 		"typedRoutes": true

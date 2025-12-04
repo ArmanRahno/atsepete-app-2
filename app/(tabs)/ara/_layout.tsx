@@ -6,8 +6,7 @@ import { Keyboard, Text, TextInput, TouchableOpacity, View } from "react-native"
 import { lightMutedForeground } from "../../../constants/Colors";
 import HeaderIcon from "@/components/header/HeaderIcon";
 
-const endpoint =
-	"https://atsepete-rework-6vep9h2qp-armans-projects-2ebbfea8.vercel.app/api/application/action/search-suggestion";
+const endpoint = "https://atsepete.net/api/application/action/search-suggestion";
 
 export default function SearchPageLayout() {
 	const router = useRouter();

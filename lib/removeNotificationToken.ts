@@ -2,7 +2,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { registerForPushNotificationsAsync } from "./registerForPushNotifications";
 
 const REMOVE_NOTIFICATION_PUSH_TOKEN_ENDPOINT =
-	"https://atsepete-rework-6vep9h2qp-armans-projects-2ebbfea8.vercel.app/api/application/notification/remove-push-token";
+	"https://atsepete.net/api/application/notification/remove-push-token";
 
 const removeNotificationToken = async () => {
 	const token = await registerForPushNotificationsAsync();

@@ -126,7 +126,7 @@ const PaymentOptions = ({ paymentData }: { paymentData?: Payment }) => {
 				}
 
 				const res = await fetch(
-					"https://atsepete-rework-6vep9h2qp-armans-projects-2ebbfea8.vercel.app/api/application/action/save-payment-data",
+					"https://atsepete.net/api/application/action/save-payment-data",
 					{
 						method: "POST",
 						headers: { "Content-Type": "application/json" },

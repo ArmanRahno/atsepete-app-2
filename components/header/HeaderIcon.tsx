@@ -5,7 +5,7 @@ import * as Linking from "expo-linking";
 
 const HeaderIcon = () => {
 	const handlePress = () => {
-		Linking.openURL("https://atsepete-rework-6vep9h2qp-armans-projects-2ebbfea8.vercel.app/");
+		Linking.openURL("https://atsepete.net/");
 	};
 
 	return (

@@ -3,7 +3,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { registerForPushNotificationsAsync } from "./registerForPushNotifications";
 
 const NOTIFICATION_TOKEN_ROUTE =
-	"https://atsepete-rework-6vep9h2qp-armans-projects-2ebbfea8.vercel.app/api/application/notification/register-push-token";
+	"https://atsepete.net/api/application/notification/register-push-token";
 
 const checkAndStoreAccountPushNotificationToken = async () => {
 	try {

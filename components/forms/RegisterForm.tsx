@@ -43,7 +43,7 @@
 // 			setServerStatus(null);
 // 			setServerMessage("");
 // 			const endpoint =
-// 				"https://atsepete-rework-6vep9h2qp-armans-projects-2ebbfea8.vercel.app/api/application/auth/register";
+// 				"https://atsepete.net/api/application/auth/register";
 
 // 			const userAppRandId = await AsyncStorage.getItem("userRandId");
 
@@ -54,7 +54,7 @@
 // 				userAppRandId
 // 			};
 
-// 			// const res = await fetch("https://atsepete-rework-6vep9h2qp-armans-projects-2ebbfea8.vercel.app/api/application/page/user-page", {
+// 			// const res = await fetch("https://atsepete.net/api/application/page/user-page", {
 // 			// 	method: "GET",
 // 			// 	credentials: "include"
 // 			// });
@@ -82,7 +82,7 @@
 // 			// TO-DO
 
 // 			const loginEndpoint =
-// 				"https://atsepete-rework-6vep9h2qp-armans-projects-2ebbfea8.vercel.app/api/application/auth/login";
+// 				"https://atsepete.net/api/application/auth/login";
 // 			let loginPayload = {
 // 				email: values.email,
 // 				password: values.password,
@@ -271,8 +271,7 @@ export default function RegisterForm({ onSuccess }: { onSuccess: () => void }) {
 			setServerStatus(null);
 			setServerMessage("");
 
-			const endpoint =
-				"https://atsepete-rework-6vep9h2qp-armans-projects-2ebbfea8.vercel.app/api/application/auth/register";
+			const endpoint = "https://atsepete.net/api/application/auth/register";
 
 			const userAppRandId = await AsyncStorage.getItem("userRandId");
 
@@ -302,8 +301,7 @@ export default function RegisterForm({ onSuccess }: { onSuccess: () => void }) {
 			}
 
 			// Kayıttan sonra otomatik giriş
-			const loginEndpoint =
-				"https://atsepete-rework-6vep9h2qp-armans-projects-2ebbfea8.vercel.app/api/application/auth/login";
+			const loginEndpoint = "https://atsepete.net/api/application/auth/login";
 
 			let idToken: string | undefined;
 			try {
@@ -451,7 +449,14 @@ export default function RegisterForm({ onSuccess }: { onSuccess: () => void }) {
 
 			<View className="flex-row items-center gap-2 mt-4">
 				<View className="h-[1] flex-1 bg-muted" />
-				<Text className="text-center text-muted-foreground">veya</Text>
+				<Text
+					className="text-center text-muted-foreground"
+					style={{ fontFamily: "Roboto_500Medium" }}
+					textBreakStrategy="simple"
+					android_hyphenationFrequency="none"
+				>
+					veya
+				</Text>
 				<View className="h-[1] flex-1 bg-muted" />
 			</View>
 

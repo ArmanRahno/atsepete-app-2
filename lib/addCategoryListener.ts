@@ -9,7 +9,7 @@ const addCategoryListener = async ({
 }) => {
 	try {
 		const response = await fetch(
-			"https://atsepete-rework-6vep9h2qp-armans-projects-2ebbfea8.vercel.app/api/application/action/category-listener",
+			"https://atsepete.net/api/application/action/category-listener",
 			{
 				method: "POST",
 				headers: { "Content-Type": "application/json" },

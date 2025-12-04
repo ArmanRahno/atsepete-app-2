@@ -8,18 +8,15 @@ const addItemListener = async ({
 	isUserSubscribed: boolean;
 }) => {
 	try {
-		const response = await fetch(
-			"https://atsepete-rework-6vep9h2qp-armans-projects-2ebbfea8.vercel.app/api/application/action/item-listener",
-			{
-				method: "POST",
-				headers: { "Content-Type": "application/json" },
-				credentials: "include",
-				body: JSON.stringify({
-					id: item._id.toString(),
-					activateListener: !isUserSubscribed
-				})
-			}
-		);
+		const response = await fetch("https://atsepete.net/api/application/action/item-listener", {
+			method: "POST",
+			headers: { "Content-Type": "application/json" },
+			credentials: "include",
+			body: JSON.stringify({
+				id: item._id.toString(),
+				activateListener: !isUserSubscribed
+			})
+		});
 
 		const data = await response.json();
 

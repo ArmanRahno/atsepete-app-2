@@ -7,8 +7,7 @@ import { useSearchParams } from "expo-router/build/hooks";
 import React, { useState, useCallback, memo } from "react";
 import { FlatList, RefreshControl, ActivityIndicator, View, Text } from "react-native";
 
-const API_URL =
-	"https://atsepete-rework-6vep9h2qp-armans-projects-2ebbfea8.vercel.app/api/application/page/search";
+const API_URL = "https://atsepete.net/api/application/page/search";
 
 type SearchData = {
 	items: Item[];

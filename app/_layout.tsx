@@ -34,15 +34,14 @@ import NotificationColdStartNav from "@/components/NotificationColdStartNav";
 import { pathFromPayload } from "@/lib/navFromNotification";
 
 // const NOTIFICATION_TOKEN_API_URL =
-// 	"https://atsepete-rework-6vep9h2qp-armans-projects-2ebbfea8.vercel.app/api/application/notification/notification-token-on-install";
+// 	"https://atsepete.net/api/application/notification/notification-token-on-install";
 
-// const INITIAL_LAUNCH_API_URL = "https://atsepete-rework-6vep9h2qp-armans-projects-2ebbfea8.vercel.app/api/application/initial-launch";
+// const INITIAL_LAUNCH_API_URL = "https://atsepete.net/api/application/initial-launch";
 
 const NOTIFICATION_TOKEN_API_URL =
-	"https://atsepete-rework-6vep9h2qp-armans-projects-2ebbfea8.vercel.app/api/application/notification/notification-token-on-install";
+	"https://atsepete.net/api/application/notification/notification-token-on-install";
 
-const INITIAL_LAUNCH_API_URL =
-	"https://atsepete-rework-6vep9h2qp-armans-projects-2ebbfea8.vercel.app/api/application/initial-launch";
+const INITIAL_LAUNCH_API_URL = "https://atsepete.net/api/application/initial-launch";
 
 Notifications.setNotificationHandler({
 	handleNotification: async () => ({

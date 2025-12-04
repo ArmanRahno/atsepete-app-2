@@ -17,7 +17,7 @@ export default function ItemDetailScreen() {
 			try {
 				setLoading(true);
 				const response = await fetch(
-					`https://atsepete-rework-6vep9h2qp-armans-projects-2ebbfea8.vercel.app/api/application/page/item/${slug}`
+					`https://atsepete.net/api/application/page/item/${slug}`
 				);
 
 				if (!response.ok) {

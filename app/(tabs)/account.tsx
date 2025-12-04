@@ -31,7 +31,7 @@ export default function AccountScreen() {
 			if (!curSession) return;
 
 			const response = await fetch(
-				"https://atsepete-rework-6vep9h2qp-armans-projects-2ebbfea8.vercel.app/api/application/page/user-page?alarms=false"
+				"https://atsepete.net/api/application/page/user-page?alarms=false"
 			);
 
 			if (!response.ok) {
@@ -91,7 +91,7 @@ export default function AccountScreen() {
 							<DeleteAccountBtn />
 						</View>
 						<Text className="mt-1 text-xs text-muted-foreground">
-							AtSepete @2025, v{Constants.expoConfig?.version} - 28.11.2025
+							AtSepete @2025, v{Constants.expoConfig?.version} - 5.12.2025
 						</Text>
 					</View>
 				</ScrollView>

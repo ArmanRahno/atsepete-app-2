@@ -21,8 +21,7 @@ import HeaderSecondRow from "@/components/header/HeaderSecondRow";
 import { Text } from "react-native";
 import { ChevronUp } from "lucide-react-native";
 
-const API_URL =
-	"https://atsepete-rework-6vep9h2qp-armans-projects-2ebbfea8.vercel.app/api/application/page/homepage";
+const API_URL = "https://atsepete.net/api/application/page/homepage";
 
 type HomepageData = {
 	items: Item[];

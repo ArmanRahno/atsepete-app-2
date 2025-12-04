@@ -13,10 +13,8 @@ import ReviewPagePriceCard from "@/components/ReviewScreenPriceCard";
 import ReviewCard from "@/components/ReviewCard";
 import LoadingIndicator from "@/components/LoadingIndicator";
 
-const itemEndpoint =
-	"https://atsepete-rework-6vep9h2qp-armans-projects-2ebbfea8.vercel.app/api/application/page/urunler-all-item";
-const reviewsEndpoint =
-	"https://atsepete-rework-6vep9h2qp-armans-projects-2ebbfea8.vercel.app/api/application/page/urunler-all-item-review";
+const itemEndpoint = "https://atsepete.net/api/application/page/urunler-all-item";
+const reviewsEndpoint = "https://atsepete.net/api/application/page/urunler-all-item-review";
 
 const MemoizedReviewCard = memo(ReviewCard);
 

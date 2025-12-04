@@ -17,7 +17,7 @@ const DeleteAccountBtn = () => {
 							style: "destructive",
 							onPress: async () => {
 								await WebBrowser.openAuthSessionAsync(
-									"https://atsepete-rework-6vep9h2qp-armans-projects-2ebbfea8.vercel.app/kullanici/hesap-sil"
+									"https://atsepete.net/kullanici/hesap-sil"
 								);
 
 								await reloadAppAsync("Revoke auth state");

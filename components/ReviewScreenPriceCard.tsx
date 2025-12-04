@@ -110,7 +110,7 @@ export default function ReviewScreenPriceCard({ item, type }: Props) {
 
 				<ShareDialog
 					shareMessage={item.name}
-					shareUrl={`https://atsepete-rework-6vep9h2qp-armans-projects-2ebbfea8.vercel.app/${
+					shareUrl={`https://atsepete.net/${
 						type === "INDIRIMLER" ? "indirimler" : "urunler"
 					}/${item.url_slug}`}
 				/>

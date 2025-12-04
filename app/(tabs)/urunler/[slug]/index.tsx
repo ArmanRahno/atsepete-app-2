@@ -17,7 +17,7 @@ export default function UrunlerItemDetailScreen() {
 			try {
 				setLoading(true);
 				const response = await fetch(
-					`https://atsepete-rework-6vep9h2qp-armans-projects-2ebbfea8.vercel.app/api/application/page/urunler-all-item/${slug}`
+					`https://atsepete.net/api/application/page/urunler-all-item/${slug}`
 				);
 
 				if (!response.ok) {

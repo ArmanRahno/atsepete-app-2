@@ -21,8 +21,7 @@ import { Text } from "react-native";
 import { ChevronUp } from "lucide-react-native";
 import UrunlerItemCard from "@/components/item/item-card/UrunlerItemCard";
 
-const API_URL =
-	"https://atsepete-rework-6vep9h2qp-armans-projects-2ebbfea8.vercel.app/api/application/page/all-items";
+const API_URL = "https://atsepete.net/api/application/page/all-items";
 
 type UrunlerPageData = {
 	items: Item[];

@@ -8,13 +8,10 @@ interface AccountSettingsProps {
 	userData: AccountAPIResponse;
 }
 
-const DOWNLOAD_APP_LINK =
-	"https://atsepete-rework-6vep9h2qp-armans-projects-2ebbfea8.vercel.app/indir";
+const DOWNLOAD_APP_LINK = "https://atsepete.net/indir";
 
 export default function AccountSettings({ userData }: AccountSettingsProps) {
-	const userRefLink = `https://atsepete-rework-6vep9h2qp-armans-projects-2ebbfea8.vercel.app/?r=${
-		userData?.referrer_code || ""
-	}`;
+	const userRefLink = `https://atsepete.net/?r=${userData?.referrer_code || ""}`;
 
 	const userDownloadLink = `${DOWNLOAD_APP_LINK}/${userData?.referrer_code}`;
 

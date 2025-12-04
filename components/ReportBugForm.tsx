@@ -19,8 +19,7 @@ type ReportBug = z.infer<typeof ReportBugSchema>;
 
 type ReportBugFormProps = {};
 
-const API_URL =
-	"https://atsepete-rework-6vep9h2qp-armans-projects-2ebbfea8.vercel.app/api/application/action/report-bug";
+const API_URL = "https://atsepete.net/api/application/action/report-bug";
 
 export default function ReportBugForm({}: ReportBugFormProps) {
 	const [isPending, setIsPending] = useState(false);

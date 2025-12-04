@@ -34,7 +34,7 @@
 // 		try {
 // 			setServerMessage("");
 // 			const endpoint =
-// 				"https://atsepete-rework-6vep9h2qp-armans-projects-2ebbfea8.vercel.app/api/application/auth/login";
+// 				"https://atsepete.net/api/application/auth/login";
 
 // 			const userAppRandId = await AsyncStorage.getItem("userRandId");
 
@@ -44,7 +44,7 @@
 // 				...(userAppRandId ? { userAppRandId } : {})
 // 			};
 
-// 			// const res = await fetch("https://atsepete-rework-6vep9h2qp-armans-projects-2ebbfea8.vercel.app/api/application/page/user-page", {
+// 			// const res = await fetch("https://atsepete.net/api/application/page/user-page", {
 // 			// 	method: "GET",
 // 			// 	credentials: "include"
 // 			// });
@@ -191,12 +191,10 @@ export default function LoginForm({ onSuccess }: { onSuccess: () => void }) {
 		try {
 			setServerMessage("");
 
-			const endpoint =
-				"https://atsepete-rework-6vep9h2qp-armans-projects-2ebbfea8.vercel.app/api/application/auth/login";
+			const endpoint = "https://atsepete.net/api/application/auth/login";
 
 			const userAppRandId = await AsyncStorage.getItem("userRandId");
 
-			// 1) Try Firebase email+password first (new users)
 			let idToken: string | undefined;
 			try {
 				const cred = await signInWithEmailAndPassword(auth, values.email, values.password);
@@ -208,8 +206,6 @@ export default function LoginForm({ onSuccess }: { onSuccess: () => void }) {
 				);
 			}
 
-			// 2) Always hit backend; if idToken is present, server uses Firebase path;
-			//    otherwise it falls back to legacy Mongo password flow.
 			const payload: any = {
 				email: values.email,
 				password: values.password,
@@ -313,7 +309,14 @@ export default function LoginForm({ onSuccess }: { onSuccess: () => void }) {
 
 			<View className="flex-row items-center gap-2 mt-4">
 				<View className="h-[1] flex-1 bg-muted" />
-				<Text className="text-center text-muted-foreground">veya</Text>
+				<Text
+					className="text-center text-muted-foreground"
+					style={{ fontFamily: "Roboto_500Medium" }}
+					textBreakStrategy="simple"
+					android_hyphenationFrequency="none"
+				>
+					veya
+				</Text>
 				<View className="h-[1] flex-1 bg-muted" />
 			</View>
 

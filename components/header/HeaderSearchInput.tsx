@@ -6,8 +6,7 @@ import { useEffect, useState } from "react";
 import { Keyboard, Text, TextInput, TouchableOpacity, View } from "react-native";
 import BarcodeScanButton from "../barcode-scan/BarcodeScanButton";
 
-const endpoint =
-	"https://atsepete-rework-6vep9h2qp-armans-projects-2ebbfea8.vercel.app/api/application/action/search-suggestion";
+const endpoint = "https://atsepete.net/api/application/action/search-suggestion";
 
 const HeaderSearchInput = () => {
 	const router = useRouter();

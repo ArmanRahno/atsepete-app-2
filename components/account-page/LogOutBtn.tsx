@@ -3,6 +3,8 @@ import { useCallback } from "react";
 import { Text, TouchableOpacity } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { AccountAPIResponse } from "@/app/(tabs)/alarms";
+import { auth } from "@/lib/auth/firebase";
+import { GoogleSignin } from "@react-native-google-signin/google-signin";
 
 const LogOutBtn = ({
 	setIsLoggedIn,
@@ -16,15 +18,33 @@ const LogOutBtn = ({
 	const handleLogout = useCallback(async () => {
 		setLoading(true);
 
-		// This has to be done before removing the session token.
-		// await removeNotificationToken();
+		try {
+			// try {
+			//   await removeNotificationToken();
+			// } catch (err) {
+			//   console.log("removeNotificationToken error (ignored on logout):", err);
+			// }
 
-		await AsyncStorage.removeItem("user-session-token");
+			try {
+				await auth.signOut();
+			} catch (err) {
+				console.log("Firebase auth.signOut error (ignored on logout):", err);
+			}
 
-		setIsLoggedIn(false);
-		setUserData(null);
-		setLoading(false);
-	}, [setIsLoggedIn, setUserData]);
+			try {
+				await GoogleSignin.signOut();
+			} catch (err) {
+				console.log("GoogleSignin.signOut error (ignored on logout):", err);
+			}
+
+			await AsyncStorage.removeItem("user-session-token");
+
+			setIsLoggedIn(false);
+			setUserData(null);
+		} finally {
+			setLoading(false);
+		}
+	}, [setIsLoggedIn, setUserData, setLoading]);
 
 	return (
 		<TouchableOpacity

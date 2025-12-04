@@ -9,7 +9,7 @@ const addMarketplaceListener = async ({
 }) => {
 	try {
 		const response = await fetch(
-			"https://atsepete-rework-6vep9h2qp-armans-projects-2ebbfea8.vercel.app/api/application/action/marketplace-listener",
+			"https://atsepete.net/api/application/action/marketplace-listener",
 			{
 				method: "POST",
 				headers: { "Content-Type": "application/json" },

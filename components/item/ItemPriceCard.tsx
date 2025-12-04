@@ -91,7 +91,7 @@ export default function ItemPriceCard({ item }: ItemPriceCardProps) {
 
 					<ShareDialog
 						shareMessage={item.name}
-						shareUrl={`https://atsepete-rework-6vep9h2qp-armans-projects-2ebbfea8.vercel.app/indirimler/${item.url_slug}`}
+						shareUrl={`https://atsepete.net/indirimler/${item.url_slug}`}
 					/>
 				</View>
 			</View>
