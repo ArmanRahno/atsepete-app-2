@@ -5,6 +5,7 @@ import Toast from "react-native-toast-message";
 import { BellMinus, BellPlus } from "lucide-react-native";
 import { ClassNameValue } from "tailwind-merge";
 import addCategoryListener from "@/lib/addCategoryListener";
+import AppTouchableOpacity from "./AppTouchableOpacity";
 
 const CategoryListener = ({
 	is_user_subscribed,
@@ -23,7 +24,7 @@ const CategoryListener = ({
 	const [isListenerPending, setIsListenerPending] = useState<boolean>(false);
 
 	return (
-		<TouchableOpacity
+		<AppTouchableOpacity
 			className={cn(
 				"px-4 py-1 rounded border border-border disabled:opacity-75 disabled:brightness-75 justify-center items-center",
 				isUserSubscribed ? "bg-emerald-500" : "bg-destructive",
@@ -75,7 +76,7 @@ const CategoryListener = ({
 					size={size}
 				/>
 			)}
-		</TouchableOpacity>
+		</AppTouchableOpacity>
 	);
 };
 

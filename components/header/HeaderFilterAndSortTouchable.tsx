@@ -1,6 +1,7 @@
 import { lightMutedForeground } from "@/constants/Colors";
 import { ListFilter } from "lucide-react-native";
 import { TouchableOpacity } from "react-native";
+import AppTouchableOpacity from "../AppTouchableOpacity";
 
 const HeaderFilterAndSortTouchable = ({
 	setDisplayDialog
@@ -8,15 +9,16 @@ const HeaderFilterAndSortTouchable = ({
 	setDisplayDialog: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
 	return (
-		<TouchableOpacity
+		<AppTouchableOpacity
 			onPress={() => setDisplayDialog(true)}
-			className="border border-border p-2 rounded-xl"
+			className="border border-border p-2.5 rounded-xl"
+			hitSlop={10}
 		>
 			<ListFilter
-				size={20}
+				size={24}
 				color={lightMutedForeground}
 			/>
-		</TouchableOpacity>
+		</AppTouchableOpacity>
 	);
 };
 

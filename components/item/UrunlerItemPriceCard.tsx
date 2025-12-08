@@ -8,6 +8,7 @@ import findCategoryLabel from "@/lib/findCategoryLabel";
 import ShareDialog from "./ShareDialog";
 import ItemListener from "./ItemListener";
 import { Card } from "../shad-cn/card";
+import AppTouchableOpacity from "../AppTouchableOpacity";
 
 type ItemPriceCardProps = {
 	item: Item;
@@ -68,14 +69,14 @@ export default function UrunlerItemPriceCard({ item }: ItemPriceCardProps) {
 				)}
 
 				<View className="flex-row gap-2">
-					<TouchableOpacity
+					<AppTouchableOpacity
 						onPress={() => {
 							Linking.openURL(item.link);
 						}}
 						className="flex-1 items-center bg-primary px-4 py-2 h-9 rounded"
 					>
 						<Text className="text-white font-semibold">Ürünü İncele</Text>
-					</TouchableOpacity>
+					</AppTouchableOpacity>
 
 					<ShareDialog
 						shareMessage={item.name}

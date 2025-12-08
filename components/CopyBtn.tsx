@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import { TouchableOpacity } from "react-native";
 import { Text } from "react-native";
 import * as Clipboard from "expo-clipboard";
+import AppTouchableOpacity from "./AppTouchableOpacity";
 
 const CopyBtn = ({
 	copyVal,
@@ -18,7 +19,7 @@ const CopyBtn = ({
 	const [hasCopied, setHasCopied] = useState<boolean>(false);
 
 	return (
-		<TouchableOpacity
+		<AppTouchableOpacity
 			className={cn(
 				"px-2 py-2 h-9 rounded border border-border justify-center items-center",
 				btnClassName
@@ -42,7 +43,7 @@ const CopyBtn = ({
 					<Copy size={size} />
 				)}
 			</Text>
-		</TouchableOpacity>
+		</AppTouchableOpacity>
 	);
 };
 

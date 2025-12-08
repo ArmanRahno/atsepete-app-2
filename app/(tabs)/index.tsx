@@ -4,7 +4,7 @@ import HeaderText from "@/components/header/HeaderText";
 import ItemCard from "@/components/item/item-card/ItemCard";
 import LoadingIndicator from "@/components/LoadingIndicator";
 import { useFocusEffect } from "expo-router";
-import React, { useState, useCallback, memo, useRef } from "react";
+import React, { useState, useCallback, memo, useRef, useEffect } from "react";
 import formatPrice from "@/lib/formatPrice";
 import {
 	FlatList,
@@ -12,14 +12,14 @@ import {
 	ActivityIndicator,
 	View,
 	NativeSyntheticEvent,
-	NativeScrollEvent,
-	TouchableOpacity
+	NativeScrollEvent
 } from "react-native";
 import FilterAndSortAppliedFilter from "@/components/FilterAndSortAppliedFilter";
 import HeaderIcon from "@/components/header/HeaderIcon";
 import HeaderSecondRow from "@/components/header/HeaderSecondRow";
 import { Text } from "react-native";
 import { ChevronUp } from "lucide-react-native";
+import AppTouchableOpacity from "@/components/AppTouchableOpacity";
 
 const API_URL = "https://atsepete.net/api/application/page/homepage";
 
@@ -99,18 +99,11 @@ export default function HomeScreen() {
 		[]
 	);
 
-	useFocusEffect(
-		useCallback(() => {
-			setDisplayBackToTopBtn(false);
-
-			const asyncCallback = async () => {
-				setPage(0);
-				await fetchItems(0, false, filters);
-			};
-
-			asyncCallback();
-		}, [fetchItems, filters])
-	);
+	useEffect(() => {
+		setDisplayBackToTopBtn(false);
+		setPage(0);
+		fetchItems(0, false, filters);
+	}, []);
 
 	const onRefresh = useCallback(() => {
 		setRefreshing(true);
@@ -262,14 +255,14 @@ export default function HomeScreen() {
 				/>
 			)}
 			{displayBackToTopBtn && (
-				<TouchableOpacity
+				<AppTouchableOpacity
 					className="absolute bottom-4 right-4 bg-background p-2 border border-border rounded-lg"
 					onPress={handleScrollToTop}
 				>
 					<Text>
 						<ChevronUp />
 					</Text>
-				</TouchableOpacity>
+				</AppTouchableOpacity>
 			)}
 		</>
 	);

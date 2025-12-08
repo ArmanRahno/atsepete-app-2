@@ -1,10 +1,11 @@
 import { reloadAppAsync } from "expo";
 import { Alert, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import WebBrowser from "expo-web-browser";
+import AppTouchableOpacity from "../AppTouchableOpacity";
 
 const DeleteAccountBtn = () => {
 	return (
-		<TouchableOpacity
+		<AppTouchableOpacity
 			className="bg-destructive px-4 py-2 rounded-lg self-start mt-2"
 			onPress={() =>
 				Alert.alert(
@@ -28,7 +29,7 @@ const DeleteAccountBtn = () => {
 			}
 		>
 			<Text className="text-destructive-foreground font-medium">Hesabı Sil</Text>
-		</TouchableOpacity>
+		</AppTouchableOpacity>
 	);
 };
 export default DeleteAccountBtn;

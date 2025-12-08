@@ -1,12 +1,13 @@
 import addItemListener from "@/lib/addItemListener";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
-import { ActivityIndicator, TouchableOpacity } from "react-native";
+import { ActivityIndicator } from "react-native";
 import Toast from "react-native-toast-message";
 import { ItemCardProps } from "./item-card/ItemCard";
 import { BellMinus, BellPlus } from "lucide-react-native";
 import { ClassNameValue } from "tailwind-merge";
 import checkAndStoreAccountPushNotificationToken from "@/lib/checkAndStoreAccountPushNotificationToken";
+import AppTouchableOpacity from "../AppTouchableOpacity";
 
 const ItemListener = ({
 	item,
@@ -19,7 +20,7 @@ const ItemListener = ({
 	const [isListenerPending, setIsListenerPending] = useState<boolean>(false);
 
 	return (
-		<TouchableOpacity
+		<AppTouchableOpacity
 			className={cn(
 				"px-4 py-2 rounded border border-border disabled:opacity-75 disabled:brightness-75 justify-center items-center",
 				isUserSubscribed ? "bg-emerald-500" : "bg-destructive",
@@ -41,7 +42,7 @@ const ItemListener = ({
 					Toast.show({
 						type: finalState ? "success" : "error",
 						text1: data.description,
-						topOffset: 60
+						topOffset: 45
 					});
 
 					await checkAndStoreAccountPushNotificationToken();
@@ -68,7 +69,7 @@ const ItemListener = ({
 				/>
 			)}
 			{isListenerPending && <ActivityIndicator className="text-white" />}
-		</TouchableOpacity>
+		</AppTouchableOpacity>
 	);
 };
 

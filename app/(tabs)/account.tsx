@@ -10,11 +10,10 @@ import Header from "@/components/header/Header";
 import HeaderIcon from "@/components/header/HeaderIcon";
 import HeaderSecondRow from "@/components/header/HeaderSecondRow";
 import { AccountAPIResponse } from "./alarms";
-import { Text } from "react-native";
-import Constants from "expo-constants";
 import LogOutBtn from "@/components/account-page/LogOutBtn";
 import DeleteAccountBtn from "@/components/account-page/DeleteAccountBtn";
 import PaymentOptions from "@/components/account-page/PaymentOptions";
+import VersionInfo from "@/components/VersionInfo";
 
 export default function AccountScreen() {
 	const [userData, setUserData] = useState<AccountAPIResponse | null>(null);
@@ -82,17 +81,17 @@ export default function AccountScreen() {
 
 							<PaymentOptions paymentData={userData.payment_data} />
 
-							<LogOutBtn
-								setIsLoggedIn={setIsLoggedIn}
-								setUserData={setUserData}
-								setLoading={setLoading}
-							/>
+							<View className="flex-row justify-between">
+								<DeleteAccountBtn />
 
-							<DeleteAccountBtn />
+								<LogOutBtn
+									setIsLoggedIn={setIsLoggedIn}
+									setUserData={setUserData}
+									setLoading={setLoading}
+								/>
+							</View>
 						</View>
-						<Text className="mt-1 text-xs text-muted-foreground">
-							AtSepete @2025, v{Constants.expoConfig?.version} - 5.12.2025
-						</Text>
+						<VersionInfo />
 					</View>
 				</ScrollView>
 			)}

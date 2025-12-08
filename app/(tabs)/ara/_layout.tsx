@@ -5,6 +5,7 @@ import { useState } from "react";
 import { Keyboard, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { lightMutedForeground } from "../../../constants/Colors";
 import HeaderIcon from "@/components/header/HeaderIcon";
+import AppTouchableOpacity from "@/components/AppTouchableOpacity";
 
 const endpoint = "https://atsepete.net/api/application/action/search-suggestion";
 
@@ -95,7 +96,7 @@ export default function SearchPageLayout() {
 							<View className="absolute top-[110%] left-0 right-0 bg-background border border-border rounded-lg z-[3]">
 								{suggestions.slice(0, 5).map(suggestion => {
 									return (
-										<TouchableOpacity
+										<AppTouchableOpacity
 											onPress={() => handleSuggestionPress(suggestion)}
 											className="px-2 py-2 border-b border-gray-200"
 										>
@@ -105,13 +106,13 @@ export default function SearchPageLayout() {
 											>
 												{suggestion.name}
 											</Text>
-										</TouchableOpacity>
+										</AppTouchableOpacity>
 									);
 								})}
 							</View>
 						)}
 					</View>
-					<TouchableOpacity
+					<AppTouchableOpacity
 						className="border border-border p-2 rounded-xl"
 						onPress={handleSubmit}
 					>
@@ -119,7 +120,7 @@ export default function SearchPageLayout() {
 							size={20}
 							color={lightMutedForeground}
 						/>
-					</TouchableOpacity>
+					</AppTouchableOpacity>
 				</View>
 			</Header>
 			<Stack screenOptions={{ headerShown: false }} />

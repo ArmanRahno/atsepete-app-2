@@ -9,16 +9,8 @@ import { AppState } from "react-native";
 import { router } from "expo-router";
 import { Scan, X, Zap, ZapOff } from "lucide-react-native";
 import React, { Dispatch, SetStateAction, useCallback, useEffect, useRef, useState } from "react";
-import {
-	ActivityIndicator,
-	Linking,
-	Modal,
-	Pressable,
-	StyleSheet,
-	Text,
-	TouchableOpacity,
-	View
-} from "react-native";
+import { ActivityIndicator, Linking, Modal, Pressable, StyleSheet, Text, View } from "react-native";
+import AppTouchableOpacity from "../AppTouchableOpacity";
 
 const BarcodeScanCameraView = ({
 	setIsCamViewOpen
@@ -106,7 +98,7 @@ const BarcodeScanCameraView = ({
 
 						<View style={{ height: 20 }} />
 
-						<TouchableOpacity
+						<AppTouchableOpacity
 							style={styles.accessDeniedButton}
 							onPress={async () => {
 								await Linking.openSettings();
@@ -116,11 +108,11 @@ const BarcodeScanCameraView = ({
 							<Text style={styles.accessDeniedButtonText}>
 								Uygulama Ayarlarına Git
 							</Text>
-						</TouchableOpacity>
+						</AppTouchableOpacity>
 
 						<View style={{ height: 8 }} />
 
-						<TouchableOpacity
+						<AppTouchableOpacity
 							style={[styles.accessDeniedButton, { backgroundColor: lightSecondary }]}
 							onPress={() => setIsCamViewOpen(false)}
 						>
@@ -132,7 +124,7 @@ const BarcodeScanCameraView = ({
 							>
 								Kapat
 							</Text>
-						</TouchableOpacity>
+						</AppTouchableOpacity>
 					</View>
 				</Pressable>
 			</Modal>
@@ -164,7 +156,7 @@ const BarcodeScanCameraView = ({
 				)}
 
 				<View style={styles.buttonContainer}>
-					<TouchableOpacity
+					<AppTouchableOpacity
 						style={styles.button}
 						onPress={handleFlashlight}
 					>
@@ -181,8 +173,8 @@ const BarcodeScanCameraView = ({
 								/>
 							)}
 						</Text>
-					</TouchableOpacity>
-					<TouchableOpacity
+					</AppTouchableOpacity>
+					<AppTouchableOpacity
 						style={styles.button}
 						onPress={handleClose}
 					>
@@ -192,7 +184,7 @@ const BarcodeScanCameraView = ({
 								color="#fff"
 							/>
 						</Text>
-					</TouchableOpacity>
+					</AppTouchableOpacity>
 				</View>
 
 				{isProcessingBarcode && (

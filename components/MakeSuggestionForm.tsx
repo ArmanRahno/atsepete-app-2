@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as ImagePicker from "expo-image-picker";
 import z from "zod";
 import { router } from "expo-router";
+import AppTouchableOpacity from "./AppTouchableOpacity";
 
 const MakeSuggestionSchema = z.object({
 	email: z.string().email("Hatalı email."),
@@ -179,7 +180,7 @@ export default function MakeSuggestionForm({}: MakeSuggestionFormProps) {
 						control={control}
 						render={({ field }) => (
 							<>
-								<TouchableOpacity
+								<AppTouchableOpacity
 									className="rounded-lg px-4 py-2 border border-border flex-row justify-between"
 									disabled={isPending}
 									onPress={() =>
@@ -191,7 +192,7 @@ export default function MakeSuggestionForm({}: MakeSuggestionFormProps) {
 											? `Seçilen Ekran Görüntüleri: ${field.value.length}`
 											: "Ekran Görüntüsü Seç"}
 									</Text>
-								</TouchableOpacity>
+								</AppTouchableOpacity>
 								{errors.screenshots && (
 									<Text className="text-red-500 text-sm">
 										{errors.screenshots.message}
@@ -204,7 +205,7 @@ export default function MakeSuggestionForm({}: MakeSuggestionFormProps) {
 
 				<View className="gap-2">
 					{!isSubmitSuccessful && (
-						<TouchableOpacity
+						<AppTouchableOpacity
 							className="flex-row justify-center items-center gap-1 px-4 py-2 bg-primary rounded-lg"
 							onPress={handleSubmit(onSubmit)}
 							disabled={isPending}
@@ -218,10 +219,10 @@ export default function MakeSuggestionForm({}: MakeSuggestionFormProps) {
 									</Text>
 								</>
 							)}
-						</TouchableOpacity>
+						</AppTouchableOpacity>
 					)}
 
-					<TouchableOpacity
+					<AppTouchableOpacity
 						className="flex-row justify-center items-center gap-1 px-4 py-2 bg-secondary rounded-lg"
 						onPress={() => router.back()}
 						disabled={isPending}
@@ -229,7 +230,7 @@ export default function MakeSuggestionForm({}: MakeSuggestionFormProps) {
 						<Text className="text-sm font-medium text-secondary-foreground">
 							Geri Dön
 						</Text>
-					</TouchableOpacity>
+					</AppTouchableOpacity>
 				</View>
 			</View>
 		</View>

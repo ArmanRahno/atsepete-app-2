@@ -126,7 +126,7 @@
 // 				</Text>
 // 			) : null}
 
-// 			<TouchableOpacity
+// 			<AppTouchableOpacity
 // 				className="bg-primary rounded py-2 mt-4 disabled:bg-primary/80"
 // 				onPress={handleSubmit(onSubmit)}
 // 				disabled={isSubmitting}
@@ -141,7 +141,7 @@
 // 						"Giriş Yap"
 // 					)}
 // 				</Text>
-// 			</TouchableOpacity>
+// 			<AppTouchableOpacity>
 
 // 			<View className="flex-row items-center gap-2 mt-4">
 // 				<View className="h-[1] flex-1 bg-muted" />
@@ -164,6 +164,7 @@ import checkAndStoreAccountPushNotificationToken from "@/lib/checkAndStoreAccoun
 import ContinueWithGoogleBtn from "../account-page/ContinueWithGoogleBtn";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "@/lib/auth/firebase";
+import AppTouchableOpacity from "../AppTouchableOpacity";
 
 const LoginSchema = z.object({
 	email: z.string().email("Geçerli bir e-posta giriniz."),
@@ -290,7 +291,7 @@ export default function LoginForm({ onSuccess }: { onSuccess: () => void }) {
 				</Text>
 			) : null}
 
-			<TouchableOpacity
+			<AppTouchableOpacity
 				className="bg-primary rounded py-2 mt-4 disabled:bg-primary/80"
 				onPress={handleSubmit(onSubmit)}
 				disabled={isSubmitting}
@@ -305,7 +306,7 @@ export default function LoginForm({ onSuccess }: { onSuccess: () => void }) {
 						"Giriş Yap"
 					)}
 				</Text>
-			</TouchableOpacity>
+			</AppTouchableOpacity>
 
 			<View className="flex-row items-center gap-2 mt-4">
 				<View className="h-[1] flex-1 bg-muted" />

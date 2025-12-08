@@ -8,6 +8,7 @@ import { ChevronRight, ChevronRightCircle } from "lucide-react-native";
 import { lightForeground, lightPrimary } from "@/constants/Colors";
 import RatingStars from "./RatingStars";
 import { router } from "expo-router";
+import AppTouchableOpacity from "../AppTouchableOpacity";
 
 type LocalReview = NonNullable<Item["reviews"]>[number];
 
@@ -45,7 +46,7 @@ export default function ItemReviewsCarousel({
 				<View className="flex-row items-center gap-4">
 					<RatingStars value={rating} />
 
-					<TouchableOpacity
+					<AppTouchableOpacity
 						onPress={() =>
 							router.push(
 								`/${
@@ -61,7 +62,7 @@ export default function ItemReviewsCarousel({
 							size={20}
 							strokeWidth={2.3}
 						/>
-					</TouchableOpacity>
+					</AppTouchableOpacity>
 				</View>
 			</View>
 

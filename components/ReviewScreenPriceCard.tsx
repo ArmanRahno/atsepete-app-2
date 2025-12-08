@@ -1,15 +1,16 @@
 import React from "react";
-import { View, Text, Image, TouchableOpacity, Linking } from "react-native";
+import { View, Text, Image, Linking } from "react-native";
 import formatPrice from "@/lib/formatPrice";
 import getFormattedTimeDifference from "@/lib/getFormattedTimeDifference";
 import findMarketplaceLabel from "@/lib/findMarketplaceLabel";
 import findCategoryLabel from "@/lib/findCategoryLabel";
 import { router } from "expo-router";
 import ReviewStars from "./carousels/ReviewStars";
-import ItemListener from "./item/ItemListener";
 import ShareDialog from "./item/ShareDialog";
 import { Undo2 } from "lucide-react-native";
 import { lightForeground } from "@/constants/Colors";
+import AppTouchableOpacity from "./AppTouchableOpacity";
+import ItemListener from "./item/ItemListener";
 
 interface Props {
 	item: Item;
@@ -34,7 +35,7 @@ export default function ReviewScreenPriceCard({ item, type }: Props) {
 
 				<View className="flex-1 gap-3">
 					<View>
-						<TouchableOpacity
+						<AppTouchableOpacity
 							onPress={() => {
 								router.push(`/(tabs)/pazaryerleri/${item.marketplace}`);
 							}}
@@ -42,10 +43,10 @@ export default function ReviewScreenPriceCard({ item, type }: Props) {
 							<Text className="text-lg font-semibold">
 								{findMarketplaceLabel(item.marketplace)} Ürünleri
 							</Text>
-						</TouchableOpacity>
+						</AppTouchableOpacity>
 
 						<View className="flex-row">
-							<TouchableOpacity
+							<AppTouchableOpacity
 								onPress={() => {
 									router.push(`/(tabs)/kategoriler/${item.category}`);
 								}}
@@ -54,7 +55,7 @@ export default function ReviewScreenPriceCard({ item, type }: Props) {
 									{findCategoryLabel(item.category)}
 									{", "}
 								</Text>
-							</TouchableOpacity>
+							</AppTouchableOpacity>
 							<Text className="text-muted-foreground">
 								{getFormattedTimeDifference(item.last_price_action_date_time)}
 							</Text>
@@ -101,12 +102,12 @@ export default function ReviewScreenPriceCard({ item, type }: Props) {
 			</View>
 
 			<View className="flex-row gap-3">
-				<TouchableOpacity
+				<AppTouchableOpacity
 					className="flex-1 px-6 py-2 h-9 rounded bg-primary justify-center items-center"
 					onPress={() => Linking.openURL(item.link)}
 				>
 					<Text className="text-primary-foreground font-semibold">Ürünü İncele</Text>
-				</TouchableOpacity>
+				</AppTouchableOpacity>
 
 				<ShareDialog
 					shareMessage={item.name}
@@ -116,7 +117,7 @@ export default function ReviewScreenPriceCard({ item, type }: Props) {
 				/>
 			</View>
 
-			<TouchableOpacity
+			<AppTouchableOpacity
 				className="border border-border px-3 py-2 w-full flex-row items-center justify-center gap-1.5 rounded"
 				onPress={() =>
 					router.push(
@@ -130,7 +131,7 @@ export default function ReviewScreenPriceCard({ item, type }: Props) {
 					strokeWidth={2.3}
 				/>
 				<Text className="text-foreground font-medium">Ürün Sayfasına Dön</Text>
-			</TouchableOpacity>
+			</AppTouchableOpacity>
 		</View>
 	);
 }

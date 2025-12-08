@@ -1,3 +1,4 @@
+import AppTouchableOpacity from "@/components/AppTouchableOpacity";
 import Header from "@/components/header/Header";
 import HeaderIcon from "@/components/header/HeaderIcon";
 import HeaderSecondRow from "@/components/header/HeaderSecondRow";
@@ -24,7 +25,7 @@ const CategoriesScreen = () => {
 						href={`/(tabs)/kategoriler/${item.value}`}
 						asChild
 					>
-						<TouchableOpacity className="flex-row gap-6 items-center w-full px-6 py-3 self-start bg-background border border-border rounded-lg">
+						<AppTouchableOpacity className="flex-row gap-6 items-center w-full px-6 py-3 self-start bg-background border border-border rounded-lg">
 							<IconSymbol
 								// @ts-expect-error Expect error instead of type assertion
 								name={item.icon}
@@ -34,7 +35,7 @@ const CategoriesScreen = () => {
 							<Text className="text-xl font-medium text-foreground">
 								{item.label}
 							</Text>
-						</TouchableOpacity>
+						</AppTouchableOpacity>
 					</Link>
 				)}
 				contentContainerStyle={{ padding: 8, gap: 8 }}

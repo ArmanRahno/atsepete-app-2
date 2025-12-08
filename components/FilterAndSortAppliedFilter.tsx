@@ -1,6 +1,7 @@
 import { lightDestructiveForeground } from "@/constants/Colors";
 import { X } from "lucide-react-native";
 import { Text, TouchableOpacity, View } from "react-native";
+import AppTouchableOpacity from "./AppTouchableOpacity";
 
 const FilterAndSortAppliedFilter = ({
 	children,
@@ -10,7 +11,7 @@ const FilterAndSortAppliedFilter = ({
 	onPress: () => void;
 }) => {
 	return (
-		<TouchableOpacity
+		<AppTouchableOpacity
 			className="flex-row justify-center items-center bg-background border border-border shadow py-0.5 pl-2 pr-1 gap-1 rounded-full"
 			onPress={onPress}
 		>
@@ -21,7 +22,7 @@ const FilterAndSortAppliedFilter = ({
 					color={lightDestructiveForeground}
 				/>
 			</View>
-		</TouchableOpacity>
+		</AppTouchableOpacity>
 	);
 };
 

@@ -1,19 +1,10 @@
 import React, { useState, useEffect } from "react";
-import {
-	Modal,
-	View,
-	Text,
-	TextInput,
-	TouchableOpacity,
-	StyleSheet,
-	ScrollView,
-	Pressable,
-	Alert
-} from "react-native";
+import { Modal, View, Text, TextInput, StyleSheet, Pressable, Alert } from "react-native";
 import SelectDropdown from "react-native-select-dropdown";
 import { lightMutedForeground } from "../constants/Colors";
 import { cn } from "@/lib/utils";
 import { ChevronDown } from "lucide-react-native";
+import AppTouchableOpacity from "./AppTouchableOpacity";
 
 export const SORT_OPTIONS = [
 	{ label: "En Yeni", value: "en-yeni" },
@@ -102,7 +93,7 @@ export default function FilterAndSortDialog(props: FilterAndSortDialogProps) {
 							onSelect={option => setSort(option.value)}
 							defaultValue={sort}
 							renderButton={() => (
-								<TouchableOpacity className="flex-row justify-between rounded-lg px-4 py-2 border border-border">
+								<AppTouchableOpacity className="flex-row justify-between rounded-lg px-4 py-2 border border-border">
 									<Text style={{ fontFamily: "Roboto_500Medium" }}>
 										{SORT_OPTIONS.find(opt => opt.value === sort)?.label}
 									</Text>
@@ -110,7 +101,7 @@ export default function FilterAndSortDialog(props: FilterAndSortDialogProps) {
 										size={20}
 										color={lightMutedForeground}
 									/>
-								</TouchableOpacity>
+								</AppTouchableOpacity>
 							)}
 							renderItem={option => (
 								<View
@@ -124,7 +115,7 @@ export default function FilterAndSortDialog(props: FilterAndSortDialogProps) {
 							)}
 						/>
 						{/* {SORT_OPTIONS.map(option => (
-								<TouchableOpacity
+								<AppTouchableOpacity
 									key={option.value}
 									onPress={() => setSort(option.value)}
 									style={styles.radioRow}
@@ -135,7 +126,7 @@ export default function FilterAndSortDialog(props: FilterAndSortDialogProps) {
 										)}
 									</View>
 									<Text style={{ marginLeft: 8 }}>{option.label}</Text>
-								</TouchableOpacity>
+								<AppTouchableOpacity>
 							))} */}
 					</View>
 
@@ -163,31 +154,31 @@ export default function FilterAndSortDialog(props: FilterAndSortDialogProps) {
 					</View>
 
 					<View className="gap-2">
-						<TouchableOpacity
+						<AppTouchableOpacity
 							className="bg-primary rounded-lg px-4 py-2 items-center"
 							onPress={validateAndApply}
 						>
 							<Text className="text-sm font-medium text-primary-foreground">
 								Seçenekleri Uygula
 							</Text>
-						</TouchableOpacity>
+						</AppTouchableOpacity>
 						<View className="flex-row gap-2">
-							<TouchableOpacity
+							<AppTouchableOpacity
 								className="flex-1 bg-secondary rounded-lg px-4 py-2 items-center"
 								onPress={onClearFilters}
 							>
 								<Text className="text-sm font-medium text-secondary-foreground">
 									Filtreleri Sil
 								</Text>
-							</TouchableOpacity>
-							<TouchableOpacity
+							</AppTouchableOpacity>
+							<AppTouchableOpacity
 								className="flex-1 bg-secondary rounded-lg px-4 py-2 items-center"
 								onPress={onClose}
 							>
 								<Text className="text-sm font-medium text-secondary-foreground">
 									Kapat
 								</Text>
-							</TouchableOpacity>
+							</AppTouchableOpacity>
 						</View>
 					</View>
 				</Pressable>

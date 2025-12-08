@@ -1,11 +1,18 @@
 import React, { useState, useEffect, useCallback, memo } from "react";
-import { View, Text, ActivityIndicator, FlatList, RefreshControl } from "react-native";
-import { TouchableOpacity } from "react-native-gesture-handler";
+import {
+	View,
+	Text,
+	ActivityIndicator,
+	FlatList,
+	RefreshControl,
+	TouchableOpacity
+} from "react-native";
 import { useSearchParams } from "expo-router/build/hooks";
 import { Card } from "@/components/shad-cn/card";
 import ReviewPagePriceCard from "@/components/ReviewScreenPriceCard";
 import ReviewCard from "@/components/ReviewCard";
 import LoadingIndicator from "@/components/LoadingIndicator";
+import AppTouchableOpacity from "@/components/AppTouchableOpacity";
 
 const itemEndpoint = "https://atsepete.net/api/application/page/item";
 const reviewsEndpoint = "https://atsepete.net/api/application/page/reviews";
@@ -124,11 +131,11 @@ export default function UrunlerReviewsScreen() {
 		return (
 			<View className="flex-1 justify-center items-center p-4">
 				<Text className="text-lg font-semibold text-red-600 mb-2">{error}</Text>
-				<TouchableOpacity onPress={() => fetchItem(true)}>
+				<AppTouchableOpacity onPress={() => fetchItem(true)}>
 					<Text className="text-base font-medium text-blue-600 underline">
 						Tekrar Dene
 					</Text>
-				</TouchableOpacity>
+				</AppTouchableOpacity>
 			</View>
 		);
 	}

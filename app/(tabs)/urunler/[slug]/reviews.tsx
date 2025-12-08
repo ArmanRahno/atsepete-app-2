@@ -12,6 +12,7 @@ import { Card } from "@/components/shad-cn/card";
 import ReviewPagePriceCard from "@/components/ReviewScreenPriceCard";
 import ReviewCard from "@/components/ReviewCard";
 import LoadingIndicator from "@/components/LoadingIndicator";
+import AppTouchableOpacity from "@/components/AppTouchableOpacity";
 
 const itemEndpoint = "https://atsepete.net/api/application/page/urunler-all-item";
 const reviewsEndpoint = "https://atsepete.net/api/application/page/urunler-all-item-review";
@@ -132,11 +133,11 @@ export default function UrunlerReviewsScreen() {
 		return (
 			<View className="flex-1 justify-center items-center p-4">
 				<Text className="text-lg font-semibold text-red-600 mb-2">{error}</Text>
-				<TouchableOpacity onPress={() => fetchItem(true)}>
+				<AppTouchableOpacity onPress={() => fetchItem(true)}>
 					<Text className="text-base font-medium text-blue-600 underline">
 						Tekrar Dene
 					</Text>
-				</TouchableOpacity>
+				</AppTouchableOpacity>
 			</View>
 		);
 	}

@@ -1,3 +1,4 @@
+import AppTouchableOpacity from "@/components/AppTouchableOpacity";
 import Header from "@/components/header/Header";
 import HeaderIcon from "@/components/header/HeaderIcon";
 import HeaderSecondRow from "@/components/header/HeaderSecondRow";
@@ -24,12 +25,12 @@ const MarketplacesScreen = () => {
 						href={`/(tabs)/pazaryerleri/${item.value}`}
 						asChild
 					>
-						<TouchableOpacity className="py-1 h-16 bg-background justify-center items-center rounded-lg border border-border">
+						<AppTouchableOpacity className="py-1 h-16 bg-background justify-center items-center rounded-lg border border-border">
 							<item.Icon
 								scaleX={1.6}
 								scaleY={1.6}
 							/>
-						</TouchableOpacity>
+						</AppTouchableOpacity>
 					</Link>
 				)}
 				contentContainerStyle={{ padding: 8, gap: 8 }}

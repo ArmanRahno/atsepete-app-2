@@ -197,7 +197,7 @@
 // 				</Text>
 // 			) : null}
 
-// 			<TouchableOpacity
+// 			<AppTouchableOpacity
 // 				className="bg-primary rounded py-2 mt-4 disabled:bg-primary/80"
 // 				onPress={handleSubmit(onSubmit)}
 // 				disabled={isSubmitting}
@@ -212,7 +212,7 @@
 // 						"Hesap Oluştur"
 // 					)}
 // 				</Text>
-// 			</TouchableOpacity>
+// 			<AppTouchableOpacity>
 
 // 			<View className="flex-row items-center gap-2 mt-4">
 // 				<View className="h-[1] flex-1 bg-muted" />
@@ -235,6 +235,7 @@ import checkAndStoreAccountPushNotificationToken from "@/lib/checkAndStoreAccoun
 import ContinueWithGoogleBtn from "../account-page/ContinueWithGoogleBtn";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "@/lib/auth/firebase";
+import AppTouchableOpacity from "../AppTouchableOpacity";
 
 const RegisterSchema = z
 	.object({
@@ -430,7 +431,7 @@ export default function RegisterForm({ onSuccess }: { onSuccess: () => void }) {
 				</Text>
 			) : null}
 
-			<TouchableOpacity
+			<AppTouchableOpacity
 				className="bg-primary rounded py-2 mt-4 disabled:bg-primary/80"
 				onPress={handleSubmit(onSubmit)}
 				disabled={isSubmitting}
@@ -445,7 +446,7 @@ export default function RegisterForm({ onSuccess }: { onSuccess: () => void }) {
 						"Hesap Oluştur"
 					)}
 				</Text>
-			</TouchableOpacity>
+			</AppTouchableOpacity>
 
 			<View className="flex-row items-center gap-2 mt-4">
 				<View className="h-[1] flex-1 bg-muted" />

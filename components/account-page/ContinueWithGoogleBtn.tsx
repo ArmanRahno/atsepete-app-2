@@ -7,6 +7,7 @@ import { GoogleAuthProvider, signInWithCredential } from "firebase/auth";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import checkAndStoreAccountPushNotificationToken from "@/lib/checkAndStoreAccountPushNotificationToken";
 import { auth } from "@/lib/auth/firebase";
+import AppTouchableOpacity from "../AppTouchableOpacity";
 
 type Props = {
 	onSuccess: () => void;
@@ -88,7 +89,7 @@ const ContinueWithGoogleBtn = ({ onSuccess, setServerMessage }: Props) => {
 	}, [onSuccess, setServerMessage]);
 
 	return (
-		<TouchableOpacity
+		<AppTouchableOpacity
 			className="flex-row items-center justify-center gap-2 bg-background border border-border rounded py-2 mt-4 disabled:bg-gray-100"
 			onPress={handlePress}
 			disabled={loading}
@@ -109,7 +110,7 @@ const ContinueWithGoogleBtn = ({ onSuccess, setServerMessage }: Props) => {
 					</Text>
 				</>
 			)}
-		</TouchableOpacity>
+		</AppTouchableOpacity>
 	);
 };
 

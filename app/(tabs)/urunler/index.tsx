@@ -20,6 +20,7 @@ import HeaderSecondRow from "@/components/header/HeaderSecondRow";
 import { Text } from "react-native";
 import { ChevronUp } from "lucide-react-native";
 import UrunlerItemCard from "@/components/item/item-card/UrunlerItemCard";
+import AppTouchableOpacity from "@/components/AppTouchableOpacity";
 
 const API_URL = "https://atsepete.net/api/application/page/all-items";
 
@@ -99,18 +100,10 @@ export default function UrunlerScreen() {
 		[]
 	);
 
-	useFocusEffect(
-		useCallback(() => {
-			setDisplayBackToTopBtn(false);
-
-			const asyncCallback = async () => {
-				setPage(0);
-				await fetchItems(0, false, filters);
-			};
-
-			asyncCallback();
-		}, [fetchItems, filters])
-	);
+	useEffect(() => {
+		setPage(0);
+		fetchItems(0, false, filters);
+	}, [fetchItems]);
 
 	const onRefresh = useCallback(() => {
 		setRefreshing(true);
@@ -262,14 +255,14 @@ export default function UrunlerScreen() {
 				/>
 			)}
 			{displayBackToTopBtn && (
-				<TouchableOpacity
+				<AppTouchableOpacity
 					className="absolute bottom-4 right-4 bg-background p-2 border border-border rounded-lg"
 					onPress={handleScrollToTop}
 				>
 					<Text>
 						<ChevronUp />
 					</Text>
-				</TouchableOpacity>
+				</AppTouchableOpacity>
 			)}
 		</>
 	);

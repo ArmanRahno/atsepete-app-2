@@ -3,6 +3,7 @@ import { View, Text, ActivityIndicator, Image, ScrollView, TouchableOpacity } fr
 import { Link, router, useLocalSearchParams } from "expo-router";
 import LoadingIndicator from "@/components/LoadingIndicator";
 import DetailedItemCard from "@/components/item/DetailedItemCard";
+import AppTouchableOpacity from "@/components/AppTouchableOpacity";
 
 export default function ItemDetailScreen() {
 	const { slug } = useLocalSearchParams<{ slug: string }>();
@@ -75,17 +76,17 @@ export default function ItemDetailScreen() {
 						Bir hata ile mi karşılaştınız?
 					</Text>
 
-					<TouchableOpacity onPress={() => router.push("/(modals)/report-issue")}>
+					<AppTouchableOpacity onPress={() => router.push("/(modals)/report-issue")}>
 						<Text className="px-3 py-1 text-sm text-foreground font-medium underline">
 							Hata Bildir
 						</Text>
-					</TouchableOpacity>
+					</AppTouchableOpacity>
 
-					<TouchableOpacity onPress={() => router.push("/(modals)/make-suggestion")}>
+					<AppTouchableOpacity onPress={() => router.push("/(modals)/make-suggestion")}>
 						<Text className="px-3 pl-1 py-1 text-sm text-foreground font-medium underline">
 							Öneri Yap
 						</Text>
-					</TouchableOpacity>
+					</AppTouchableOpacity>
 				</View>
 			</View>
 		</ScrollView>

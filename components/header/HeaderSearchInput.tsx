@@ -3,8 +3,9 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
 import { Search } from "lucide-react-native";
 import { useEffect, useState } from "react";
-import { Keyboard, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Keyboard, Text, TextInput, View } from "react-native";
 import BarcodeScanButton from "../barcode-scan/BarcodeScanButton";
+import AppTouchableOpacity from "../AppTouchableOpacity";
 
 const endpoint = "https://atsepete.net/api/application/action/search-suggestion";
 
@@ -83,12 +84,12 @@ const HeaderSearchInput = () => {
 		<View className="flex-row relative flex-1 items-center border border-border rounded-xl">
 			<Text className="mx-1 p-2">
 				<Search
-					size={20}
+					size={24}
 					color={lightMutedForeground}
 				/>
 			</Text>
 			<TextInput
-				className="flex-1 p-0 text-foreground placeholder:text-muted-foreground"
+				className="flex-1 p-0 py-1.5 text-foreground placeholder:text-muted-foreground text-lg"
 				placeholder="Ara"
 				autoCapitalize="none"
 				value={query}
@@ -108,7 +109,7 @@ const HeaderSearchInput = () => {
 				<View className="absolute top-[210%] left-0 right-0 bg-background border border-border rounded-lg z-[3]">
 					{suggestions.slice(0, 5).map(suggestion => {
 						return (
-							<TouchableOpacity
+							<AppTouchableOpacity
 								key={suggestion.url_slug}
 								onPress={() => handleSuggestionPress(suggestion)}
 								className="px-2 py-2 border-b border-gray-200"
@@ -119,7 +120,7 @@ const HeaderSearchInput = () => {
 								>
 									{suggestion.name}
 								</Text>
-							</TouchableOpacity>
+							</AppTouchableOpacity>
 						);
 					})}
 				</View>

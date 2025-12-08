@@ -24,13 +24,6 @@ export default function UrunlerDetailedItemCard({ item }: DetailedItemCardProps)
 
 	return (
 		<>
-			<Link
-				href={
-					"/(tabs)/urunler/bigpoint-sunum-dosyasi-cepli-40li-kirmizi-p569275963395-s726605"
-				}
-			>
-				JIIPUSAHFIDSGHIPHSDIHGHASDPIUHGSDI
-			</Link>
 			<Text className="text-xl font-semibold mb-4">{item.name}</Text>
 
 			<View className="relative w-full aspect-square bg-white rounded-lg overflow-hidden mb-4">

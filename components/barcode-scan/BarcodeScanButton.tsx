@@ -11,10 +11,13 @@ const BarcodeScanButton = () => {
 
 	return (
 		<View>
-			<Pressable onPress={handlePress}>
-				<Text className="mx-1 p-2">
+			<Pressable
+				onPress={handlePress}
+				hitSlop={10}
+			>
+				<Text className="mx-1 p-2.5">
 					<CameraIcon
-						size={20}
+						size={24}
 						color={lightMutedForeground}
 					/>
 				</Text>

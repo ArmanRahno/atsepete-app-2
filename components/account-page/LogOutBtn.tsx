@@ -5,6 +5,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { AccountAPIResponse } from "@/app/(tabs)/alarms";
 import { auth } from "@/lib/auth/firebase";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
+import AppTouchableOpacity from "../AppTouchableOpacity";
 
 const LogOutBtn = ({
 	setIsLoggedIn,
@@ -47,12 +48,13 @@ const LogOutBtn = ({
 	}, [setIsLoggedIn, setUserData, setLoading]);
 
 	return (
-		<TouchableOpacity
+		<AppTouchableOpacity
 			className="bg-amber-500 px-4 py-2 rounded-lg self-start mt-2"
 			onPress={handleLogout}
 		>
 			<Text className="text-destructive-foreground font-medium">Çıkış Yap</Text>
-		</TouchableOpacity>
+		</AppTouchableOpacity>
 	);
 };
+
 export default LogOutBtn;

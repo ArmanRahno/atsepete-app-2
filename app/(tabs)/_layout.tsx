@@ -5,10 +5,12 @@ import { Platform } from "react-native";
 import { HapticTab } from "@/components/HapticTab";
 import TabBarBackground from "@/components/ui/TabBarBackground";
 import { Colors } from "@/constants/Colors";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import { Bell, Boxes, Grid3x3, Package, ShoppingBag, Sparkles, Store } from "lucide-react-native";
 
 export default function TabLayout() {
+	const insets = useSafeAreaInsets();
+
 	return (
 		<SafeAreaView
 			edges={["top"]}
@@ -23,10 +25,20 @@ export default function TabLayout() {
 					popToTopOnBlur: true,
 					tabBarStyle: Platform.select({
 						ios: {
-							// Use a transparent background on iOS to show the blur effect
+							height: 66 + insets.bottom,
+							paddingBottom: insets.bottom,
+							paddingTop: 6
 						},
-						default: {}
-					})
+						default: {
+							height: 66 + insets.bottom,
+							paddingBottom: insets.bottom,
+							paddingTop: 6
+						}
+					}),
+					tabBarLabelStyle: {
+						fontSize: 11,
+						marginTop: 4
+					}
 				}}
 				backBehavior="history"
 				initialRouteName="index"
@@ -37,7 +49,7 @@ export default function TabLayout() {
 						title: "Fırsatlar",
 						tabBarIcon: ({ color, focused }) => (
 							<Sparkles
-								size={28}
+								size={32}
 								strokeWidth={focused ? 1.6 : 1.5}
 								color={color}
 							/>
@@ -51,7 +63,7 @@ export default function TabLayout() {
 						title: "Tüm Ürünler",
 						tabBarIcon: ({ color, focused }) => (
 							<Boxes
-								size={28}
+								size={32}
 								strokeWidth={focused ? 1.6 : 1.5}
 								color={color}
 							/>
@@ -65,7 +77,7 @@ export default function TabLayout() {
 						title: "Pazaryerleri",
 						tabBarIcon: ({ color, focused }) => (
 							<Store
-								size={28}
+								size={32}
 								strokeWidth={focused ? 1.6 : 1.5}
 								color={color}
 							/>
@@ -87,7 +99,7 @@ export default function TabLayout() {
 						title: "Kategoriler",
 						tabBarIcon: ({ color, focused }) => (
 							<Grid3x3
-								size={28}
+								size={32}
 								strokeWidth={focused ? 1.6 : 1.5}
 								color={color}
 							/>
@@ -108,7 +120,7 @@ export default function TabLayout() {
 						title: "Takip Listem",
 						tabBarIcon: ({ color, focused }) => (
 							<Bell
-								size={28}
+								size={32}
 								strokeWidth={focused ? 1.6 : 1.5}
 								color={color}
 							/>
