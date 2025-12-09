@@ -102,19 +102,20 @@ export default function ReviewScreenPriceCard({ item, type }: Props) {
 			</View>
 
 			<View className="flex-row gap-3">
-				<AppTouchableOpacity
-					className="flex-1 px-6 py-2 h-9 rounded bg-primary justify-center items-center"
-					onPress={() => Linking.openURL(item.link)}
-				>
-					<Text className="text-primary-foreground font-semibold">Ürünü İncele</Text>
-				</AppTouchableOpacity>
-
 				<ShareDialog
 					shareMessage={item.name}
 					shareUrl={`https://atsepete.net/${
 						type === "INDIRIMLER" ? "indirimler" : "urunler"
 					}/${item.url_slug}`}
+					pressableClassName="h-12"
 				/>
+
+				<AppTouchableOpacity
+					className="flex-1 px-6 py-2 h-12 rounded bg-primary items-center justify-center"
+					onPress={() => Linking.openURL(item.link)}
+				>
+					<Text className="text-primary-foreground font-semibold">Ürünü İncele</Text>
+				</AppTouchableOpacity>
 			</View>
 
 			<AppTouchableOpacity

@@ -18,6 +18,7 @@ import { cn } from "@/lib/utils";
 import { ClassNameValue } from "tailwind-merge";
 import { lightPrimary, lightSecondary } from "@/constants/Colors";
 import Share from "react-native-share";
+import AppTouchableOpacity from "./AppTouchableOpacity";
 
 type ShareQRDialogProps = {
 	url: string;
@@ -127,19 +128,29 @@ const ShareQRDialog: React.FC<ShareQRDialogProps> = ({
 		}
 	};
 
+	const createQrBase64 = (): Promise<string | null> =>
+		new Promise(resolve => {
+			if (!qrRef.current) return resolve(null);
+
+			qrRef.current.toDataURL((data: string) => {
+				resolve(data);
+			});
+		});
+
 	const handleShare = async () => {
 		if (!shareMessage) return;
 
 		try {
-			const fileUri = await createQrPngFile();
+			const base64 = await createQrBase64();
 
-			const options: any = fileUri
+			const options: any = base64
 				? {
 						title: caption ?? title ?? "QR kodunu paylaş",
 						message: shareMessage,
-						url: fileUri,
+						url: `data:image/png;base64,${base64}`,
 						type: "image/png",
-						failOnCancel: false
+						failOnCancel: false,
+						useInternalStorage: true
 				  }
 				: {
 						title: caption ?? title ?? "QR kodunu paylaş",
@@ -148,10 +159,22 @@ const ShareQRDialog: React.FC<ShareQRDialogProps> = ({
 				  };
 
 			await Share.open(options);
+
+			// TO-DO
+
+			// } catch (error: any) {
+			// 	if (error?.message?.includes("User did not share")) return;
+			// 	console.warn("Paylaşırken hata oluştu:", error);
+			// }
 		} catch (error: any) {
 			if (error?.message?.includes("User did not share")) return;
 
-			console.warn("Paylaşırken hata oluştu:", error);
+			const msg =
+				typeof error === "string"
+					? error
+					: error?.message ?? JSON.stringify(error, null, 2);
+
+			Alert.alert("Paylaşma hatası", msg);
 		}
 	};
 
@@ -182,18 +205,10 @@ const ShareQRDialog: React.FC<ShareQRDialogProps> = ({
 					style={{ flex: 1, backgroundColor: "rgba(0,0,0,0.5)" }}
 					onPress={close}
 				>
-					<Pressable
-						onPress={stopPropagation}
+					<View
 						className="mx-6 my-auto rounded-2xl bg-white px-4 py-6"
+						onStartShouldSetResponder={() => true}
 					>
-						<Pressable
-							onPress={close}
-							hitSlop={8}
-							className="absolute top-4 right-4 p-1 rounded-full"
-						>
-							<X size={18} />
-						</Pressable>
-
 						{title && (
 							<Text className="text-xl font-bold text-center mb-2">{title}</Text>
 						)}
@@ -245,7 +260,7 @@ const ShareQRDialog: React.FC<ShareQRDialogProps> = ({
 						)}
 
 						<View className="flex-row gap-2">
-							<Pressable
+							<AppTouchableOpacity
 								onPress={handleSave}
 								disabled={!url || saving}
 								className="flex-1 flex-row items-center justify-center rounded-xl p-3 opacity-100 disabled:opacity-60"
@@ -257,9 +272,9 @@ const ShareQRDialog: React.FC<ShareQRDialogProps> = ({
 									style={{ marginRight: 6 }}
 								/>
 								<Text className="font-medium text-white">Kaydet</Text>
-							</Pressable>
+							</AppTouchableOpacity>
 
-							<Pressable
+							<AppTouchableOpacity
 								onPress={handleCopy}
 								disabled={!clipboardText}
 								className="flex-1 flex-row items-center justify-center rounded-xl border border-border p-[11px] opacity-100 disabled:opacity-60"
@@ -281,9 +296,9 @@ const ShareQRDialog: React.FC<ShareQRDialogProps> = ({
 										<Text className="font-medium">Kopyala</Text>
 									</>
 								)}
-							</Pressable>
+							</AppTouchableOpacity>
 
-							<Pressable
+							<AppTouchableOpacity
 								onPress={handleShare}
 								disabled={!shareMessage}
 								className="flex-1 flex-row items-center justify-center rounded-xl p-3 opacity-100 disabled:opacity-60"
@@ -294,9 +309,17 @@ const ShareQRDialog: React.FC<ShareQRDialogProps> = ({
 									style={{ marginRight: 6 }}
 								/>
 								<Text className="font-medium">Paylaş</Text>
-							</Pressable>
+							</AppTouchableOpacity>
 						</View>
-					</Pressable>
+
+						<AppTouchableOpacity
+							onPress={close}
+							hitSlop={24}
+							className="absolute top-3 right-3 p-1 rounded-full"
+						>
+							<X size={24} />
+						</AppTouchableOpacity>
+					</View>
 				</Pressable>
 			</Modal>
 		</>

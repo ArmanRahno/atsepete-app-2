@@ -21,6 +21,8 @@ import HeaderIcon from "@/components/header/HeaderIcon";
 import HeaderSecondRow from "@/components/header/HeaderSecondRow";
 import { Payment } from "@/zod-schemas/save-user-payment-data";
 
+const REFERRER_CODE_KEY = "user-referrer-code";
+
 type EarningsPreviousPaymentsHistory = {
 	datetime: string;
 	payment_method: string;
@@ -104,7 +106,10 @@ export default function AlarmScreen() {
 			setUserData(null);
 
 			const curSession = await AsyncStorage.getItem("user-session-token");
-			if (!curSession) return;
+			if (!curSession) {
+				await AsyncStorage.removeItem(REFERRER_CODE_KEY);
+				return;
+			}
 
 			const response = await fetch(
 				"https://atsepete.net/api/application/page/user-page?earnings=false"
@@ -118,10 +123,21 @@ export default function AlarmScreen() {
 
 			if (data.status === "error" || data.code === "LOGIN_REQUIRED") {
 				setIsLoggedIn(false);
+				await AsyncStorage.removeItem(REFERRER_CODE_KEY);
 				return;
 			}
 
 			setIsLoggedIn(true);
+
+			if (
+				"referrer_code" in data &&
+				typeof data.referrer_code === "string" &&
+				data.referrer_code
+			) {
+				await AsyncStorage.setItem(REFERRER_CODE_KEY, data.referrer_code);
+			} else {
+				await AsyncStorage.removeItem(REFERRER_CODE_KEY);
+			}
 
 			if ("items" in data && data.items) {
 				setUserData({

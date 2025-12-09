@@ -1,6 +1,6 @@
 import formatPrice from "@/lib/formatPrice";
 import getFormattedTimeDifference from "@/lib/getFormattedTimeDifference";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, TouchableOpacity, Linking } from "react-native";
 import findMarketplaceLabel from "@/lib/findMarketplaceLabel";
 import { Link } from "expo-router";
@@ -9,6 +9,9 @@ import ShareDialog from "./ShareDialog";
 import ItemListener from "./ItemListener";
 import { Card } from "../shad-cn/card";
 import AppTouchableOpacity from "../AppTouchableOpacity";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
+const REFERRER_CODE_KEY = "user-referrer-code";
 
 type ItemPriceCardProps = {
 	item: Item;
@@ -18,6 +21,27 @@ type ItemPriceCardProps = {
 
 export default function UrunlerItemPriceCard({ item }: ItemPriceCardProps) {
 	const lastPrice = item.last_price;
+
+	const [shareUrl, setShareUrl] = useState(`https://atsepete.net/urunler/${item.url_slug}`);
+
+	useEffect(() => {
+		(async () => {
+			try {
+				const referrerCode = await AsyncStorage.getItem(REFERRER_CODE_KEY);
+				const baseUrl = `https://atsepete.net/urunler/${item.url_slug}`;
+
+				const finalUrl = referrerCode
+					? `${baseUrl}${baseUrl.includes("?") ? "&" : "?"}r=${encodeURIComponent(
+							referrerCode
+					  )}`
+					: baseUrl;
+
+				setShareUrl(finalUrl);
+			} catch (err) {
+				setShareUrl(`https://atsepete.net/urunler/${item.url_slug}`);
+			}
+		})();
+	}, [item.url_slug]);
 
 	return (
 		<Card className="bg-background rounded-lg p-4 my-4 shadow-sm">
@@ -69,19 +93,20 @@ export default function UrunlerItemPriceCard({ item }: ItemPriceCardProps) {
 				)}
 
 				<View className="flex-row gap-2">
+					<ShareDialog
+						shareMessage={item.name}
+						shareUrl={shareUrl}
+						pressableClassName="h-12"
+					/>
+
 					<AppTouchableOpacity
 						onPress={() => {
 							Linking.openURL(item.link);
 						}}
-						className="flex-1 items-center bg-primary px-4 py-2 h-9 rounded"
+						className="flex-1 items-center justify-center bg-primary px-4 py-2 h-12 rounded"
 					>
 						<Text className="text-white font-semibold">Ürünü İncele</Text>
 					</AppTouchableOpacity>
-
-					<ShareDialog
-						shareMessage={item.name}
-						shareUrl={`https://atsepete.net/indirimler/${item.url_slug}`}
-					/>
 				</View>
 			</View>
 		</Card>

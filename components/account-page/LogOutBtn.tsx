@@ -7,6 +7,8 @@ import { auth } from "@/lib/auth/firebase";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import AppTouchableOpacity from "../AppTouchableOpacity";
 
+const REFERRER_CODE_KEY = "user-referrer-code";
+
 const LogOutBtn = ({
 	setIsLoggedIn,
 	setUserData,
@@ -38,6 +40,7 @@ const LogOutBtn = ({
 				console.log("GoogleSignin.signOut error (ignored on logout):", err);
 			}
 
+			await AsyncStorage.removeItem(REFERRER_CODE_KEY);
 			await AsyncStorage.removeItem("user-session-token");
 
 			setIsLoggedIn(false);

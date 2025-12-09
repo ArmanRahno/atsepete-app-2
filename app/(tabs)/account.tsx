@@ -15,6 +15,8 @@ import DeleteAccountBtn from "@/components/account-page/DeleteAccountBtn";
 import PaymentOptions from "@/components/account-page/PaymentOptions";
 import VersionInfo from "@/components/VersionInfo";
 
+const REFERRER_CODE_KEY = "user-referrer-code";
+
 export default function AccountScreen() {
 	const [userData, setUserData] = useState<AccountAPIResponse | null>(null);
 	const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
@@ -27,7 +29,11 @@ export default function AccountScreen() {
 			setUserData(null);
 
 			const curSession = await AsyncStorage.getItem("user-session-token");
-			if (!curSession) return;
+			if (!curSession) {
+				// user not logged in → clear referrer
+				await AsyncStorage.removeItem(REFERRER_CODE_KEY);
+				return;
+			}
 
 			const response = await fetch(
 				"https://atsepete.net/api/application/page/user-page?alarms=false"
@@ -41,12 +47,20 @@ export default function AccountScreen() {
 
 			if (data.status === "error" || data.code === "LOGIN_REQUIRED") {
 				setIsLoggedIn(false);
+				await AsyncStorage.removeItem(REFERRER_CODE_KEY);
 				return;
 			}
 
 			setIsLoggedIn(true);
-
 			setUserData(data);
+
+			const refCode = (data as any).user?.referrer_code ?? (data as any).referrer_code;
+
+			if (refCode) {
+				await AsyncStorage.setItem(REFERRER_CODE_KEY, refCode);
+			} else {
+				await AsyncStorage.removeItem(REFERRER_CODE_KEY);
+			}
 		} catch (error) {
 			console.error("Error fetching user data:", error);
 		} finally {
