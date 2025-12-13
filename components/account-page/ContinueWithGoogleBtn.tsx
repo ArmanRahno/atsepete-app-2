@@ -5,9 +5,9 @@ import GoogleIcon from "@/assets/icons/Google";
 import { GoogleSignin, statusCodes } from "@react-native-google-signin/google-signin";
 import { GoogleAuthProvider, signInWithCredential } from "firebase/auth";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import checkAndStoreAccountPushNotificationToken from "@/lib/checkAndStoreAccountPushNotificationToken";
 import { auth } from "@/lib/auth/firebase";
 import AppTouchableOpacity from "../AppTouchableOpacity";
+import { useAccountNotificationPermission } from "@/hooks/useAccountNotificationPermission";
 
 type Props = {
 	onSuccess: () => void;
@@ -16,6 +16,8 @@ type Props = {
 
 const ContinueWithGoogleBtn = ({ onSuccess, setServerMessage }: Props) => {
 	const [loading, setLoading] = useState(false);
+
+	const { askAndStoreAccountPushToken } = useAccountNotificationPermission();
 
 	useEffect(() => {
 		GoogleSignin.configure({
@@ -72,7 +74,7 @@ const ContinueWithGoogleBtn = ({ onSuccess, setServerMessage }: Props) => {
 			const sessionToken = data?.data?.sessionToken;
 			if (sessionToken) {
 				await AsyncStorage.setItem("user-session-token", sessionToken);
-				await checkAndStoreAccountPushNotificationToken();
+				await askAndStoreAccountPushToken();
 			}
 
 			onSuccess();
@@ -86,7 +88,7 @@ const ContinueWithGoogleBtn = ({ onSuccess, setServerMessage }: Props) => {
 		} finally {
 			setLoading(false);
 		}
-	}, [onSuccess, setServerMessage]);
+	}, [onSuccess, setServerMessage, askAndStoreAccountPushToken]);
 
 	return (
 		<AppTouchableOpacity

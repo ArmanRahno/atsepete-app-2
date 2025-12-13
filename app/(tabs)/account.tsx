@@ -30,7 +30,6 @@ export default function AccountScreen() {
 
 			const curSession = await AsyncStorage.getItem("user-session-token");
 			if (!curSession) {
-				// user not logged in → clear referrer
 				await AsyncStorage.removeItem(REFERRER_CODE_KEY);
 				return;
 			}

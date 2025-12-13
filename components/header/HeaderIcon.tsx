@@ -15,17 +15,17 @@ const HeaderIcon = () => {
 		>
 			<View
 				className="bg-primary justify-center items-center rounded-full"
-				style={{ height: 28, width: 28 }}
+				style={{ height: 22, width: 22 }}
 			>
 				<AtSepeteIcon
-					height={18}
-					width={18}
+					height={14}
+					width={14}
 					fill="white"
 					stroke="white"
 					strokeWidth={4}
 				/>
 			</View>
-			<HeaderText className="text-xl">AtSepete.Net</HeaderText>
+			<HeaderText className="text-base">AtSepete.Net</HeaderText>
 		</Pressable>
 	);
 };

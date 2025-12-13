@@ -6,8 +6,8 @@ import Toast from "react-native-toast-message";
 import { ItemCardProps } from "./item-card/ItemCard";
 import { BellMinus, BellPlus } from "lucide-react-native";
 import { ClassNameValue } from "tailwind-merge";
-import checkAndStoreAccountPushNotificationToken from "@/lib/checkAndStoreAccountPushNotificationToken";
 import AppTouchableOpacity from "../AppTouchableOpacity";
+import { useAccountNotificationPermission } from "@/hooks/useAccountNotificationPermission";
 
 const ItemListener = ({
 	item,
@@ -18,6 +18,8 @@ const ItemListener = ({
 		item.is_user_subscribed || false
 	);
 	const [isListenerPending, setIsListenerPending] = useState<boolean>(false);
+
+	const { askAndStoreAccountPushToken } = useAccountNotificationPermission();
 
 	return (
 		<AppTouchableOpacity
@@ -45,7 +47,7 @@ const ItemListener = ({
 						topOffset: 45
 					});
 
-					await checkAndStoreAccountPushNotificationToken();
+					await askAndStoreAccountPushToken();
 
 					onListenerSuccess && onListenerSuccess(item._id.toString());
 				} catch (err) {

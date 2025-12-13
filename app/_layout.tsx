@@ -32,11 +32,9 @@ import {
 import { Platform } from "react-native";
 import NotificationColdStartNav from "@/components/NotificationColdStartNav";
 import { pathFromPayload } from "@/lib/navFromNotification";
-
-// const NOTIFICATION_TOKEN_API_URL =
-// 	"https://atsepete.net/api/application/notification/notification-token-on-install";
-
-// const INITIAL_LAUNCH_API_URL = "https://atsepete.net/api/application/initial-launch";
+import { PermissionWarmupProvider } from "@/components/PermissionWarmupDialog";
+import { usePermissionWarmup } from "@/components/PermissionWarmupDialog";
+import { Bell } from "lucide-react-native";
 
 const NOTIFICATION_TOKEN_API_URL =
 	"https://atsepete.net/api/application/notification/notification-token-on-install";
@@ -55,10 +53,12 @@ Notifications.setNotificationHandler({
 
 SplashScreen.preventAutoHideAsync();
 
-export default function RootLayout() {
+function RootLayoutContent() {
 	const notificationListener = useRef<Notifications.EventSubscription>(null);
 	const responseListener = useRef<Notifications.EventSubscription>(null);
 	const router = useRouter();
+
+	const { showPermissionDialog } = usePermissionWarmup();
 
 	let [fontsLoaded] = useFonts({
 		Roboto_100Thin,
@@ -138,7 +138,6 @@ export default function RootLayout() {
 
 		const logFirstLaunch = async () => {
 			const hasLaunched = await AsyncStorage.getItem("hasLaunchedV2");
-
 			if (hasLaunched) return;
 
 			const app_user_agent = await getUserAgent();
@@ -155,9 +154,7 @@ export default function RootLayout() {
 			} catch (_) {}
 
 			const app_build_version = nativeBuildVersion;
-
 			const app_application_version = nativeApplicationVersion;
-
 			const app_installation_time = await getInstallationTimeAsync();
 
 			const res = await fetch(INITIAL_LAUNCH_API_URL, {
@@ -186,53 +183,99 @@ export default function RootLayout() {
 			installReferrer && (await AsyncStorage.setItem("referrer", installReferrer));
 		};
 
-		const registerPushToken = async () => {
-			try {
-				const hasLaunched = await AsyncStorage.getItem("hasLaunchedV2");
+		const askNotificationOnInstall = async () => {
+			const hasLaunched = await AsyncStorage.getItem("hasLaunchedV2");
+			if (hasLaunched) return;
 
-				if (!hasLaunched) {
-					const expoToken = await registerForPushNotificationsAsync();
-					if (expoToken) {
-						await fetch(NOTIFICATION_TOKEN_API_URL, {
-							method: "POST",
-							headers: { "Content-Type": "application/json" },
-							body: JSON.stringify({ token: expoToken, rand_id: userRandId })
-						});
-					}
+			const perms = await Notifications.getPermissionsAsync();
 
-					await AsyncStorage.setItem("hasLaunchedV2", "true");
+			const doRegisterInstallToken = async () => {
+				const expoToken = await registerForPushNotificationsAsync();
+				if (expoToken) {
+					await fetch(NOTIFICATION_TOKEN_API_URL, {
+						method: "POST",
+						headers: { "Content-Type": "application/json" },
+						body: JSON.stringify({ token: expoToken, rand_id: userRandId })
+					});
 				}
-			} catch (err) {
-				console.error("Error registering for push notifications:", err);
+				await AsyncStorage.setItem("hasLaunchedV2", "true");
+			};
+
+			if (perms.status === "granted") {
+				await doRegisterInstallToken();
+				return;
 			}
+
+			if (perms.canAskAgain) {
+				showPermissionDialog({
+					mode: "request",
+					title: "Bildirimleri Açmak İster misiniz?",
+					description:
+						"Takip ettiğiniz ürünlerdeki indirimler ve kazanç güncellemelerini size bildirebilmemiz için bildirim izni gereklidir.",
+					bulletPoints: [
+						"Takip ettiğiniz ürünlerdeki indirimlerden anında haberdar olun",
+						"Kurduğunuz alarmlardaki fiyat değişikliklerini kaçırmayın",
+						"Davet linklerinden elde ettiğiniz kazancı kolayca takip edin"
+					],
+					icon: (
+						<Bell
+							size={32}
+							color="#fff"
+						/>
+					),
+					onConfirm: async () => {
+						const res = await Notifications.requestPermissionsAsync();
+						if (res.status === "granted") {
+							await doRegisterInstallToken();
+						} else {
+							await AsyncStorage.setItem("hasLaunchedV2", "true");
+						}
+					},
+					onCancel: async () => {
+						await AsyncStorage.setItem("hasLaunchedV2", "true");
+					}
+				});
+
+				return;
+			}
+
+			await AsyncStorage.setItem("hasLaunchedV2", "true");
 		};
 
 		(async () => {
 			await logFirstLaunch();
-			await registerPushToken();
+			await askNotificationOnInstall();
 		})();
-	}, []);
+	}, [showPermissionDialog]);
 
 	return (
-		<GestureHandlerRootView>
-			<SafeAreaProvider>
-				<ThemeProvider value={DefaultTheme}>
-					<StatusBar style="dark" />
-					<NotificationColdStartNav />
-					<Stack>
-						<Stack.Screen
-							name="(tabs)"
-							options={{ headerShown: false }}
-						/>
-						<Stack.Screen
-							name="(modals)"
-							options={{ headerShown: false, presentation: "modal" }}
-						/>
-						<Stack.Screen name="+not-found" />
-					</Stack>
-					<Toast config={toastConfig} />
-				</ThemeProvider>
-			</SafeAreaProvider>
+		<SafeAreaProvider>
+			<ThemeProvider value={DefaultTheme}>
+				<StatusBar style="dark" />
+				<NotificationColdStartNav />
+				<Stack>
+					<Stack.Screen
+						name="(tabs)"
+						options={{ headerShown: false }}
+					/>
+					<Stack.Screen
+						name="(modals)"
+						options={{ headerShown: false, presentation: "modal" }}
+					/>
+					<Stack.Screen name="+not-found" />
+				</Stack>
+				<Toast config={toastConfig} />
+			</ThemeProvider>
+		</SafeAreaProvider>
+	);
+}
+
+export default function RootLayout() {
+	return (
+		<GestureHandlerRootView style={{ flex: 1 }}>
+			<PermissionWarmupProvider>
+				<RootLayoutContent />
+			</PermissionWarmupProvider>
 		</GestureHandlerRootView>
 	);
 }

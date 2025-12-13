@@ -1,15 +1,8 @@
-import {
-	lightPrimary,
-	lightPrimaryForeground,
-	lightSecondary,
-	lightSecondaryForeground
-} from "@/constants/Colors";
-import { BarcodeScanningResult, CameraView, useCameraPermissions } from "expo-camera";
-import { AppState } from "react-native";
+import { BarcodeScanningResult, CameraView } from "expo-camera";
 import { router } from "expo-router";
 import { Scan, X, Zap, ZapOff } from "lucide-react-native";
-import React, { Dispatch, SetStateAction, useCallback, useEffect, useRef, useState } from "react";
-import { ActivityIndicator, Linking, Modal, Pressable, StyleSheet, Text, View } from "react-native";
+import React, { Dispatch, SetStateAction, useCallback, useRef, useState } from "react";
+import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
 import AppTouchableOpacity from "../AppTouchableOpacity";
 
 const BarcodeScanCameraView = ({
@@ -20,17 +13,7 @@ const BarcodeScanCameraView = ({
 	const [isFlashlightOn, setIsFlashlightOn] = useState(false);
 	const [isProcessingBarcode, setIsProcessingBarcode] = useState(false);
 	const [message, setMessage] = useState<string | null>(null);
-	const [permission, requestPermission] = useCameraPermissions();
 	const camRef = useRef<CameraView | null>(null);
-
-	useEffect(() => {
-		const sub = AppState.addEventListener("change", state => {
-			if (state === "active") {
-				requestPermission();
-			}
-		});
-		return () => sub.remove();
-	}, [requestPermission]);
 
 	const handleFlashlight = useCallback(() => {
 		setIsFlashlightOn(cur => !cur);
@@ -53,11 +36,6 @@ const BarcodeScanCameraView = ({
 					params: { slug: barcode.data }
 				});
 
-				// router.navigate({
-				// 	pathname: "/(tabs)/barkod/[slug]",
-				// 	params: { slug: 9786057144645 }
-				// });
-
 				setIsCamViewOpen(false);
 			} catch {
 				setMessage("Bir hata oluştu. Lütfen tekrar deneyin.");
@@ -69,67 +47,6 @@ const BarcodeScanCameraView = ({
 		},
 		[isProcessingBarcode, setIsCamViewOpen]
 	);
-
-	if (!permission) return null;
-
-	if (!permission.granted) {
-		if (permission.canAskAgain) {
-			requestPermission();
-
-			return null;
-		}
-
-		return (
-			<Modal
-				animationType="fade"
-				transparent
-				onRequestClose={() => setIsCamViewOpen(false)}
-				visible
-			>
-				<Pressable
-					style={styles.accessDeniedOverlay}
-					onPress={() => setIsCamViewOpen(false)}
-				>
-					<View style={styles.accessDeniedContainerInner}>
-						<Text style={styles.accessDeniedText}>
-							Barkod tarama özelliğini kullanabilmeniz için kamera erişim izni
-							vermeniz gerekiyor.
-						</Text>
-
-						<View style={{ height: 20 }} />
-
-						<AppTouchableOpacity
-							style={styles.accessDeniedButton}
-							onPress={async () => {
-								await Linking.openSettings();
-								// user will return -> AppState listener requests permission
-							}}
-						>
-							<Text style={styles.accessDeniedButtonText}>
-								Uygulama Ayarlarına Git
-							</Text>
-						</AppTouchableOpacity>
-
-						<View style={{ height: 8 }} />
-
-						<AppTouchableOpacity
-							style={[styles.accessDeniedButton, { backgroundColor: lightSecondary }]}
-							onPress={() => setIsCamViewOpen(false)}
-						>
-							<Text
-								style={[
-									styles.accessDeniedButtonText,
-									{ color: lightSecondaryForeground }
-								]}
-							>
-								Kapat
-							</Text>
-						</AppTouchableOpacity>
-					</View>
-				</Pressable>
-			</Modal>
-		);
-	}
 
 	return (
 		<View style={styles.container}>
@@ -227,33 +144,6 @@ const styles = StyleSheet.create({
 		alignItems: "center",
 		backgroundColor: "rgba(0,0,0,0.5)"
 	},
-	accessDeniedOverlay: {
-		flex: 1,
-		justifyContent: "center",
-		alignItems: "center",
-		backgroundColor: "rgba(0,0,0,0.3)"
-	},
-	accessDeniedContainerInner: {
-		width: "90%",
-		maxWidth: 350,
-		backgroundColor: "#fff",
-		padding: 16,
-		borderRadius: 8
-	},
-	accessDeniedText: { textAlign: "center", fontSize: 16, fontWeight: "bold" },
-	accessDeniedButton: {
-		width: "100%",
-		alignSelf: "center",
-		backgroundColor: lightPrimary,
-		paddingHorizontal: 16,
-		paddingVertical: 8,
-		borderRadius: 8
-	},
-	accessDeniedButtonText: {
-		color: lightPrimaryForeground,
-		fontWeight: "bold",
-		textAlign: "center"
-	},
 	serverMessageContainer: {
 		position: "absolute",
 		bottom: 0,
@@ -266,5 +156,10 @@ const styles = StyleSheet.create({
 		backgroundColor: "rgba(0,0,0,0.5)",
 		borderRadius: 16
 	},
-	serverMessageText: { color: "#eee", fontSize: 16, fontWeight: "bold", textAlign: "center" }
+	serverMessageText: {
+		color: "#eee",
+		fontSize: 16,
+		fontWeight: "bold",
+		textAlign: "center"
+	}
 });

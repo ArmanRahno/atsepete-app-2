@@ -1,11 +1,12 @@
 import { cn } from "@/lib/utils";
 import { useState } from "react";
-import { ActivityIndicator, TouchableOpacity } from "react-native";
+import { ActivityIndicator } from "react-native";
 import Toast from "react-native-toast-message";
 import { BellMinus, BellPlus } from "lucide-react-native";
 import { ClassNameValue } from "tailwind-merge";
 import addCategoryListener from "@/lib/addCategoryListener";
 import AppTouchableOpacity from "./AppTouchableOpacity";
+import { useAccountNotificationPermission } from "@/hooks/useAccountNotificationPermission";
 
 const CategoryListener = ({
 	is_user_subscribed,
@@ -22,6 +23,8 @@ const CategoryListener = ({
 }) => {
 	const [isUserSubscribed, setIsUserSubscribed] = useState<boolean>(is_user_subscribed || false);
 	const [isListenerPending, setIsListenerPending] = useState<boolean>(false);
+
+	const { askAndStoreAccountPushToken } = useAccountNotificationPermission();
 
 	return (
 		<AppTouchableOpacity
@@ -48,6 +51,8 @@ const CategoryListener = ({
 						text1: data.description,
 						topOffset: 60
 					});
+
+					if (finalState) await askAndStoreAccountPushToken();
 
 					onListenerSuccess && onListenerSuccess();
 				} catch (err) {
