@@ -159,22 +159,9 @@ const ShareQRDialog: React.FC<ShareQRDialogProps> = ({
 				  };
 
 			await Share.open(options);
-
-			// TO-DO
-
-			// } catch (error: any) {
-			// 	if (error?.message?.includes("User did not share")) return;
-			// 	console.warn("Paylaşırken hata oluştu:", error);
-			// }
 		} catch (error: any) {
 			if (error?.message?.includes("User did not share")) return;
-
-			const msg =
-				typeof error === "string"
-					? error
-					: error?.message ?? JSON.stringify(error, null, 2);
-
-			Alert.alert("Paylaşma hatası", msg);
+			console.warn("Paylaşırken hata oluştu:", error);
 		}
 	};
 

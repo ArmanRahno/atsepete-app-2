@@ -6,7 +6,7 @@ import { BellMinus, BellPlus } from "lucide-react-native";
 import { ClassNameValue } from "tailwind-merge";
 import addCategoryListener from "@/lib/addCategoryListener";
 import AppTouchableOpacity from "./AppTouchableOpacity";
-import { useAccountNotificationPermission } from "@/hooks/useAccountNotificationPermission";
+import { useNotificationPermission } from "@/hooks/useNotificationPermission";
 
 const CategoryListener = ({
 	is_user_subscribed,
@@ -24,7 +24,7 @@ const CategoryListener = ({
 	const [isUserSubscribed, setIsUserSubscribed] = useState<boolean>(is_user_subscribed || false);
 	const [isListenerPending, setIsListenerPending] = useState<boolean>(false);
 
-	const { askAndStoreAccountPushToken } = useAccountNotificationPermission();
+	const { askAndStoreAccountPushToken } = useNotificationPermission();
 
 	return (
 		<AppTouchableOpacity
@@ -52,7 +52,7 @@ const CategoryListener = ({
 						topOffset: 60
 					});
 
-					if (finalState) await askAndStoreAccountPushToken();
+					if (finalState) await askAndStoreAccountPushToken("listener");
 
 					onListenerSuccess && onListenerSuccess();
 				} catch (err) {

@@ -20,7 +20,6 @@ import {
 	Roboto_900Black
 } from "@expo-google-fonts/roboto";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { registerForPushNotificationsAsync } from "@/lib/registerForPushNotifications";
 import * as Notifications from "expo-notifications";
 import { getUserAgent } from "react-native-device-info";
 import {
@@ -33,11 +32,10 @@ import { Platform } from "react-native";
 import NotificationColdStartNav from "@/components/NotificationColdStartNav";
 import { pathFromPayload } from "@/lib/navFromNotification";
 import { PermissionWarmupProvider } from "@/components/PermissionWarmupDialog";
-import { usePermissionWarmup } from "@/components/PermissionWarmupDialog";
-import { Bell } from "lucide-react-native";
+import { useNotificationPermission } from "@/hooks/useNotificationPermission";
 
-const NOTIFICATION_TOKEN_API_URL =
-	"https://atsepete.net/api/application/notification/notification-token-on-install";
+// const NOTIFICATION_TOKEN_API_URL =
+// 	"https://atsepete.net/api/application/notification/notification-token-on-install";
 
 const INITIAL_LAUNCH_API_URL = "https://atsepete.net/api/application/initial-launch";
 
@@ -58,7 +56,7 @@ function RootLayoutContent() {
 	const responseListener = useRef<Notifications.EventSubscription>(null);
 	const router = useRouter();
 
-	const { showPermissionDialog } = usePermissionWarmup();
+	const { askAndStoreAccountPushToken } = useNotificationPermission();
 
 	let [fontsLoaded] = useFonts({
 		Roboto_100Thin,
@@ -181,72 +179,74 @@ function RootLayoutContent() {
 			await AsyncStorage.setItem("userId", resJson.userId || "");
 			await AsyncStorage.setItem("userRandId", resJson.rand_id || "");
 			installReferrer && (await AsyncStorage.setItem("referrer", installReferrer));
-		};
-
-		const askNotificationOnInstall = async () => {
-			const hasLaunched = await AsyncStorage.getItem("hasLaunchedV2");
-			if (hasLaunched) return;
-
-			const perms = await Notifications.getPermissionsAsync();
-
-			const doRegisterInstallToken = async () => {
-				const expoToken = await registerForPushNotificationsAsync();
-				if (expoToken) {
-					await fetch(NOTIFICATION_TOKEN_API_URL, {
-						method: "POST",
-						headers: { "Content-Type": "application/json" },
-						body: JSON.stringify({ token: expoToken, rand_id: userRandId })
-					});
-				}
-				await AsyncStorage.setItem("hasLaunchedV2", "true");
-			};
-
-			if (perms.status === "granted") {
-				await doRegisterInstallToken();
-				return;
-			}
-
-			if (perms.canAskAgain) {
-				showPermissionDialog({
-					mode: "request",
-					title: "Bildirimleri Açmak İster misiniz?",
-					description:
-						"Takip ettiğiniz ürünlerdeki indirimler ve kazanç güncellemelerini size bildirebilmemiz için bildirim izni gereklidir.",
-					bulletPoints: [
-						"Takip ettiğiniz ürünlerdeki indirimlerden anında haberdar olun",
-						"Kurduğunuz alarmlardaki fiyat değişikliklerini kaçırmayın",
-						"Davet linklerinden elde ettiğiniz kazancı kolayca takip edin"
-					],
-					icon: (
-						<Bell
-							size={32}
-							color="#fff"
-						/>
-					),
-					onConfirm: async () => {
-						const res = await Notifications.requestPermissionsAsync();
-						if (res.status === "granted") {
-							await doRegisterInstallToken();
-						} else {
-							await AsyncStorage.setItem("hasLaunchedV2", "true");
-						}
-					},
-					onCancel: async () => {
-						await AsyncStorage.setItem("hasLaunchedV2", "true");
-					}
-				});
-
-				return;
-			}
 
 			await AsyncStorage.setItem("hasLaunchedV2", "true");
 		};
 
+		// const askNotificationOnInstall = async () => {
+		// 	const hasLaunched = await AsyncStorage.getItem("hasLaunchedV2");
+		// 	if (hasLaunched) return;
+
+		// 	const perms = await Notifications.getPermissionsAsync();
+
+		// 	const doRegisterInstallToken = async () => {
+		// 		const expoToken = await registerForPushNotificationsAsync();
+		// 		if (expoToken) {
+		// 			await fetch(NOTIFICATION_TOKEN_API_URL, {
+		// 				method: "POST",
+		// 				headers: { "Content-Type": "application/json" },
+		// 				body: JSON.stringify({ token: expoToken, rand_id: userRandId })
+		// 			});
+		// 		}
+		// 		await AsyncStorage.setItem("hasLaunchedV2", "true");
+		// 	};
+
+		// 	if (perms.status === "granted") {
+		// 		await doRegisterInstallToken();
+		// 		return;
+		// 	}
+
+		// 	if (perms.canAskAgain) {
+		// 		showPermissionDialog({
+		// 			mode: "request",
+		// 			title: "Bildirimleri Açmak İster misiniz?",
+		// 			description:
+		// 				"Takip ettiğiniz ürünlerdeki indirimler ve kazanç güncellemelerini size bildirebilmemiz için bildirim izni gereklidir.",
+		// 			bulletPoints: [
+		// 				"Takip ettiğiniz ürünlerdeki indirimlerden anında haberdar olun",
+		// 				"Kurduğunuz alarmlardaki fiyat değişikliklerini kaçırmayın",
+		// 				"Davet linklerinden elde ettiğiniz kazancı kolayca takip edin"
+		// 			],
+		// 			icon: (
+		// 				<Bell
+		// 					size={32}
+		// 					color="#fff"
+		// 				/>
+		// 			),
+		// 			onConfirm: async () => {
+		// 				const res = await Notifications.requestPermissionsAsync();
+		// 				if (res.status === "granted") {
+		// 					await doRegisterInstallToken();
+		// 				} else {
+		// 					await AsyncStorage.setItem("hasLaunchedV2", "true");
+		// 				}
+		// 			},
+		// 			onCancel: async () => {
+		// 				await AsyncStorage.setItem("hasLaunchedV2", "true");
+		// 			}
+		// 		});
+
+		// 		return;
+		// 	}
+
+		// 	await AsyncStorage.setItem("hasLaunchedV2", "true");
+		// };
+
 		(async () => {
 			await logFirstLaunch();
-			await askNotificationOnInstall();
+			await askAndStoreAccountPushToken("startup");
 		})();
-	}, [showPermissionDialog]);
+	}, [askAndStoreAccountPushToken]);
 
 	return (
 		<SafeAreaProvider>

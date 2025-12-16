@@ -8,7 +8,7 @@ import ContinueWithGoogleBtn from "../account-page/ContinueWithGoogleBtn";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "@/lib/auth/firebase";
 import AppTouchableOpacity from "../AppTouchableOpacity";
-import { useAccountNotificationPermission } from "@/hooks/useAccountNotificationPermission";
+import { useNotificationPermission } from "@/hooks/useNotificationPermission";
 
 const LoginSchema = z.object({
 	email: z.string().email("Geçerli bir e-posta giriniz."),
@@ -18,7 +18,7 @@ const LoginSchema = z.object({
 export default function LoginForm({ onSuccess }: { onSuccess: () => void }) {
 	const [serverMessage, setServerMessage] = useState<string>("");
 
-	const { askAndStoreAccountPushToken } = useAccountNotificationPermission();
+	const { askAndStoreAccountPushToken } = useNotificationPermission();
 
 	const form = useForm({
 		resolver: zodResolver(LoginSchema),
@@ -74,7 +74,7 @@ export default function LoginForm({ onSuccess }: { onSuccess: () => void }) {
 				const token = data?.data?.sessionToken;
 				if (token) {
 					await AsyncStorage.setItem("user-session-token", token);
-					await askAndStoreAccountPushToken();
+					await askAndStoreAccountPushToken("explicit");
 				}
 
 				onSuccess();

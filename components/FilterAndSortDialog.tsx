@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { Modal, View, Text, TextInput, StyleSheet, Pressable, Alert } from "react-native";
 import SelectDropdown from "react-native-select-dropdown";
-import { lightMutedForeground } from "../constants/Colors";
+import { lightBorder, lightMutedForeground } from "../constants/Colors";
 import { cn } from "@/lib/utils";
 import { ChevronDown } from "lucide-react-native";
 import AppTouchableOpacity from "./AppTouchableOpacity";
+import { Dropdown } from "react-native-element-dropdown";
 
 export const SORT_OPTIONS = [
 	{ label: "En Yeni", value: "en-yeni" },
@@ -87,33 +88,22 @@ export default function FilterAndSortDialog(props: FilterAndSortDialogProps) {
 					<View className="gap-1">
 						<Text className="font-medium">Sıralama</Text>
 
-						<SelectDropdown
+						<Dropdown
 							data={SORT_OPTIONS}
-							dropdownStyle={styles.dropdown}
-							onSelect={option => setSort(option.value)}
-							defaultValue={sort}
-							renderButton={() => (
-								<AppTouchableOpacity className="flex-row justify-between rounded-lg px-4 py-2 border border-border">
-									<Text style={{ fontFamily: "Roboto_500Medium" }}>
-										{SORT_OPTIONS.find(opt => opt.value === sort)?.label}
-									</Text>
-									<ChevronDown
-										size={20}
-										color={lightMutedForeground}
-									/>
-								</AppTouchableOpacity>
-							)}
-							renderItem={option => (
-								<View
-									className={cn(
-										"px-2 py-1 my-0.5 rounded-[6px]",
-										option.value === sort ? "bg-gray-300" : ""
-									)}
-								>
-									<Text>{option.label}</Text>
-								</View>
-							)}
+							labelField="label"
+							valueField="value"
+							value={sort}
+							onChange={(item: any) => setSort(item.value)}
+							style={{
+								paddingVertical: 8,
+								paddingHorizontal: 12,
+								borderRadius: 8,
+								borderWidth: 1,
+								borderColor: lightBorder
+							}}
+							containerStyle={{ borderRadius: 8, overflow: "hidden", marginTop: -16 }}
 						/>
+
 						{/* {SORT_OPTIONS.map(option => (
 								<AppTouchableOpacity
 									key={option.value}

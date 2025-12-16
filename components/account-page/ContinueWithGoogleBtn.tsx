@@ -7,7 +7,7 @@ import { GoogleAuthProvider, signInWithCredential } from "firebase/auth";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { auth } from "@/lib/auth/firebase";
 import AppTouchableOpacity from "../AppTouchableOpacity";
-import { useAccountNotificationPermission } from "@/hooks/useAccountNotificationPermission";
+import { useNotificationPermission } from "@/hooks/useNotificationPermission";
 
 type Props = {
 	onSuccess: () => void;
@@ -17,7 +17,7 @@ type Props = {
 const ContinueWithGoogleBtn = ({ onSuccess, setServerMessage }: Props) => {
 	const [loading, setLoading] = useState(false);
 
-	const { askAndStoreAccountPushToken } = useAccountNotificationPermission();
+	const { askAndStoreAccountPushToken } = useNotificationPermission();
 
 	useEffect(() => {
 		GoogleSignin.configure({
@@ -74,7 +74,7 @@ const ContinueWithGoogleBtn = ({ onSuccess, setServerMessage }: Props) => {
 			const sessionToken = data?.data?.sessionToken;
 			if (sessionToken) {
 				await AsyncStorage.setItem("user-session-token", sessionToken);
-				await askAndStoreAccountPushToken();
+				await askAndStoreAccountPushToken("explicit");
 			}
 
 			onSuccess();

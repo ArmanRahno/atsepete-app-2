@@ -3,7 +3,7 @@ const IS_DEV = process.env.APP_VARIANT === "development";
 export default {
 	"name": "AtSepete",
 	"slug": "atsepete",
-	"version": "1.1.0",
+	"version": "1.2.0",
 	"orientation": "portrait",
 	"icon": "./assets/images/icon.png",
 	"scheme": "atsepete",

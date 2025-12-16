@@ -7,7 +7,7 @@ import { ItemCardProps } from "./item-card/ItemCard";
 import { BellMinus, BellPlus } from "lucide-react-native";
 import { ClassNameValue } from "tailwind-merge";
 import AppTouchableOpacity from "../AppTouchableOpacity";
-import { useAccountNotificationPermission } from "@/hooks/useAccountNotificationPermission";
+import { useNotificationPermission } from "@/hooks/useNotificationPermission";
 
 const ItemListener = ({
 	item,
@@ -19,7 +19,7 @@ const ItemListener = ({
 	);
 	const [isListenerPending, setIsListenerPending] = useState<boolean>(false);
 
-	const { askAndStoreAccountPushToken } = useAccountNotificationPermission();
+	const { askAndStoreAccountPushToken } = useNotificationPermission();
 
 	return (
 		<AppTouchableOpacity
@@ -47,7 +47,7 @@ const ItemListener = ({
 						topOffset: 45
 					});
 
-					await askAndStoreAccountPushToken();
+					if (finalState) await askAndStoreAccountPushToken("listener");
 
 					onListenerSuccess && onListenerSuccess(item._id.toString());
 				} catch (err) {

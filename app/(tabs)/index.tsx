@@ -3,7 +3,6 @@ import Header from "@/components/header/Header";
 import HeaderText from "@/components/header/HeaderText";
 import ItemCard from "@/components/item/item-card/ItemCard";
 import LoadingIndicator from "@/components/LoadingIndicator";
-import { useFocusEffect } from "expo-router";
 import React, { useState, useCallback, memo, useRef, useEffect } from "react";
 import formatPrice from "@/lib/formatPrice";
 import {
@@ -50,6 +49,38 @@ export default function HomeScreen() {
 	const [displayBackToTopBtn, setDisplayBackToTopBtn] = useState<boolean>(false);
 	const flatListRef = useRef<FlatList<Item>>(null);
 
+	const [lastUpdatedAt, setLastUpdatedAt] = useState<Date | null>(null);
+	const [lastUpdatedLabel, setLastUpdatedLabel] = useState<string | null>(null);
+
+	useEffect(() => {
+		if (!lastUpdatedAt) return;
+
+		const updateLabel = () => {
+			const diffMs = Date.now() - lastUpdatedAt.getTime();
+			const diffSec = Math.floor(diffMs / 1000);
+
+			if (diffSec < 60) {
+				setLastUpdatedLabel(`${diffSec} saniye`);
+				return;
+			}
+
+			const diffMin = Math.floor(diffSec / 60);
+			if (diffMin < 60) {
+				setLastUpdatedLabel(`${diffMin} dakika`);
+				return;
+			}
+
+			const diffHours = Math.floor(diffMin / 60);
+			setLastUpdatedLabel(`${diffHours} saat`);
+		};
+
+		updateLabel();
+
+		const intervalId = setInterval(updateLabel, 1 * 1000);
+
+		return () => clearInterval(intervalId);
+	}, [lastUpdatedAt]);
+
 	const fetchItems = useCallback(
 		async (pageNum: number, append = false, localFilters: Filters, isRefresh = false) => {
 			try {
@@ -88,6 +119,8 @@ export default function HomeScreen() {
 				} else {
 					setItems(data.items.slice(0, 18));
 				}
+
+				setLastUpdatedAt(new Date());
 			} catch (error) {
 				console.error("Error fetching homepage items:", error);
 			} finally {
@@ -172,9 +205,10 @@ export default function HomeScreen() {
 					scrollEventThrottle={32}
 					ListHeaderComponent={
 						<>
-							<HeaderText className="mt-2 mb-4">
-								Tüm Pazaryerlerinde Son Yakalanan İndirimler
+							<HeaderText className="mt-2 mb-2">
+								4 Milyon Üründe Yakalanan İndirimler
 							</HeaderText>
+
 							{(filters.sort !== "en-yeni" ||
 								filters.minPrice ||
 								filters.maxPrice) && (
@@ -219,6 +253,13 @@ export default function HomeScreen() {
 										)}
 									</View>
 								</View>
+							)}
+
+							{lastUpdatedLabel && (
+								<Text className="text-xs text-muted-foreground mb-1 text-center">
+									Liste {lastUpdatedLabel} önce güncellendi. Yenilemek için aşağı
+									kaydırın.
+								</Text>
 							)}
 						</>
 					}
