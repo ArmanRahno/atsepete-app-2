@@ -29,7 +29,15 @@ export default {
 			"android.permission.SYSTEM_ALERT_WINDOW",
 			"android.permission.WAKE_LOCK",
 			"android.permission.VIBRATE",
-			"android.permission.RECORD_AUDIO"
+			"android.permission.RECORD_AUDIO",
+
+			"android.permission.READ_EXTERNAL_STORAGE",
+			"android.permission.WRITE_EXTERNAL_STORAGE",
+			"android.permission.READ_MEDIA_IMAGES",
+			"android.permission.READ_MEDIA_VIDEO",
+			"android.permission.READ_MEDIA_AUDIO",
+			"android.permission.READ_MEDIA_VISUAL_USER_SELECTED",
+			"android.permission.ACCESS_MEDIA_LOCATION"
 		]
 	},
 	"web": {
@@ -75,6 +83,19 @@ export default {
 					"com.zhiliaoapp.musically"
 				],
 				"enableBase64ShareAndroid": true
+			}
+		],
+		[
+			"expo-media-library",
+			{
+				// iOS: add-only message (needed for saving)
+				savePhotosPermission: "QR kodunu galeriye kaydetmek için izin gerekir.",
+
+				// Android: don't add READ_MEDIA_IMAGES/VIDEO/AUDIO
+				granularPermissions: [],
+
+				// Android: don't request ACCESS_MEDIA_LOCATION either
+				isAccessMediaLocationEnabled: false
 			}
 		]
 	],

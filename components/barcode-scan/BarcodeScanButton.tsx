@@ -3,10 +3,10 @@ import { Camera as CameraIcon } from "lucide-react-native";
 import { AppState, Text, View } from "react-native";
 import { useEffect, useRef, useState } from "react";
 import BarcodeScanCameraModal from "./BarcodeScanCameraModal";
-import { getCameraPermissionsAsync, requestCameraPermissionsAsync } from "expo-image-picker";
 import { usePermissionWarmup } from "../PermissionWarmupDialog";
 import { openSettings } from "expo-linking";
 import AppTouchableOpacity from "../AppTouchableOpacity";
+import { Camera } from "expo-camera";
 
 const BarcodeScanButton = () => {
 	const [isCamViewOpen, setIsCamViewOpen] = useState<boolean>(false);
@@ -24,7 +24,7 @@ const BarcodeScanButton = () => {
 				nextState === "active" &&
 				pendingCamOpenAfterSettings
 			) {
-				const perm = await getCameraPermissionsAsync();
+				const perm = await Camera.getCameraPermissionsAsync();
 
 				if (perm.granted) {
 					setIsCamViewOpen(true);
@@ -42,7 +42,7 @@ const BarcodeScanButton = () => {
 	}, [pendingCamOpenAfterSettings]);
 
 	const handleCameraPress = async () => {
-		const perm = await getCameraPermissionsAsync();
+		const perm = await Camera.getCameraPermissionsAsync();
 
 		if (perm.granted) {
 			setIsCamViewOpen(true);
@@ -66,7 +66,7 @@ const BarcodeScanButton = () => {
 					/>
 				),
 				onConfirm: async () => {
-					const res = await requestCameraPermissionsAsync();
+					const res = await Camera.requestCameraPermissionsAsync();
 					if (res.granted) {
 						setIsCamViewOpen(true);
 					}

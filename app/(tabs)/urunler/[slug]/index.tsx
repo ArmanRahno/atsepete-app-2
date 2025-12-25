@@ -64,7 +64,7 @@ export default function UrunlerItemDetailScreen() {
 
 	return (
 		<ScrollView className="p-2">
-			<View className="p-3 pb-6 bg-background">
+			<View className="p-3 pb-10 bg-background">
 				<UrunlerDetailedItemCard item={item} />
 
 				<View className="flex-row flex-wrap items-center mt-4">
@@ -76,13 +76,19 @@ export default function UrunlerItemDetailScreen() {
 						Bir hata ile mi karşılaştınız?
 					</Text>
 
-					<AppTouchableOpacity onPress={() => router.push("/(modals)/report-issue")}>
+					<AppTouchableOpacity
+						onPress={() => router.push("/(modals)/report-issue")}
+						hitSlop={12}
+					>
 						<Text className="px-3 py-1 text-sm text-foreground font-medium underline">
 							Hata Bildir
 						</Text>
 					</AppTouchableOpacity>
 
-					<AppTouchableOpacity onPress={() => router.push("/(modals)/make-suggestion")}>
+					<AppTouchableOpacity
+						onPress={() => router.push("/(modals)/make-suggestion")}
+						hitSlop={12}
+					>
 						<Text className="px-3 pl-1 py-1 text-sm text-foreground font-medium underline">
 							Öneri Yap
 						</Text>

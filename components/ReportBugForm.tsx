@@ -1,11 +1,17 @@
 import React, { useState } from "react";
-import { Text, View, TextInput, Alert, ActivityIndicator } from "react-native";
+import {
+	Text,
+	View,
+	TextInput,
+	Alert,
+	ActivityIndicator,
+	KeyboardAvoidingView
+} from "react-native";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import z from "zod";
 import { router } from "expo-router";
 import AppTouchableOpacity from "./AppTouchableOpacity";
-import { pickImageAsBase64 } from "@/lib/pickImageAsBase64";
 
 const ReportBugSchema = z.object({
 	email: z.string().email("Hatalı email."),
@@ -40,12 +46,6 @@ export default function ReportBugForm({}: ReportBugFormProps) {
 		}
 	});
 
-	async function pickScreenshot(onChange: (newVal: string[]) => void) {
-		const base64 = await pickImageAsBase64();
-		if (!base64) return;
-		onChange([base64]);
-	}
-
 	const onSubmit = async (values: ReportBug) => {
 		setIsPending(true);
 
@@ -74,7 +74,10 @@ export default function ReportBugForm({}: ReportBugFormProps) {
 	};
 
 	return (
-		<View className="flex-1 bg-secondary justify-center items-center">
+		<KeyboardAvoidingView
+			className="flex-1 bg-secondary justify-center items-center"
+			behavior="padding"
+		>
 			<View className="w-4/5 max-w-96 bg-background border border-border shadow-lg p-5 rounded-lg gap-4">
 				<Text className="text-lg text-foreground font-semibold">Hata Bildir</Text>
 
@@ -150,34 +153,6 @@ export default function ReportBugForm({}: ReportBugFormProps) {
 					)}
 				</View>
 
-				<View className="gap-1">
-					<Text className="font-medium">Ekran Görüntüsü (Max. 2 MB)</Text>
-					<Controller
-						name="screenshots"
-						control={control}
-						render={({ field }) => (
-							<>
-								<AppTouchableOpacity
-									className="rounded-lg px-4 py-2 border border-border flex-row justify-between"
-									disabled={isPending}
-									onPress={() => pickScreenshot(field.onChange)}
-								>
-									<Text className="text-sm">
-										{field.value?.length ?? 0
-											? `Seçilen Ekran Görüntüleri: ${field.value!.length}`
-											: "Ekran Görüntüsü Seç"}
-									</Text>
-								</AppTouchableOpacity>
-								{errors.screenshots && (
-									<Text className="text-red-500 text-sm">
-										{errors.screenshots.message}
-									</Text>
-								)}
-							</>
-						)}
-					/>
-				</View>
-
 				<View className="gap-2">
 					{!isSubmitSuccessful && (
 						<AppTouchableOpacity
@@ -208,6 +183,6 @@ export default function ReportBugForm({}: ReportBugFormProps) {
 					</AppTouchableOpacity>
 				</View>
 			</View>
-		</View>
+		</KeyboardAvoidingView>
 	);
 }

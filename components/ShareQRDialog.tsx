@@ -1,5 +1,5 @@
 import React, { useMemo, useRef, useState } from "react";
-import { Modal, View, Text, Pressable, Alert } from "react-native";
+import { Modal, View, Text, Pressable, Alert, Platform } from "react-native";
 import QRCodeSvg from "react-native-qrcode-svg";
 import * as Clipboard from "expo-clipboard";
 import * as MediaLibrary from "expo-media-library";
@@ -41,11 +41,8 @@ const ShareQRDialog: React.FC<ShareQRDialogProps> = ({
 	const qrRef = useRef<any | null>(null);
 
 	const textWithUrl = useMemo(() => (caption ? `${caption.trim()} ${url}` : url), [caption, url]);
-
 	const clipboardText = textWithUrl;
-
 	const shareMessage = textWithUrl;
-
 	const shortUrl = useMemo(() => url.replace(/^https?:\/\//, ""), [url]);
 
 	const open = () => setVisible(true);
@@ -53,29 +50,19 @@ const ShareQRDialog: React.FC<ShareQRDialogProps> = ({
 
 	const createQrPngFile = (): Promise<string | null> => {
 		return new Promise((resolve, reject) => {
-			if (!qrRef.current) {
-				resolve(null);
-				return;
-			}
+			if (!qrRef.current) return resolve(null);
 
 			qrRef.current.toDataURL((data: string) => {
 				try {
 					const fileName = `qr-${Date.now()}.png`;
 					const dir = FileSystem.documentDirectory ?? FileSystem.cacheDirectory;
-
-					if (!dir) {
-						console.warn("Dosya dizini bulunamadı.");
-						resolve(null);
-						return;
-					}
+					if (!dir) return resolve(null);
 
 					const fileUri = `${dir}${fileName}`;
 
-					FileSystem.writeAsStringAsync(fileUri, data, {
-						encoding: "base64"
-					})
+					FileSystem.writeAsStringAsync(fileUri, data, { encoding: "base64" })
 						.then(() => resolve(fileUri))
-						.catch(err => reject(err));
+						.catch(reject);
 				} catch (err) {
 					reject(err);
 				}
@@ -83,42 +70,55 @@ const ShareQRDialog: React.FC<ShareQRDialogProps> = ({
 		});
 	};
 
+	const ensureIOSAddOnlyPermission = async () => {
+		const cur = await MediaLibrary.getPermissionsAsync(true);
+		if (cur.status === "granted") return true;
+
+		const req = await MediaLibrary.requestPermissionsAsync(true);
+		return req.status === "granted";
+	};
+
 	const handleSave = async () => {
 		if (!qrRef.current || saving) return;
 
+		setSaving(true);
+		setSaveStatus(null);
+
 		try {
-			const { status } = await MediaLibrary.requestPermissionsAsync();
-			if (status !== "granted") {
-				Alert.alert("İzin gerekli", "Galeriye kaydetmek için izin vermeniz gerekiyor.");
-				return;
-			}
-
-			setSaving(true);
-			setSaveStatus(null);
-
 			const fileUri = await createQrPngFile();
 			if (!fileUri) {
 				setSaveStatus("error");
 				return;
 			}
 
+			if (Platform.OS === "ios") {
+				const ok = await ensureIOSAddOnlyPermission();
+				if (!ok) {
+					Alert.alert("İzin gerekli", "Galeriye kaydetmek için izin vermeniz gerekiyor.");
+					return;
+				}
+			}
+
 			await MediaLibrary.saveToLibraryAsync(fileUri);
 
 			setSaveStatus("success");
+
+			try {
+				await FileSystem.deleteAsync(fileUri, { idempotent: true });
+			} catch {
+				// ignore
+			}
 		} catch (error) {
 			console.warn("QR kaydedilirken hata oluştu:", error);
 			setSaveStatus("error");
 		} finally {
 			setSaving(false);
-			setTimeout(() => {
-				setSaveStatus(null);
-			}, 3000);
+			setTimeout(() => setSaveStatus(null), 3000);
 		}
 	};
 
 	const handleCopy = async () => {
 		if (!clipboardText) return;
-
 		try {
 			await Clipboard.setStringAsync(clipboardText);
 			setCopied(true);
@@ -131,10 +131,7 @@ const ShareQRDialog: React.FC<ShareQRDialogProps> = ({
 	const createQrBase64 = (): Promise<string | null> =>
 		new Promise(resolve => {
 			if (!qrRef.current) return resolve(null);
-
-			qrRef.current.toDataURL((data: string) => {
-				resolve(data);
-			});
+			qrRef.current.toDataURL((data: string) => resolve(data));
 		});
 
 	const handleShare = async () => {
@@ -163,10 +160,6 @@ const ShareQRDialog: React.FC<ShareQRDialogProps> = ({
 			if (error?.message?.includes("User did not share")) return;
 			console.warn("Paylaşırken hata oluştu:", error);
 		}
-	};
-
-	const stopPropagation = (e: any) => {
-		e.stopPropagation();
 	};
 
 	return (
@@ -234,6 +227,7 @@ const ShareQRDialog: React.FC<ShareQRDialogProps> = ({
 								</Text>
 							</View>
 						)}
+
 						{saveStatus === "error" && (
 							<View className="flex-row items-center gap-2 rounded-xl bg-destructive px-4 py-2 mb-2">
 								<TriangleAlert
