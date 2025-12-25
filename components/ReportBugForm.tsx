@@ -1,12 +1,11 @@
 import React, { useState } from "react";
-import { Text, View, TextInput, TouchableOpacity, Alert, ActivityIndicator } from "react-native";
-
+import { Text, View, TextInput, Alert, ActivityIndicator } from "react-native";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import * as ImagePicker from "expo-image-picker";
 import z from "zod";
 import { router } from "expo-router";
 import AppTouchableOpacity from "./AppTouchableOpacity";
+import { pickImageAsBase64 } from "@/lib/pickImageAsBase64";
 
 const ReportBugSchema = z.object({
 	email: z.string().email("Hatalı email."),
@@ -41,35 +40,10 @@ export default function ReportBugForm({}: ReportBugFormProps) {
 		}
 	});
 
-	async function pickScreenshot(
-		currentScreenshots: string[],
-		onChange: (newVal: string[]) => void
-	) {
-		const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
-		if (!permissionResult.granted) {
-			Alert.alert("İzin Gerekli", "Lütfen galeriye erişime izin verin.");
-			return;
-		}
-
-		const result = await ImagePicker.launchImageLibraryAsync({
-			allowsMultipleSelection: false,
-			base64: true,
-			quality: 1
-		});
-
-		if (!result.canceled && result.assets?.[0]) {
-			const picked = result.assets[0];
-			if (picked.base64) {
-				const sizeInBytes = (picked.base64.length * 3) / 4;
-				if (sizeInBytes > 2 * 1024 * 1024) {
-					Alert.alert("Resim Çok Büyük", "2 MB limitini aşıyor!");
-					return;
-				}
-			}
-
-			const updated = [...currentScreenshots, picked.base64 || ""];
-			onChange(updated);
-		}
+	async function pickScreenshot(onChange: (newVal: string[]) => void) {
+		const base64 = await pickImageAsBase64();
+		if (!base64) return;
+		onChange([base64]);
 	}
 
 	const onSubmit = async (values: ReportBug) => {
@@ -186,13 +160,11 @@ export default function ReportBugForm({}: ReportBugFormProps) {
 								<AppTouchableOpacity
 									className="rounded-lg px-4 py-2 border border-border flex-row justify-between"
 									disabled={isPending}
-									onPress={() =>
-										field.value && pickScreenshot(field.value, field.onChange)
-									}
+									onPress={() => pickScreenshot(field.onChange)}
 								>
 									<Text className="text-sm">
-										{field.value?.length
-											? `Seçilen Ekran Görüntüleri: ${field.value.length}`
+										{field.value?.length ?? 0
+											? `Seçilen Ekran Görüntüleri: ${field.value!.length}`
 											: "Ekran Görüntüsü Seç"}
 									</Text>
 								</AppTouchableOpacity>

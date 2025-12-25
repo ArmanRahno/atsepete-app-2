@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Modal, View, Text, TextInput, StyleSheet, Pressable, Alert } from "react-native";
+import { Modal, View, Text, TextInput, StyleSheet, Pressable, Alert, Platform } from "react-native";
 import SelectDropdown from "react-native-select-dropdown";
 import { lightBorder, lightMutedForeground } from "../constants/Colors";
 import { cn } from "@/lib/utils";
@@ -78,7 +78,7 @@ export default function FilterAndSortDialog(props: FilterAndSortDialogProps) {
 				onPress={onClose}
 			>
 				<Pressable
-					className="w-4/5 max-w-96 bg-background p-5 rounded-lg gap-4"
+					className="w-5/6 max-w-96 bg-background p-5 rounded-lg gap-4"
 					onPress={() => {}}
 				>
 					<Text className="text-lg text-foreground font-semibold">
@@ -95,13 +95,17 @@ export default function FilterAndSortDialog(props: FilterAndSortDialogProps) {
 							value={sort}
 							onChange={(item: any) => setSort(item.value)}
 							style={{
-								paddingVertical: 8,
+								paddingVertical: 10,
 								paddingHorizontal: 12,
 								borderRadius: 8,
 								borderWidth: 1,
 								borderColor: lightBorder
 							}}
-							containerStyle={{ borderRadius: 8, overflow: "hidden", marginTop: -16 }}
+							containerStyle={{
+								borderRadius: 8,
+								overflow: "hidden",
+								marginTop: Platform.select({ android: -16, ios: 0, default: 0 })
+							}}
 						/>
 
 						{/* {SORT_OPTIONS.map(option => (
@@ -124,7 +128,7 @@ export default function FilterAndSortDialog(props: FilterAndSortDialogProps) {
 						<Text className="font-medium">Fiyat Aralığı</Text>
 						<View className="flex-row gap-2 items-center">
 							<TextInput
-								className="flex-1 rounded-lg px-4 py-2 border border-border text-foreground placeholder:text-muted-foreground"
+								className="flex-1 rounded-lg px-4 py-2.5 border border-border text-lg text-foreground placeholder:text-muted-foreground"
 								placeholder="Min."
 								keyboardType="numeric"
 								value={minPrice}
@@ -133,7 +137,7 @@ export default function FilterAndSortDialog(props: FilterAndSortDialogProps) {
 							/>
 							<Text>-</Text>
 							<TextInput
-								className="flex-1 rounded-lg px-4 py-2 border border-border text-foreground placeholder:text-muted-foreground"
+								className="flex-1 rounded-lg px-4 py-2.5 border border-border text-lg text-foreground placeholder:text-muted-foreground"
 								placeholder="Max."
 								keyboardType="numeric"
 								value={maxPrice}
@@ -143,29 +147,29 @@ export default function FilterAndSortDialog(props: FilterAndSortDialogProps) {
 						</View>
 					</View>
 
-					<View className="gap-2">
+					<View className="gap-3">
 						<AppTouchableOpacity
-							className="bg-primary rounded-lg px-4 py-2 items-center"
+							className="bg-primary rounded-lg px-6 py-3 items-center"
 							onPress={validateAndApply}
 						>
-							<Text className="text-sm font-medium text-primary-foreground">
+							<Text className="text-base font-medium text-primary-foreground">
 								Seçenekleri Uygula
 							</Text>
 						</AppTouchableOpacity>
-						<View className="flex-row gap-2">
+						<View className="flex-row gap-3">
 							<AppTouchableOpacity
-								className="flex-1 bg-secondary rounded-lg px-4 py-2 items-center"
+								className="flex-1 bg-secondary rounded-lg px-6 py-3 items-center"
 								onPress={onClearFilters}
 							>
-								<Text className="text-sm font-medium text-secondary-foreground">
+								<Text className="text-base font-medium text-secondary-foreground">
 									Filtreleri Sil
 								</Text>
 							</AppTouchableOpacity>
 							<AppTouchableOpacity
-								className="flex-1 bg-secondary rounded-lg px-4 py-2 items-center"
+								className="flex-1 bg-secondary rounded-lg px-6 py-3 items-center"
 								onPress={onClose}
 							>
-								<Text className="text-sm font-medium text-secondary-foreground">
+								<Text className="text-base font-medium text-secondary-foreground">
 									Kapat
 								</Text>
 							</AppTouchableOpacity>

@@ -3,7 +3,7 @@ const IS_DEV = process.env.APP_VARIANT === "development";
 export default {
 	"name": "AtSepete",
 	"slug": "atsepete",
-	"version": "1.2.0",
+	"version": "1.2.1",
 	"orientation": "portrait",
 	"icon": "./assets/images/icon.png",
 	"scheme": "atsepete",
@@ -28,7 +28,8 @@ export default {
 			"android.permission.RECEIVE_BOOT_COMPLETED",
 			"android.permission.SYSTEM_ALERT_WINDOW",
 			"android.permission.WAKE_LOCK",
-			"android.permission.VIBRATE"
+			"android.permission.VIBRATE",
+			"android.permission.RECORD_AUDIO"
 		]
 	},
 	"web": {
