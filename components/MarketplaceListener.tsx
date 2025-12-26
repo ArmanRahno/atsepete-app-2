@@ -7,6 +7,7 @@ import { ClassNameValue } from "tailwind-merge";
 import addMarketplaceListener from "@/lib/addMarketplaceListener";
 import AppTouchableOpacity from "./AppTouchableOpacity";
 import { useNotificationPermission } from "@/hooks/useNotificationPermission";
+import { router } from "expo-router";
 
 const MarketplaceListener = ({
 	is_user_subscribed,
@@ -24,7 +25,8 @@ const MarketplaceListener = ({
 	const [isUserSubscribed, setIsUserSubscribed] = useState<boolean>(is_user_subscribed || false);
 	const [isListenerPending, setIsListenerPending] = useState<boolean>(false);
 
-	const { askAndStoreAccountPushToken } = useNotificationPermission();
+	const { ensureNotificationPermission, registerAccountPushTokenIfNeeded } =
+		useNotificationPermission();
 
 	return (
 		<AppTouchableOpacity
@@ -33,35 +35,78 @@ const MarketplaceListener = ({
 				isUserSubscribed ? "bg-emerald-500" : "bg-destructive",
 				className
 			)}
+			hitSlop={16}
+			disabled={isListenerPending}
 			onPress={async () => {
+				if (isListenerPending) return;
+
 				try {
 					setIsListenerPending(true);
-
 					Toast.hide();
 
-					const data = await addMarketplaceListener({ marketplace, isUserSubscribed });
+					const permResult = await ensureNotificationPermission({
+						reason: "listener",
+						onGrantedFromSettings: () => router.push("/alarms")
+					});
 
-					if (!data) return;
+					if (permResult === "denied") {
+						Toast.show({
+							type: "error",
+							text1: "Bildirim izni olmadan alarm ekleyemezsiniz.",
+							topOffset: 60
+						});
+						return;
+					}
 
-					const { finalState } = data;
+					if (permResult === "settings") {
+						return;
+					}
 
-					setIsUserSubscribed(finalState);
+					const res = await addMarketplaceListener({ marketplace, isUserSubscribed });
+
+					if (!res.ok) {
+						if (res.reason === "LOGIN") {
+							Toast.show({
+								type: "custom",
+								text1: res.description,
+								topOffset: 60
+							});
+							router.push("/alarms");
+							return;
+						}
+
+						Toast.show({
+							type: "error",
+							text1: res.description,
+							topOffset: 60
+						});
+						return;
+					}
+
+					setIsUserSubscribed(res.finalState);
+
 					Toast.show({
-						type: finalState ? "success" : "error",
-						text1: data.description,
+						type: res.finalState ? "success" : "error",
+						text1: res.description,
 						topOffset: 60
 					});
 
-					if (finalState) await askAndStoreAccountPushToken("listener");
+					if (res.finalState) {
+						await registerAccountPushTokenIfNeeded();
+					}
 
-					onListenerSuccess && onListenerSuccess();
+					onListenerSuccess?.();
 				} catch (err) {
 					console.error(err);
+					Toast.show({
+						type: "error",
+						text1: "Bir hata oluştu",
+						topOffset: 60
+					});
 				} finally {
 					setIsListenerPending(false);
 				}
 			}}
-			disabled={isListenerPending}
 		>
 			{!isListenerPending && isUserSubscribed && (
 				<BellMinus

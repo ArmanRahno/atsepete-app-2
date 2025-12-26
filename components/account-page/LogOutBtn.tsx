@@ -1,13 +1,14 @@
-import removeNotificationToken from "@/lib/removeNotificationToken";
 import { useCallback } from "react";
-import { Text, TouchableOpacity } from "react-native";
+import { Text } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { AccountAPIResponse } from "@/app/(tabs)/alarms";
 import { auth } from "@/lib/auth/firebase";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import AppTouchableOpacity from "../AppTouchableOpacity";
+import { useResetOnAuth } from "@/hooks/useResetOnAuth";
 
 const REFERRER_CODE_KEY = "user-referrer-code";
+const LOGOUT_URL = "https://atsepete.net/api/application/auth/logout";
 
 const LogOutBtn = ({
 	setIsLoggedIn,
@@ -18,15 +19,24 @@ const LogOutBtn = ({
 	setUserData: React.Dispatch<React.SetStateAction<AccountAPIResponse | null>>;
 	setLoading: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
+	const { bumpResetOnAuthEpoch } = useResetOnAuth();
+
 	const handleLogout = useCallback(async () => {
 		setLoading(true);
 
 		try {
-			// try {
-			//   await removeNotificationToken();
-			// } catch (err) {
-			//   console.log("removeNotificationToken error (ignored on logout):", err);
-			// }
+			try {
+				const res = await fetch(LOGOUT_URL, {
+					method: "POST",
+					headers: { "Content-Type": "application/json" },
+					credentials: "include"
+				});
+				if (!res.ok) {
+					console.log("Logout endpoint failed:", res.status);
+				}
+			} catch (err) {
+				console.log("Logout endpoint error:", err);
+			}
 
 			try {
 				await auth.signOut();
@@ -45,10 +55,12 @@ const LogOutBtn = ({
 
 			setIsLoggedIn(false);
 			setUserData(null);
+
+			bumpResetOnAuthEpoch();
 		} finally {
 			setLoading(false);
 		}
-	}, [setIsLoggedIn, setUserData, setLoading]);
+	}, [setLoading, setIsLoggedIn, setUserData, bumpResetOnAuthEpoch]);
 
 	return (
 		<AppTouchableOpacity

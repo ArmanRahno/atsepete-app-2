@@ -8,6 +8,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { auth } from "@/lib/auth/firebase";
 import AppTouchableOpacity from "../AppTouchableOpacity";
 import { useNotificationPermission } from "@/hooks/useNotificationPermission";
+import { useResetOnAuth } from "@/hooks/useResetOnAuth";
 
 type Props = {
 	onSuccess: () => void;
@@ -18,6 +19,7 @@ const ContinueWithGoogleBtn = ({ onSuccess, setServerMessage }: Props) => {
 	const [loading, setLoading] = useState(false);
 
 	const { askAndStoreAccountPushToken } = useNotificationPermission();
+	const { bumpResetOnAuthEpoch } = useResetOnAuth();
 
 	useEffect(() => {
 		GoogleSignin.configure({
@@ -61,7 +63,8 @@ const ContinueWithGoogleBtn = ({ onSuccess, setServerMessage }: Props) => {
 			const res = await fetch(endpoint, {
 				method: "POST",
 				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify(payload)
+				body: JSON.stringify(payload),
+				credentials: "include"
 			});
 
 			const data = await res.json();
@@ -72,11 +75,15 @@ const ContinueWithGoogleBtn = ({ onSuccess, setServerMessage }: Props) => {
 			}
 
 			const sessionToken = data?.data?.sessionToken;
-			if (sessionToken) {
-				await AsyncStorage.setItem("user-session-token", sessionToken);
-				await askAndStoreAccountPushToken("explicit");
+			if (!sessionToken) {
+				setServerMessage("Oturum bilgisi alınamadı.");
+				return;
 			}
 
+			await AsyncStorage.setItem("user-session-token", sessionToken);
+			await askAndStoreAccountPushToken("explicit");
+
+			bumpResetOnAuthEpoch();
 			onSuccess();
 		} catch (err: any) {
 			if (err?.code === statusCodes.SIGN_IN_CANCELLED) {
@@ -88,7 +95,7 @@ const ContinueWithGoogleBtn = ({ onSuccess, setServerMessage }: Props) => {
 		} finally {
 			setLoading(false);
 		}
-	}, [onSuccess, setServerMessage, askAndStoreAccountPushToken]);
+	}, [onSuccess, setServerMessage, askAndStoreAccountPushToken, bumpResetOnAuthEpoch]);
 
 	return (
 		<AppTouchableOpacity

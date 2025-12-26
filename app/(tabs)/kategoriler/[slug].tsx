@@ -135,10 +135,11 @@ const MarketplaceScreen = () => {
 				onEndReached={handleLoadMore}
 				onEndReachedThreshold={1.5}
 				ListHeaderComponent={
-					<View className="mt-1 mb-3">
+					<View className="mt-4 mb-5">
 						<View className="flex-row justify-center items-center gap-3">
-							<HeaderText>{categoryLabel}</HeaderText>
+							<HeaderText>Bütün {categoryLabel} ürünlerine alarm kur</HeaderText>
 							<CategoryListener
+								className="px-4 py-2"
 								category={category}
 								is_user_subscribed={userIsSubscribed}
 							/>

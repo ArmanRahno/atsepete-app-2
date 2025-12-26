@@ -9,6 +9,7 @@ import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "@/lib/auth/firebase";
 import AppTouchableOpacity from "../AppTouchableOpacity";
 import { useNotificationPermission } from "@/hooks/useNotificationPermission";
+import { useResetOnAuth } from "@/hooks/useResetOnAuth";
 
 const LoginSchema = z.object({
 	email: z.string().email("Geçerli bir e-posta giriniz."),
@@ -19,6 +20,7 @@ export default function LoginForm({ onSuccess }: { onSuccess: () => void }) {
 	const [serverMessage, setServerMessage] = useState<string>("");
 
 	const { askAndStoreAccountPushToken } = useNotificationPermission();
+	const { bumpResetOnAuthEpoch } = useResetOnAuth();
 
 	const form = useForm({
 		resolver: zodResolver(LoginSchema),
@@ -72,11 +74,15 @@ export default function LoginForm({ onSuccess }: { onSuccess: () => void }) {
 				setServerMessage(data?.message || "İşlem sırasında bir hata oluştu.");
 			} else {
 				const token = data?.data?.sessionToken;
-				if (token) {
-					await AsyncStorage.setItem("user-session-token", token);
-					await askAndStoreAccountPushToken("explicit");
+				if (!token) {
+					setServerMessage("Oturum bilgisi alınamadı.");
+					return;
 				}
 
+				await AsyncStorage.setItem("user-session-token", token);
+				await askAndStoreAccountPushToken("explicit");
+
+				bumpResetOnAuthEpoch();
 				onSuccess();
 			}
 		} catch (error) {

@@ -9,6 +9,7 @@ import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "@/lib/auth/firebase";
 import AppTouchableOpacity from "../AppTouchableOpacity";
 import { useNotificationPermission } from "@/hooks/useNotificationPermission";
+import { useResetOnAuth } from "@/hooks/useResetOnAuth";
 
 const RegisterSchema = z
 	.object({
@@ -26,6 +27,7 @@ export default function RegisterForm({ onSuccess }: { onSuccess: () => void }) {
 	const [serverStatus, setServerStatus] = useState<"success" | "error" | null>(null);
 
 	const { askAndStoreAccountPushToken } = useNotificationPermission();
+	const { bumpResetOnAuthEpoch } = useResetOnAuth();
 
 	const form = useForm({
 		resolver: zodResolver(RegisterSchema),
@@ -62,7 +64,7 @@ export default function RegisterForm({ onSuccess }: { onSuccess: () => void }) {
 				method: "POST",
 				headers: { "Content-Type": "application/json" },
 				body: JSON.stringify(payload),
-				credentials: "same-origin"
+				credentials: "include"
 			});
 
 			const data = await response.json();
@@ -120,6 +122,7 @@ export default function RegisterForm({ onSuccess }: { onSuccess: () => void }) {
 				await AsyncStorage.setItem("user-session-token", token);
 				await askAndStoreAccountPushToken("explicit");
 
+				bumpResetOnAuthEpoch();
 				onSuccess();
 			}
 		} catch (error) {

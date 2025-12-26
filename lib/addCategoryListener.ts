@@ -1,4 +1,7 @@
-import Toast from "react-native-toast-message";
+export type AddCategoryListenerResponse =
+	| { ok: true; finalState: boolean; description: string }
+	| { ok: false; reason: "LOGIN"; description: string }
+	| { ok: false; reason: "ERROR"; description: string };
 
 const addCategoryListener = async ({
 	category,
@@ -6,7 +9,7 @@ const addCategoryListener = async ({
 }: {
 	category: string;
 	isUserSubscribed: boolean;
-}) => {
+}): Promise<AddCategoryListenerResponse> => {
 	try {
 		const response = await fetch(
 			"https://atsepete.net/api/application/action/category-listener",
@@ -21,39 +24,33 @@ const addCategoryListener = async ({
 			}
 		);
 
-		const data = await response.json();
+		const data = await response.json().catch(() => null);
 
-		if (data.action && data.action === "LOGIN") {
-			Toast.show({
-				type: "custom",
-				text1: data.description,
-				topOffset: 60
-			});
-
-			return null;
+		if (data?.action === "LOGIN") {
+			return {
+				ok: false,
+				reason: "LOGIN",
+				description:
+					data?.description ??
+					"Fiyat bildirimi eklemeniz için giriş yapmanız gerekmektedir."
+			};
 		}
 
-		if (!response.ok || typeof data.finalState === "undefined") {
-			Toast.show({
-				type: "error",
-				text1: "Bir hata oluştu",
-				topOffset: 60
-			});
-
-			return null;
+		if (response.ok && typeof data?.finalState !== "undefined") {
+			return {
+				ok: true,
+				finalState: Boolean(data.finalState),
+				description: data?.description ?? "İşlem başarılı."
+			};
 		}
 
-		const { finalState } = data;
-
-		Toast.show({
-			type: finalState ? "success" : "error",
-			text1: data.description,
-			topOffset: 60
-		});
-
-		return data;
-	} catch (e) {
-		console.log(e);
+		return {
+			ok: false,
+			reason: "ERROR",
+			description: data?.description ?? data?.message ?? "Bir hata oluştu"
+		};
+	} catch {
+		return { ok: false, reason: "ERROR", description: "Bir hata oluştu" };
 	}
 };
 

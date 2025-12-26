@@ -4,7 +4,7 @@ import "../global.css";
 import { DefaultTheme, ThemeProvider } from "@react-navigation/native";
 import { SplashScreen, Stack, useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import { useEffect, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import "react-native-reanimated";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
@@ -33,6 +33,7 @@ import NotificationColdStartNav from "@/components/NotificationColdStartNav";
 import { pathFromPayload } from "@/lib/navFromNotification";
 import { PermissionWarmupProvider } from "@/components/PermissionWarmupDialog";
 import { useNotificationPermission } from "@/hooks/useNotificationPermission";
+import { ResetOnAuthContext } from "@/hooks/useResetOnAuth";
 
 // const NOTIFICATION_TOKEN_API_URL =
 // 	"https://atsepete.net/api/application/notification/notification-token-on-install";
@@ -112,25 +113,6 @@ function RootLayoutContent() {
 		if (fontsLoaded) SplashScreen.hideAsync();
 	}, [fontsLoaded]);
 
-	// useEffect(() => {
-	//       const checkFirstLaunch = async () => {
-	//          try {
-	//             const hasLaunched = await AsyncStorage.getItem("hasLaunched");
-	//             if (hasLaunched === null) {
-	//                // TODO:
-	//                // Ask for notification permission.
-	//                // If granted, send it to NOTIFICATION_TOKEN_API_URL {token: ExpoPushToken}
-
-	//                await AsyncStorage.setItem("hasLaunched", "true");
-	//             }
-	//          } catch (error) {
-	//             console.error("Error checking first launch:", error);
-	//          }
-	//       };
-
-	//       checkFirstLaunch();
-	//    }, []);
-
 	useEffect(() => {
 		let userRandId: string | undefined;
 
@@ -183,65 +165,6 @@ function RootLayoutContent() {
 			await AsyncStorage.setItem("hasLaunchedV2", "true");
 		};
 
-		// const askNotificationOnInstall = async () => {
-		// 	const hasLaunched = await AsyncStorage.getItem("hasLaunchedV2");
-		// 	if (hasLaunched) return;
-
-		// 	const perms = await Notifications.getPermissionsAsync();
-
-		// 	const doRegisterInstallToken = async () => {
-		// 		const expoToken = await registerForPushNotificationsAsync();
-		// 		if (expoToken) {
-		// 			await fetch(NOTIFICATION_TOKEN_API_URL, {
-		// 				method: "POST",
-		// 				headers: { "Content-Type": "application/json" },
-		// 				body: JSON.stringify({ token: expoToken, rand_id: userRandId })
-		// 			});
-		// 		}
-		// 		await AsyncStorage.setItem("hasLaunchedV2", "true");
-		// 	};
-
-		// 	if (perms.status === "granted") {
-		// 		await doRegisterInstallToken();
-		// 		return;
-		// 	}
-
-		// 	if (perms.canAskAgain) {
-		// 		showPermissionDialog({
-		// 			mode: "request",
-		// 			title: "Bildirimleri Açmak İster misiniz?",
-		// 			description:
-		// 				"Takip ettiğiniz ürünlerdeki indirimler ve kazanç güncellemelerini size bildirebilmemiz için bildirim izni gereklidir.",
-		// 			bulletPoints: [
-		// 				"Takip ettiğiniz ürünlerdeki indirimlerden anında haberdar olun",
-		// 				"Kurduğunuz alarmlardaki fiyat değişikliklerini kaçırmayın",
-		// 				"Davet linklerinden elde ettiğiniz kazancı kolayca takip edin"
-		// 			],
-		// 			icon: (
-		// 				<Bell
-		// 					size={32}
-		// 					color="#fff"
-		// 				/>
-		// 			),
-		// 			onConfirm: async () => {
-		// 				const res = await Notifications.requestPermissionsAsync();
-		// 				if (res.status === "granted") {
-		// 					await doRegisterInstallToken();
-		// 				} else {
-		// 					await AsyncStorage.setItem("hasLaunchedV2", "true");
-		// 				}
-		// 			},
-		// 			onCancel: async () => {
-		// 				await AsyncStorage.setItem("hasLaunchedV2", "true");
-		// 			}
-		// 		});
-
-		// 		return;
-		// 	}
-
-		// 	await AsyncStorage.setItem("hasLaunchedV2", "true");
-		// };
-
 		(async () => {
 			await logFirstLaunch();
 			await askAndStoreAccountPushToken("startup");
@@ -271,11 +194,22 @@ function RootLayoutContent() {
 }
 
 export default function RootLayout() {
+	const [resetOnAuthEpoch, setResetOnAuthEpoch] = useState(0);
+
+	const ctxValue = useMemo(
+		() => ({
+			bumpResetOnAuthEpoch: () => setResetOnAuthEpoch(x => x + 1)
+		}),
+		[]
+	);
+
 	return (
 		<GestureHandlerRootView style={{ flex: 1 }}>
-			<PermissionWarmupProvider>
-				<RootLayoutContent />
-			</PermissionWarmupProvider>
+			<ResetOnAuthContext.Provider value={ctxValue}>
+				<PermissionWarmupProvider>
+					<RootLayoutContent key={resetOnAuthEpoch} />
+				</PermissionWarmupProvider>
+			</ResetOnAuthContext.Provider>
 		</GestureHandlerRootView>
 	);
 }
