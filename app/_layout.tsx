@@ -34,6 +34,7 @@ import { pathFromPayload } from "@/lib/navFromNotification";
 import { PermissionWarmupProvider } from "@/components/PermissionWarmupDialog";
 import { useNotificationPermission } from "@/hooks/useNotificationPermission";
 import { ResetOnAuthContext } from "@/hooks/useResetOnAuth";
+import { OnboardingGate } from "@/components/onboarding/OnboardingGate";
 
 // const NOTIFICATION_TOKEN_API_URL =
 // 	"https://atsepete.net/api/application/notification/notification-token-on-install";
@@ -185,6 +186,10 @@ function RootLayoutContent() {
 						name="(modals)"
 						options={{ headerShown: false, presentation: "modal" }}
 					/>
+					<Stack.Screen
+						name="(onboarding)"
+						options={{ headerShown: false }}
+					/>
 					<Stack.Screen name="+not-found" />
 				</Stack>
 				<Toast config={toastConfig} />
@@ -207,6 +212,7 @@ export default function RootLayout() {
 		<GestureHandlerRootView style={{ flex: 1 }}>
 			<ResetOnAuthContext.Provider value={ctxValue}>
 				<PermissionWarmupProvider>
+					<OnboardingGate />
 					<RootLayoutContent key={resetOnAuthEpoch} />
 				</PermissionWarmupProvider>
 			</ResetOnAuthContext.Provider>
