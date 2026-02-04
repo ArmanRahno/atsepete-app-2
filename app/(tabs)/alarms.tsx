@@ -2,16 +2,17 @@ import LoginAndRegisterFormsWrapper from "@/components/forms/LoginAndRegisterFor
 import LoadingIndicator from "@/components/LoadingIndicator";
 import { useCallback, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import Header from "@/components/header/Header";
 import { Dropdown } from "react-native-element-dropdown";
 import {
 	lightBackground,
 	lightBorder,
 	lightDestructive,
-	lightForeground
+	lightForeground,
+	lightMutedForeground
 } from "@/constants/Colors";
-import { useFocusEffect } from "expo-router";
+import { router, useFocusEffect } from "expo-router";
 import addMarketplaceListener from "@/lib/addMarketplaceListener";
 import addCategoryListener from "@/lib/addCategoryListener";
 import CategoriesList from "@/components/account-page/CategoriesList";
@@ -20,6 +21,8 @@ import ItemsList from "@/components/account-page/ItemsList";
 import HeaderIcon from "@/components/header/HeaderIcon";
 import HeaderSecondRow from "@/components/header/HeaderSecondRow";
 import { Payment } from "@/zod-schemas/save-user-payment-data";
+import AppTouchableOpacity from "@/components/AppTouchableOpacity";
+import { ChevronRight } from "lucide-react-native";
 
 const REFERRER_CODE_KEY = "user-referrer-code";
 
@@ -112,7 +115,7 @@ export default function AlarmScreen() {
 			}
 
 			const response = await fetch(
-				"https://atsepete.net/api/application/page/user-page?earnings=false"
+				"https://atsepete-rework-1qrklhqs9-armans-projects-2ebbfea8.vercel.app/api/application/page/user-page?earnings=false"
 			);
 
 			if (!response.ok) {
@@ -166,11 +169,12 @@ export default function AlarmScreen() {
 		<>
 			<Header className="shadow-none">
 				<HeaderIcon />
+
 				<HeaderSecondRow />
 			</Header>
 
 			{isLoggedIn && (
-				<View className="p-2.5 bg-background shadow-lg">
+				<View className="p-2.5 bg-background shadow-lg gap-2">
 					<Dropdown
 						style={styles.dropdown}
 						containerStyle={styles.dropdownContainer}
@@ -182,6 +186,26 @@ export default function AlarmScreen() {
 						value={mode}
 						onChange={item => setMode(item.value)}
 					/>
+
+					<AppTouchableOpacity
+						onPress={() => router.push("/(modals)/notification-settings")}
+						style={styles.dropdown}
+						className="w-full flex-row items-center justify-between"
+					>
+						<View className="flex-1 pr-3">
+							<Text
+								style={styles.selectedText}
+								className="font-semibold"
+							>
+								Bildirim Ayarları
+							</Text>
+						</View>
+						<ChevronRight
+							size={16}
+							strokeWidth={2.6}
+							color={lightMutedForeground}
+						/>
+					</AppTouchableOpacity>
 				</View>
 			)}
 
@@ -268,7 +292,7 @@ const styles = StyleSheet.create({
 	},
 	dropdownContainer: { borderRadius: 8, overflow: "hidden" },
 	dropdownText: { color: lightForeground },
-	selectedText: { fontWeight: "600" },
+	selectedText: { fontWeight: "600", fontSize: 16 },
 	summaryText: {
 		fontSize: 16,
 		fontWeight: "600",

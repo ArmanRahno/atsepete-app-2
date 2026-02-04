@@ -686,8 +686,8 @@ export default function HomeScreen() {
 								index === 0
 									? "rounded-t-lg"
 									: index === items.length - 1
-									? "rounded-b-lg"
-									: ""
+										? "rounded-b-lg"
+										: ""
 							}
 							item={item}
 						/>

@@ -103,6 +103,7 @@ export default function EarningsList({ earnings }: EarningsListProps) {
 
 	const preview = historySorted.slice(0, PREVIEW_COUNT);
 	const hasMore = historySorted.length > PREVIEW_COUNT;
+	const canOpenModal = historySorted.length > 0;
 
 	const openModal = useCallback(() => {
 		setIsOpening(true);
@@ -175,22 +176,27 @@ export default function EarningsList({ earnings }: EarningsListProps) {
 
 			<View style={styles.tableFrame}>
 				<Pressable
-					onPress={hasMore ? openModal : undefined}
-					disabled={!hasMore || isOpening}
+					onPress={canOpenModal ? openModal : undefined}
+					disabled={!canOpenModal || isOpening}
 					android_disableSound
-					style={({ pressed }) => [styles.tablePressable, pressed && { opacity: 0.92 }]}
+					style={({ pressed }) => [
+						styles.tablePressable,
+						canOpenModal && pressed && { opacity: 0.92 }
+					]}
 				>
 					<View style={styles.tableInner}>
-						<View
-							style={styles.diagonalWatermark}
-							pointerEvents="none"
-						>
-							<View style={styles.diagonalWatermarkWrapper}>
-								<Text style={styles.diagonalWatermarkText}>
-									Detay için tıklayınız
-								</Text>
+						{canOpenModal && (
+							<View
+								style={styles.diagonalWatermark}
+								pointerEvents="none"
+							>
+								<View style={styles.diagonalWatermarkWrapper}>
+									<Text style={styles.diagonalWatermarkText}>
+										Detay için tıklayınız
+									</Text>
+								</View>
 							</View>
-						</View>
+						)}
 
 						<TableHeader />
 

@@ -35,7 +35,7 @@ export default function ItemPriceCard({ item }: ItemPriceCardProps) {
 				const finalUrl = referrerCode
 					? `${baseUrl}${baseUrl.includes("?") ? "&" : "?"}r=${encodeURIComponent(
 							referrerCode
-					  )}`
+						)}`
 					: baseUrl;
 
 				setShareUrl(finalUrl);

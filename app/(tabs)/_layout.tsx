@@ -129,6 +129,16 @@ export default function TabLayout() {
 				/>
 
 				<Tabs.Screen
+					name="account-forgot-password"
+					options={{ href: null }}
+				/>
+
+				<Tabs.Screen
+					name="account-change-password"
+					options={{ href: null }}
+				/>
+
+				<Tabs.Screen
 					name="account"
 					options={{ href: null }}
 				/>

@@ -1,7 +1,7 @@
-import { useCallback, useState } from "react";
-import { View, ScrollView } from "react-native";
+import { useCallback, useMemo, useState } from "react";
+import { View, ScrollView, TouchableOpacity, Text } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useFocusEffect } from "expo-router";
+import { router, useFocusEffect } from "expo-router";
 import LoadingIndicator from "@/components/LoadingIndicator";
 import LoginAndRegisterFormsWrapper from "@/components/forms/LoginAndRegisterFormsWrapper";
 import EarningsList from "@/components/account-page/EarningsList";
@@ -14,8 +14,36 @@ import LogOutBtn from "@/components/account-page/LogOutBtn";
 import DeleteAccountBtn from "@/components/account-page/DeleteAccountBtn";
 import PaymentOptions from "@/components/account-page/PaymentOptions";
 import VersionInfo from "@/components/VersionInfo";
+import NotificationSettingsForm from "@/components/account-page/NotificationSettingsForm";
 
 const REFERRER_CODE_KEY = "user-referrer-code";
+
+function RowButton({
+	title,
+	subtitle,
+	onPress
+}: {
+	title: string;
+	subtitle?: string;
+	onPress: () => void;
+}) {
+	return (
+		<TouchableOpacity
+			onPress={onPress}
+			activeOpacity={0.85}
+			className="w-full flex-row items-center justify-between rounded-xl border border-border bg-background px-4 py-3"
+		>
+			<View className="flex-1 pr-3">
+				<Text className="text-foreground font-semibold">{title}</Text>
+				{subtitle ? (
+					<Text className="text-muted-foreground text-xs mt-1">{subtitle}</Text>
+				) : null}
+			</View>
+
+			<Text className="text-muted-foreground font-semibold">›</Text>
+		</TouchableOpacity>
+	);
+}
 
 export default function AccountScreen() {
 	const [userData, setUserData] = useState<AccountAPIResponse | null>(null);
@@ -35,7 +63,8 @@ export default function AccountScreen() {
 			}
 
 			const response = await fetch(
-				"https://atsepete.net/api/application/page/user-page?alarms=false"
+				"https://atsepete.net/api/application/page/user-page?alarms=false",
+				{ credentials: "include" }
 			);
 
 			if (!response.ok) {
@@ -73,6 +102,18 @@ export default function AccountScreen() {
 		}, [fetchUserPage])
 	);
 
+	const canChangePassword = useMemo(() => {
+		return Boolean((userData as any)?.auth?.canChangePassword);
+	}, [userData]);
+
+	const goNotificationSettings = useCallback(() => {
+		router.push("/(modals)/notification-settings");
+	}, []);
+
+	const goChangePassword = useCallback(() => {
+		router.push("/(tabs)/account-change-password");
+	}, []);
+
 	if (loading) {
 		return <LoadingIndicator />;
 	}
@@ -93,6 +134,33 @@ export default function AccountScreen() {
 							<EarningsList earnings={userData.earnings} />
 
 							<PaymentOptions paymentData={userData.payment_data} />
+
+							<View className="mt-4">
+								<View className="mb-2">
+									<Text className="text-foreground font-semibold text-base">
+										Hesap Ayarları
+									</Text>
+									<Text className="text-muted-foreground text-xs mt-1">
+										Bildirim, oturum ve güvenlik ayarları
+									</Text>
+								</View>
+
+								<View className="gap-2">
+									<RowButton
+										title="Bildirim Ayarları"
+										subtitle="Uygulama ve e-posta bildirimlerini yönet"
+										onPress={goNotificationSettings}
+									/>
+
+									{canChangePassword && (
+										<RowButton
+											title="Şifre Değiştir"
+											subtitle="Şifrenizi değiştirmek için tıklayın"
+											onPress={goChangePassword}
+										/>
+									)}
+								</View>
+							</View>
 
 							<View className="flex-row justify-between">
 								<DeleteAccountBtn />

@@ -114,8 +114,8 @@ const SearchScreen = () => {
 							index === 0
 								? "rounded-t-lg"
 								: index === items.length - 1
-								? "rounded-b-lg"
-								: ""
+									? "rounded-b-lg"
+									: ""
 						}
 						key={item._id.toString()}
 						item={item}

@@ -1,33 +1,18 @@
-import React, { Fragment, useCallback } from "react";
-import * as Clipboard from "expo-clipboard";
+import React, { Fragment } from "react";
 import { AccountAPIResponse } from "@/app/(tabs)/alarms";
-import * as Linking from "expo-linking";
 import AccountReferrerLinks from "./AccountReferrerLinks";
 
 interface AccountSettingsProps {
 	userData: AccountAPIResponse;
 }
 
-const DOWNLOAD_APP_LINK = "https://atsepete.net/indir";
-
 export default function AccountSettings({ userData }: AccountSettingsProps) {
-	const userRefLink = `https://atsepete.net/?r=${userData?.referrer_code || ""}`;
-
-	const userDownloadLink = `${DOWNLOAD_APP_LINK}/${userData?.referrer_code}`;
-
-	const copyToClipboard = useCallback(async (text: string) => {
-		await Clipboard.setStringAsync(text);
-	}, []);
-
-	const openLink = useCallback((url: string) => {
-		Linking.openURL(url).catch(err => {
-			console.warn("Link kopyalanamadı:", err);
-		});
-	}, []);
+	const referralCode =
+		(userData as any)?.user?.referrer_code ?? (userData as any)?.referrer_code ?? "";
 
 	return (
 		<Fragment>
-			<AccountReferrerLinks referralCode={userData?.referrer_code} />
+			<AccountReferrerLinks referralCode={referralCode} />
 		</Fragment>
 	);
 }

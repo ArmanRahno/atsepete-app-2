@@ -10,6 +10,7 @@ import { auth } from "@/lib/auth/firebase";
 import AppTouchableOpacity from "../AppTouchableOpacity";
 import { useNotificationPermission } from "@/hooks/useNotificationPermission";
 import { useResetOnAuth } from "@/hooks/useResetOnAuth";
+import { useRouter } from "expo-router";
 
 const LoginSchema = z.object({
 	email: z.string().email("Geçerli bir e-posta giriniz."),
@@ -21,6 +22,8 @@ export default function LoginForm({ onSuccess }: { onSuccess: () => void }) {
 
 	const { askAndStoreAccountPushToken } = useNotificationPermission();
 	const { bumpResetOnAuthEpoch } = useResetOnAuth();
+
+	const router = useRouter();
 
 	const form = useForm({
 		resolver: zodResolver(LoginSchema),
@@ -120,15 +123,29 @@ export default function LoginForm({ onSuccess }: { onSuccess: () => void }) {
 				control={control}
 				name="password"
 				render={({ field: { onChange, onBlur, value } }) => (
-					<TextInput
-						className="border border-gray-300 p-2 rounded mt-1 text-foreground placeholder:text-muted-foreground"
-						placeholder="Şifreniz"
-						secureTextEntry
-						autoCapitalize="none"
-						onBlur={onBlur}
-						onChangeText={onChange}
-						value={value}
-					/>
+					<>
+						<TextInput
+							className="border border-gray-300 p-2 rounded mt-1 text-foreground placeholder:text-muted-foreground"
+							placeholder="Şifreniz"
+							secureTextEntry
+							autoCapitalize="none"
+							onBlur={onBlur}
+							onChangeText={onChange}
+							value={value}
+						/>
+						<AppTouchableOpacity
+							className="p-1 self-end"
+							onPress={() => router.push("/(tabs)/account-forgot-password")}
+							hitSlop={12}
+						>
+							<Text
+								className="text-primary"
+								style={{ fontFamily: "Roboto_500Medium" }}
+							>
+								Şifremi unuttum
+							</Text>
+						</AppTouchableOpacity>
+					</>
 				)}
 			/>
 			{errors.password && (
