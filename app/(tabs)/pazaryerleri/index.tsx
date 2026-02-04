@@ -2,11 +2,9 @@ import AppTouchableOpacity from "@/components/AppTouchableOpacity";
 import Header from "@/components/header/Header";
 import HeaderIcon from "@/components/header/HeaderIcon";
 import HeaderSecondRow from "@/components/header/HeaderSecondRow";
-import HeaderText from "@/components/header/HeaderText";
-import ResizedMarketplaceImage from "@/components/ResizedMarketplaceImage";
 import Marketplaces from "@/constants/Marketplaces";
 import { Link } from "expo-router";
-import { FlatList, TouchableOpacity } from "react-native";
+import { FlatList } from "react-native";
 
 const MarketplacesScreen = () => {
 	return (
@@ -26,10 +24,7 @@ const MarketplacesScreen = () => {
 						asChild
 					>
 						<AppTouchableOpacity className="py-1 h-16 bg-background justify-center items-center rounded-lg border border-border">
-							<item.Icon
-								scaleX={1.6}
-								scaleY={1.6}
-							/>
+							<item.Icon style={{ transform: [{ scale: 1.5 }] }} />
 						</AppTouchableOpacity>
 					</Link>
 				)}

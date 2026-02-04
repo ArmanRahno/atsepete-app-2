@@ -10,7 +10,7 @@ import {
 	Animated,
 	ActivityIndicator
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Earnings } from "@/app/(tabs)/alarms";
 import {
 	lightBackground,
@@ -87,6 +87,8 @@ function ListOpeningOverlay() {
 export default function EarningsList({ earnings }: EarningsListProps) {
 	const [open, setOpen] = useState(false);
 	const [isOpening, setIsOpening] = useState(false);
+
+	const insets = useSafeAreaInsets();
 
 	const historySorted = useMemo(() => {
 		const list = earnings?.earnings_history ?? [];
@@ -248,7 +250,14 @@ export default function EarningsList({ earnings }: EarningsListProps) {
 				animationType="slide"
 				onRequestClose={closeModal}
 			>
-				<SafeAreaView style={styles.modalRoot}>
+				<View
+					style={{
+						flex: 1,
+						paddingTop: insets.top,
+						paddingBottom: insets.bottom,
+						backgroundColor: "white"
+					}}
+				>
 					<View style={styles.modalTopBar}>
 						<Text style={styles.modalTitle}>Kazanç Geçmişi</Text>
 						<Pressable
@@ -300,7 +309,7 @@ export default function EarningsList({ earnings }: EarningsListProps) {
 							removeClippedSubviews
 						/>
 					</View>
-				</SafeAreaView>
+				</View>
 			</Modal>
 		</View>
 	);

@@ -123,7 +123,13 @@ export default function SearchPageLayout() {
 					</AppTouchableOpacity>
 				</View>
 			</Header>
-			<Stack screenOptions={{ headerShown: false }} />
+			<Stack
+				screenOptions={{
+					headerShown: false,
+					gestureEnabled: true,
+					fullScreenGestureEnabled: true
+				}}
+			/>
 		</>
 	);
 }

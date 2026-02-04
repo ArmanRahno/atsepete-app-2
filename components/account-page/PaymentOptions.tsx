@@ -6,7 +6,8 @@ import {
 	Pressable,
 	Modal,
 	ScrollView,
-	ActivityIndicator
+	ActivityIndicator,
+	Platform
 } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import { Controller, useForm } from "react-hook-form";
@@ -14,7 +15,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as Clipboard from "expo-clipboard";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Payment, PaymentSchemaFrontend } from "@/zod-schemas/save-user-payment-data";
-import { Copy, CopyCheck, UserRound, CreditCard, Gift, Info } from "lucide-react-native";
+import { Copy, CopyCheck, UserRound, CreditCard } from "lucide-react-native";
 import FormInForm, { FormInformProps } from "../FormInform";
 import {
 	lightBackground,
@@ -181,7 +182,13 @@ const PaymentOptions = ({ paymentData }: { paymentData?: Payment }) => {
 							<Label>Tercih edilen ödeme yöntemi</Label>
 							<View
 								className="rounded-lg border border-border overflow-hidden"
-								style={{ backgroundColor: lightSecondary }}
+								style={[
+									{
+										backgroundColor:
+											Platform.OS === "ios" ? lightBackground : lightSecondary
+									},
+									Platform.OS === "ios" && { overflow: "visible" }
+								]}
 							>
 								<Picker
 									selectedValue={field.value}
@@ -213,10 +220,26 @@ const PaymentOptions = ({ paymentData }: { paymentData?: Payment }) => {
 											}
 										}
 									}}
-									style={{
-										color: lightSecondaryForeground,
-										backgroundColor: lightBackground
-									}}
+									style={[
+										{
+											color: lightSecondaryForeground,
+											backgroundColor:
+												Platform.OS === "ios"
+													? "transparent"
+													: lightBackground
+										},
+										Platform.OS === "ios" && {}
+									]}
+									itemStyle={
+										Platform.OS === "ios"
+											? {
+													color: lightSecondaryForeground,
+													fontSize: 14,
+													fontWeight: "600",
+													height: 108
+												}
+											: undefined
+									}
 									dropdownIconColor={lightSecondaryForeground}
 								>
 									<Picker.Item
@@ -233,6 +256,7 @@ const PaymentOptions = ({ paymentData }: { paymentData?: Payment }) => {
 									/>
 								</Picker>
 							</View>
+
 							<FieldError
 								msg={errors.preferred_option?.message as string | undefined}
 							/>

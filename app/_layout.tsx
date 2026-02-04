@@ -47,7 +47,9 @@ Notifications.setNotificationHandler({
 		shouldShowList: true,
 		shouldPlaySound: true,
 		shouldSetBadge: true,
-		priority: Notifications.AndroidNotificationPriority.HIGH
+		...(Platform.OS === "android"
+			? { priority: Notifications.AndroidNotificationPriority.HIGH }
+			: {})
 	})
 });
 
@@ -177,7 +179,12 @@ function RootLayoutContent() {
 			<ThemeProvider value={DefaultTheme}>
 				<StatusBar style="dark" />
 				<NotificationColdStartNav />
-				<Stack>
+				<Stack
+					screenOptions={{
+						gestureEnabled: true,
+						fullScreenGestureEnabled: true
+					}}
+				>
 					<Stack.Screen
 						name="(tabs)"
 						options={{ headerShown: false }}

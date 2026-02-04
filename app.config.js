@@ -3,7 +3,7 @@ const IS_DEV = process.env.APP_VARIANT === "development";
 export default {
 	"name": "AtSepete",
 	"slug": "atsepete",
-	"version": "1.2.1",
+	"version": "1.3.0",
 	"orientation": "portrait",
 	"icon": "./assets/images/icon.png",
 	"scheme": "atsepete",
@@ -11,7 +11,8 @@ export default {
 	"newArchEnabled": true,
 	"ios": {
 		"supportsTablet": true,
-		"bundleIdentifier": "com.anonymous.atsepete",
+		"bundleIdentifier": "com.atsepete.atsepete",
+		"googleServicesFile": "GoogleService-Info.plist",
 		"infoPlist": {
 			"LSApplicationQueriesSchemes": ["fb", "instagram", "twitter", "tiktoksharesdk"],
 			"ITSAppUsesNonExemptEncryption": false

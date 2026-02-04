@@ -115,7 +115,7 @@ export default function AlarmScreen() {
 			}
 
 			const response = await fetch(
-				"https://atsepete-rework-1qrklhqs9-armans-projects-2ebbfea8.vercel.app/api/application/page/user-page?earnings=false"
+				"https://atsepete.net/api/application/page/user-page?earnings=false"
 			);
 
 			if (!response.ok) {

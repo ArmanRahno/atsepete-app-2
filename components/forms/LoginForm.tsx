@@ -161,11 +161,11 @@ export default function LoginForm({ onSuccess }: { onSuccess: () => void }) {
 			) : null}
 
 			<AppTouchableOpacity
-				className="bg-primary rounded py-2 mt-4 disabled:bg-primary/80"
+				className="bg-primary rounded py-2 mt-4 disabled:bg-primary/80 items-center"
 				onPress={handleSubmit(onSubmit)}
 				disabled={isSubmitting}
 			>
-				<Text className="text-primary-foreground text-center font-semibold">
+				<Text className="text-primary-foreground font-semibold">
 					{isSubmitting ? (
 						<ActivityIndicator
 							color="white"

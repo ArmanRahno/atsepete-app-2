@@ -4,9 +4,10 @@ import { Platform } from "react-native";
 
 import { HapticTab } from "@/components/HapticTab";
 import TabBarBackground from "@/components/ui/TabBarBackground";
-import { Colors } from "@/constants/Colors";
+import { Colors, lightBackground } from "@/constants/Colors";
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import { Bell, Boxes, Grid3x3, Package, ShoppingBag, Sparkles, Store } from "lucide-react-native";
+import { View } from "react-native";
 
 export default function TabLayout() {
 	const insets = useSafeAreaInsets();
@@ -21,7 +22,12 @@ export default function TabLayout() {
 					tabBarActiveTintColor: Colors["light"].tint,
 					headerShown: false,
 					tabBarButton: HapticTab,
-					tabBarBackground: TabBarBackground,
+					tabBarBackground: () =>
+						Platform.OS === "ios" ? (
+							<View style={{ flex: 1, backgroundColor: lightBackground }} />
+						) : (
+							TabBarBackground
+						),
 					popToTopOnBlur: true,
 					tabBarStyle: Platform.select({
 						ios: {
