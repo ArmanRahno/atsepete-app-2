@@ -1,5 +1,5 @@
 import React, { memo } from "react";
-import { FlatList, Text } from "react-native";
+import { FlatList, Text, View } from "react-native";
 import ItemCard from "@/components/item/item-card/ItemCard";
 import UrunlerItemCard from "../item/item-card/UrunlerItemCard";
 
@@ -17,35 +17,63 @@ export default function ItemsList({ items, onListenerSuccess }: ItemsListProps) 
 			data={items}
 			keyExtractor={item => item._id.toString()}
 			renderItem={({ item, index }) => {
-				if (item.isDiscount)
+				const isFirst = index === 0;
+				const isLast = index === items.length - 1;
+
+				const rounding = [isFirst ? "rounded-t-lg" : "", isLast ? "rounded-b-lg" : ""]
+					.filter(Boolean)
+					.join(" ");
+
+				if (item.isDiscount) {
+					if (!isFirst && !isLast) {
+						return (
+							<MemoizedItemCard
+								key={item._id.toString()}
+								item={item}
+								onListenerSuccess={onListenerSuccess}
+							/>
+						);
+					}
+
 					return (
-						<MemoizedItemCard
-							className={
-								index === 0
-									? "rounded-t-lg"
-									: index === items.length - 1
-									? "rounded-b-lg"
-									: ""
-							}
+						<View
+							key={item._id.toString()}
+							className={["border border-border", rounding].join(" ")}
+						>
+							<View className={["overflow-hidden", rounding].join(" ")}>
+								<MemoizedItemCard
+									item={item}
+									onListenerSuccess={onListenerSuccess}
+									className="border-0"
+								/>
+							</View>
+						</View>
+					);
+				}
+
+				if (!isFirst && !isLast) {
+					return (
+						<MemoizedUrunlerItemCard
 							key={item._id.toString()}
 							item={item}
 							onListenerSuccess={onListenerSuccess}
 						/>
 					);
+				}
 
 				return (
-					<MemoizedUrunlerItemCard
-						className={
-							index === 0
-								? "rounded-t-lg"
-								: index === items.length - 1
-								? "rounded-b-lg"
-								: ""
-						}
+					<View
 						key={item._id.toString()}
-						item={item}
-						onListenerSuccess={onListenerSuccess}
-					/>
+						className={["border border-border", rounding].join(" ")}
+					>
+						<View className={["overflow-hidden", rounding].join(" ")}>
+							<MemoizedUrunlerItemCard
+								item={item}
+								onListenerSuccess={onListenerSuccess}
+								className="border-0"
+							/>
+						</View>
+					</View>
 				);
 			}}
 			ListEmptyComponent={

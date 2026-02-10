@@ -8,10 +8,11 @@ import LoadingIndicator from "@/components/LoadingIndicator";
 import findCategoryLabel from "@/lib/findCategoryLabel";
 import { useFocusEffect } from "expo-router";
 import { useSearchParams } from "expo-router/build/hooks";
-import React, { useState, useCallback, memo } from "react";
+import React, { useState, useCallback, memo, useRef } from "react";
 import { FlatList, RefreshControl, ActivityIndicator, View, Text } from "react-native";
 
 const API_URL = "https://atsepete.net/api/application/page/with-params";
+const PAGE_SIZE = 18;
 
 type CategoryData = {
 	is_user_subscribed: boolean;
@@ -22,22 +23,40 @@ type CategoryData = {
 
 const MemoizedItemCard = memo(ItemCard);
 
-const MarketplaceScreen = () => {
+const CategoryScreen = () => {
 	const params = useSearchParams();
 	const category = params.get("slug");
 	const categoryLabel = findCategoryLabel(category!);
+
 	const [items, setItems] = useState<Item[]>([]);
 	const [totalItems, setTotalItems] = useState<number>(0);
 	const [loading, setLoading] = useState<boolean>(false);
 	const [loadingMore, setLoadingMore] = useState<boolean>(false);
 	const [refreshing, setRefreshing] = useState<boolean>(false);
-	const [page, setPage] = useState<number>(0);
+
+	const [page, setPage] = useState<number>(1);
+
+	const loadMoreLockRef = useRef(false);
+
 	const [userIsSubscribed, setUserIsSubscribed] = useState<boolean>(false);
+
+	const dedupeById = useCallback((list: Item[]) => {
+		const seen = new Set<string>();
+		return list.filter(it => {
+			const id = it?._id?.toString?.() ?? String(it?._id);
+			if (!id) return true;
+			if (seen.has(id)) return false;
+			seen.add(id);
+			return true;
+		});
+	}, []);
 
 	const fetchItems = useCallback(
 		async (pageNum: number, append = false) => {
+			if (!category) return;
+
 			try {
-				if (pageNum === 0 && !refreshing) {
+				if (pageNum === 1 && !refreshing) {
 					setLoading(true);
 				} else {
 					setLoadingMore(true);
@@ -45,60 +64,67 @@ const MarketplaceScreen = () => {
 
 				const response = await fetch(
 					`${API_URL}?${new URLSearchParams({
-						category: category!,
+						category: category,
 						p: pageNum.toString()
 					})}`
 				);
 
-				if (!response.ok) {
-					throw new Error("Error fetching items");
-				}
+				if (!response.ok) throw new Error("Error fetching items");
 
 				const data: CategoryData = await response.json();
 				setTotalItems(data.totalItems);
 				setUserIsSubscribed(data.is_user_subscribed);
 
+				const nextChunk = (data.items ?? []).slice(0, PAGE_SIZE);
+
 				if (append) {
-					setItems(prevItems => [...prevItems, ...data.items.slice(0, 18)]);
+					setItems(prev => dedupeById([...prev, ...nextChunk]));
 				} else {
-					setItems(data.items.slice(0, 18));
+					setItems(dedupeById(nextChunk));
 				}
 			} catch (error) {
-				console.error("Error fetching homepage items:", error);
+				console.error("Error fetching category items:", error);
 			} finally {
 				setLoading(false);
 				setLoadingMore(false);
 				setRefreshing(false);
+				loadMoreLockRef.current = false;
 			}
 		},
-		[refreshing]
+		[refreshing, category, dedupeById]
 	);
 
 	useFocusEffect(
 		useCallback(() => {
-			setPage(0);
-			fetchItems(0);
+			setPage(1);
+			fetchItems(1, false);
 		}, [fetchItems])
 	);
 
 	const onRefresh = useCallback(() => {
 		setRefreshing(true);
-		setPage(0);
-		fetchItems(0);
+		setPage(1);
+		fetchItems(1, false);
 	}, [fetchItems]);
 
 	const handleLoadMore = useCallback(() => {
-		if (!loadingMore && items.length < totalItems) {
-			const nextPage = page + 1;
-			setPage(nextPage);
-			fetchItems(nextPage, true);
-		}
+		if (loadMoreLockRef.current) return;
+		if (loadingMore) return;
+		if (items.length >= totalItems) return;
+
+		loadMoreLockRef.current = true;
+
+		const nextPage = page + 1;
+		setPage(nextPage);
+		fetchItems(nextPage, true);
 	}, [items.length, totalItems, page, loadingMore, fetchItems]);
 
-	if (!category)
+	if (!category) {
 		return (
 			<Text className="p-4 text-lg font-medium text-destructive">Kategori bulunamadı!</Text>
 		);
+	}
+
 	if (loading && items.length === 0) {
 		return <LoadingIndicator />;
 	}
@@ -113,19 +139,29 @@ const MarketplaceScreen = () => {
 			<FlatList
 				data={items}
 				keyExtractor={item => item._id.toString()}
-				renderItem={({ item, index }) => (
-					<MemoizedItemCard
-						className={
-							index === 0
-								? "rounded-t-lg"
-								: index === items.length - 1
-									? "rounded-b-lg"
-									: ""
-						}
-						key={item._id.toString()}
-						item={item}
-					/>
-				)}
+				renderItem={({ item, index }) => {
+					const isFirst = index === 0;
+					const isLast = index === items.length - 1;
+
+					if (!isFirst && !isLast) {
+						return <MemoizedItemCard item={item} />;
+					}
+
+					const rounding = [isFirst ? "rounded-t-lg" : "", isLast ? "rounded-b-lg" : ""]
+						.filter(Boolean)
+						.join(" ");
+
+					return (
+						<View className={["border border-border", rounding].join(" ")}>
+							<View className={["overflow-hidden", rounding].join(" ")}>
+								<MemoizedItemCard
+									item={item}
+									className="border-0"
+								/>
+							</View>
+						</View>
+					);
+				}}
 				refreshControl={
 					<RefreshControl
 						refreshing={refreshing}
@@ -135,21 +171,20 @@ const MarketplaceScreen = () => {
 				onEndReached={handleLoadMore}
 				onEndReachedThreshold={1.5}
 				ListHeaderComponent={
-					<View className="mt-4 mb-5">
-						<View className="flex-row justify-center items-center gap-3">
-							<HeaderText>Bütün {categoryLabel} ürünlerine alarm kur</HeaderText>
+					<View className="flex-row flex-wrap justify-center items-center gap-3 py-3">
+						<View className="flex-1 min-w-0">
+							<HeaderText className="text-center flex-shrink">
+								Bütün {categoryLabel} ürünlerine alarm kur
+							</HeaderText>
+						</View>
+
+						<View style={{ flexShrink: 0 }}>
 							<CategoryListener
 								className="px-4 py-2"
 								category={category}
 								is_user_subscribed={userIsSubscribed}
 							/>
 						</View>
-
-						{items && items.length === 0 && (
-							<Text className="mt-4 text-center text-destructive font-semibold">
-								{categoryLabel} kategorisinde indirimli ürün bulunamadı.
-							</Text>
-						)}
 					</View>
 				}
 				ListFooterComponent={
@@ -165,4 +200,4 @@ const MarketplaceScreen = () => {
 	);
 };
 
-export default MarketplaceScreen;
+export default CategoryScreen;

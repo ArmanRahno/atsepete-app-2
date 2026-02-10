@@ -3,7 +3,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
 import { Search } from "lucide-react-native";
 import { useEffect, useState } from "react";
-import { Keyboard, Text, TextInput, View } from "react-native";
+import { Keyboard, Text, TextInput, View, Platform } from "react-native";
 import BarcodeScanButton from "../barcode-scan/BarcodeScanButton";
 import AppTouchableOpacity from "../AppTouchableOpacity";
 
@@ -51,10 +51,7 @@ const HeaderSearchInput = () => {
 				body: JSON.stringify({ search: text, userId: userId || "APPLICATION" })
 			});
 
-			if (!response.ok) {
-				return;
-				// throw new Error("Network error");
-			}
+			if (!response.ok) return;
 
 			const data = await response.json();
 
@@ -88,43 +85,58 @@ const HeaderSearchInput = () => {
 					color={lightMutedForeground}
 				/>
 			</Text>
+
 			<TextInput
-				className="flex-1 p-0 py-1.5 text-foreground placeholder:text-muted-foreground text-lg"
+				className="flex-1 p-0 text-foreground placeholder:text-muted-foreground text-lg android:py-1.5 ios:py-0"
+				style={[
+					// iOS: remove the “baseline drop” by controlling the line box explicitly
+					Platform.OS === "ios"
+						? { lineHeight: 20, paddingTop: 0, paddingBottom: 0 }
+						: null
+				]}
 				placeholder="Ara"
 				autoCapitalize="none"
 				value={query}
 				onChangeText={handleChangeText}
 				onSubmitEditing={handleSubmit}
 				onFocus={() => {
-					if (suggestions.length > 0) {
-						setShowSuggestions(true);
-					}
+					if (suggestions.length > 0) setShowSuggestions(true);
 				}}
 				onBlur={() => {
 					setShowSuggestions(false);
 				}}
 			/>
+
 			<BarcodeScanButton />
-			{showSuggestions && suggestions.length > 0 && (
-				<View className="absolute top-[210%] left-0 right-0 bg-background border border-border rounded-lg z-[3]">
-					{suggestions.slice(0, 5).map(suggestion => {
-						return (
-							<AppTouchableOpacity
-								key={suggestion.url_slug}
-								onPress={() => handleSuggestionPress(suggestion)}
-								className="px-2 py-2 border-b border-gray-200"
-							>
-								<Text
-									numberOfLines={1}
-									className="text-gray-800"
-								>
-									{suggestion.name}
-								</Text>
-							</AppTouchableOpacity>
-						);
-					})}
-				</View>
-			)}
+
+			{showSuggestions &&
+				suggestions.length > 0 &&
+				(() => {
+					const visible = suggestions.slice(0, 5);
+
+					return (
+						<View className="absolute top-[110%] left-0 right-0 bg-background border border-border rounded-lg z-[3] overflow-hidden">
+							{visible.map((suggestion, idx) => {
+								const isLast = idx === visible.length - 1;
+
+								return (
+									<AppTouchableOpacity
+										key={suggestion.url_slug}
+										onPress={() => handleSuggestionPress(suggestion)}
+										className={`p-3 ${isLast ? "" : "border-b border-border"}`}
+									>
+										<Text
+											numberOfLines={1}
+											className="text-foreground"
+										>
+											{suggestion.name}
+										</Text>
+									</AppTouchableOpacity>
+								);
+							})}
+						</View>
+					);
+				})()}
 		</View>
 	);
 };

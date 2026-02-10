@@ -117,7 +117,7 @@ const Categories = [
 	{
 		value: "temizlik-ve-koruma",
 		label: "Temizlik ve Koruma",
-		icon: "hands.sparkles"
+		icon: "hands.and.sparkles"
 	},
 	{
 		value: "dijital-urunler",
@@ -127,7 +127,7 @@ const Categories = [
 	{
 		value: "bebek-beslenme",
 		label: "Bebek Beslenme",
-		icon: "baby.bottle"
+		icon: "stroller"
 	},
 	{
 		value: "bisiklet",
@@ -142,7 +142,7 @@ const Categories = [
 	{
 		value: "temizlik-urunleri",
 		label: "Temizlik Ürünleri",
-		icon: "shower.head"
+		icon: "shower"
 	},
 	{
 		value: "hediye",
@@ -172,7 +172,7 @@ const Categories = [
 	{
 		value: "kadin-giyim",
 		label: "Kadın Giyim",
-		icon: "figure.dress"
+		icon: "hanger"
 	},
 	{
 		value: "erkek-giyim",
@@ -197,7 +197,7 @@ const Categories = [
 	{
 		value: "akilli-ev-sistemleri",
 		label: "Akıllı Ev Sistemleri",
-		icon: "house.badge.shield"
+		icon: "lock.shield"
 	},
 	{
 		value: "arac-ici-aksesuarlar",
@@ -222,7 +222,7 @@ const Categories = [
 	{
 		value: "oto-aksesuar",
 		label: "Oto Aksesuar",
-		icon: "car.badge.plus"
+		icon: "wrench.and.screwdriver"
 	},
 	{
 		value: "kirtasiye-urunleri",
