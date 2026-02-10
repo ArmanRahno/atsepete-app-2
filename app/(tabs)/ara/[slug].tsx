@@ -62,7 +62,7 @@ const SearchScreen = () => {
 				setRefreshing(false);
 			}
 		},
-		[refreshing]
+		[refreshing, searchTerm]
 	);
 
 	useFocusEffect(
@@ -108,19 +108,37 @@ const SearchScreen = () => {
 				}
 				data={items}
 				keyExtractor={item => item._id.toString()}
-				renderItem={({ item, index }) => (
-					<MemoizedItemCard
-						className={
-							index === 0
-								? "rounded-t-lg"
-								: index === items.length - 1
-									? "rounded-b-lg"
-									: ""
-						}
-						key={item._id.toString()}
-						item={item}
-					/>
-				)}
+				renderItem={({ item, index }) => {
+					const isFirst = index === 0;
+					const isLast = index === items.length - 1;
+
+					if (!isFirst && !isLast) {
+						return (
+							<MemoizedItemCard
+								key={item._id.toString()}
+								item={item}
+							/>
+						);
+					}
+
+					const rounding = [isFirst ? "rounded-t-lg" : "", isLast ? "rounded-b-lg" : ""]
+						.filter(Boolean)
+						.join(" ");
+
+					return (
+						<View
+							key={item._id.toString()}
+							className={["border border-border", rounding].join(" ")}
+						>
+							<View className={["overflow-hidden", rounding].join(" ")}>
+								<MemoizedItemCard
+									item={item}
+									className="border-0"
+								/>
+							</View>
+						</View>
+					);
+				}}
 				refreshControl={
 					<RefreshControl
 						refreshing={refreshing}

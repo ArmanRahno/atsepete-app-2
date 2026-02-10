@@ -84,6 +84,12 @@ export default function HomeScreen() {
 	const [pendingNew, setPendingNew] = useState<Item[]>([]);
 	const [isNearTop, setIsNearTop] = useState<boolean>(true);
 
+	const [maintain, setMaintain] = useState<boolean>(false);
+	const maintainOnce = useCallback(() => {
+		setMaintain(true);
+		requestAnimationFrame(() => setMaintain(false));
+	}, []);
+
 	const skipAutoApplyPendingRef = useRef(false);
 
 	const listRef = useRef<FlatList<Item>>(null);
@@ -253,6 +259,7 @@ export default function HomeScreen() {
 
 				if (newOnes.length > 0) {
 					if (isNearTopRef.current) {
+						maintainOnce();
 						setItems(prev => concatUniqueById(newOnes, prev));
 					} else {
 						setPendingNew(prev => concatUniqueById(newOnes, prev));
@@ -281,7 +288,7 @@ export default function HomeScreen() {
 				}
 			}
 		},
-		[clearAutoLabelTimer]
+		[clearAutoLabelTimer, maintainOnce]
 	);
 
 	const headRefreshRef = useRef<
@@ -295,10 +302,11 @@ export default function HomeScreen() {
 		if (skipAutoApplyPendingRef.current) return;
 
 		if (isNearTop && pendingNew.length > 0) {
+			maintainOnce();
 			setItems(prev => concatUniqueById(pendingNew, prev));
 			setPendingNew([]);
 		}
-	}, [isNearTop, pendingNew]);
+	}, [isNearTop, pendingNew, maintainOnce]);
 
 	const resetCounter = useCallback(() => {
 		refreshCounterRef.current = 0;
@@ -604,9 +612,7 @@ export default function HomeScreen() {
 					onScroll={handleScroll}
 					scrollEventThrottle={32}
 					maintainVisibleContentPosition={
-						isNearTop
-							? { minIndexForVisible: 0, autoscrollToTopThreshold: 80 }
-							: undefined
+						maintain ? { minIndexForVisible: 0 } : undefined
 					}
 					ListHeaderComponent={
 						<>
@@ -680,18 +686,36 @@ export default function HomeScreen() {
 						</>
 					}
 					keyExtractor={item => String(item._id)}
-					renderItem={({ item, index }) => (
-						<MemoizedItemCard
-							className={
-								index === 0
-									? "rounded-t-lg"
-									: index === items.length - 1
-										? "rounded-b-lg"
-										: ""
-							}
-							item={item}
-						/>
-					)}
+					renderItem={({ item, index }) => {
+						const isFirst = index === 0;
+						const isLast = index === items.length - 1;
+
+						if (!isFirst && !isLast) {
+							return <MemoizedItemCard item={item} />;
+						}
+
+						const rounding = [
+							isFirst ? "rounded-t-lg" : "",
+							isLast ? "rounded-b-lg" : ""
+						]
+							.filter(Boolean)
+							.join(" ");
+
+						return (
+							<View className={["border border-border", rounding].join(" ")}>
+								<View
+									className={["bg-background overflow-hidden", rounding].join(
+										" "
+									)}
+								>
+									<MemoizedItemCard
+										item={item}
+										className="border-0"
+									/>
+								</View>
+							</View>
+						);
+					}}
 					refreshControl={
 						<RefreshControl
 							refreshing={refreshing}

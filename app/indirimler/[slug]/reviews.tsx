@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, memo, useRef } from "react";
+import React, { useState, useEffect, useCallback, memo } from "react";
 import {
 	View,
 	Text,
@@ -13,9 +13,15 @@ import ReviewPagePriceCard from "@/components/ReviewScreenPriceCard";
 import ReviewCard from "@/components/ReviewCard";
 import LoadingIndicator from "@/components/LoadingIndicator";
 import AppTouchableOpacity from "@/components/AppTouchableOpacity";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import BottomBackBar, {
+	BOTTOM_BACK_BAR_TOTAL_HEIGHT,
+	useBottomBackBarOnScroll
+} from "@/components/BottomBackBar";
+import { lightBackground } from "@/constants/Colors";
 
-const itemEndpoint = "https://atsepete.net/api/application/page/urunler-all-item";
-const reviewsEndpoint = "https://atsepete.net/api/application/page/urunler-all-item-review";
+const itemEndpoint = "https://atsepete.net/api/application/page/item";
+const reviewsEndpoint = "https://atsepete.net/api/application/page/reviews";
 
 const MemoizedReviewCard = memo(ReviewCard);
 
@@ -28,13 +34,15 @@ export default function UrunlerReviewsScreen() {
 	const [error, setError] = useState<string | null>(null);
 
 	const [reviews, setReviews] = useState<Item["reviews"]>([]);
-	const [page, setPage] = useState<number>(0);
+	const [page, setPage] = useState<number>(1);
 	const [hasMoreReviews, setHasMoreReviews] = useState<boolean>(true);
 	const [isFetchingMore, setIsFetchingMore] = useState<boolean>(false);
 
 	const [refreshing, setRefreshing] = useState<boolean>(false);
 
-	const onEndReachedCalledDuringMomentum = useRef(false);
+	const insets = useSafeAreaInsets();
+
+	const backBarOnScroll = useBottomBackBarOnScroll();
 
 	const fetchItem = useCallback(
 		async (reset?: boolean) => {
@@ -59,7 +67,7 @@ export default function UrunlerReviewsScreen() {
 				const data = (await res.json()) as Item | null;
 
 				if (!data || !data.reviews || data.reviews.length === 0) {
-					setError("Item or reviews not found.");
+					setError("Ürün veya yorumlar bulunamadı.");
 					setLoading(false);
 					setRefreshing(false);
 					return;
@@ -67,8 +75,8 @@ export default function UrunlerReviewsScreen() {
 
 				setItem(data);
 				setReviews(data.reviews);
-				setHasMoreReviews((data.reviews ?? []).length > 0);
-				setPage(0);
+				setHasMoreReviews(true);
+				setPage(1);
 				setLoading(false);
 				setRefreshing(false);
 			} catch (err: any) {
@@ -151,63 +159,62 @@ export default function UrunlerReviewsScreen() {
 	}
 
 	return (
-		<FlatList
-			className="p-2 pb-6"
-			contentContainerClassName="p-3 pb-6 bg-background"
-			data={reviews}
-			keyExtractor={(_, index) => `review-${index}`}
-			renderItem={({ item: review }) => <MemoizedReviewCard review={review} />}
-			ListHeaderComponent={
-				<>
-					<View className="mb-4">
-						<ReviewPagePriceCard
-							item={item}
-							type="URUNLER"
-						/>
+		<View style={{ flex: 1, paddingTop: insets.top }}>
+			<FlatList
+				className="p-2"
+				style={{ flex: 1 }}
+				contentContainerStyle={{
+					flexGrow: 1,
+					padding: 12,
+					backgroundColor: lightBackground,
+					paddingBottom: insets.bottom + BOTTOM_BACK_BAR_TOTAL_HEIGHT + 12
+				}}
+				data={reviews}
+				keyExtractor={(_, index) => `review-${index}`}
+				renderItem={({ item: review }) => <MemoizedReviewCard review={review} />}
+				ListHeaderComponent={
+					<>
+						<View className="mb-4">
+							<ReviewPagePriceCard
+								item={item}
+								type="INDIRIMLER"
+							/>
 
-						{item.ai_review && (
-							<Card className="rounded-2xl p-4 mt-4 bg-secondary">
-								<Text className="font-medium mb-2">
-									Yapay Zeka Değerlendirmeler Özeti:
-								</Text>
+							{item.ai_review && (
+								<Card className="rounded-2xl p-4 mt-4 bg-secondary">
+									<Text className="font-medium mb-2">
+										Yapay Zeka Değerlendirmeler Özeti:
+									</Text>
 
-								<Text className="text-sm">{item.ai_review}</Text>
-							</Card>
-						)}
-					</View>
+									<Text className="text-sm">{item.ai_review}</Text>
+								</Card>
+							)}
+						</View>
 
-					<Text className="text-2xl font-medium mb-2">Ürün Değerlendirmeleri</Text>
-				</>
-			}
-			ItemSeparatorComponent={() => <View className="my-2 h-[1px] bg-border" />}
-			onEndReachedThreshold={0.1}
-			onEndReached={() => {
-				if (
-					!onEndReachedCalledDuringMomentum.current &&
-					!isFetchingMore &&
-					hasMoreReviews
-				) {
-					fetchMoreReviews();
-					onEndReachedCalledDuringMomentum.current = true;
+						<Text className="text-2xl font-medium mb-2">Ürün Değerlendirmeleri</Text>
+					</>
 				}
-			}}
-			onMomentumScrollBegin={() => {
-				onEndReachedCalledDuringMomentum.current = false;
-			}}
-			ListFooterComponent={
-				isFetchingMore ? (
-					<ActivityIndicator
-						className="my-2"
-						size="small"
+				ItemSeparatorComponent={() => <View className="my-2 h-[1px] bg-border" />}
+				onEndReachedThreshold={0.3}
+				onEndReached={fetchMoreReviews}
+				ListFooterComponent={
+					isFetchingMore ? (
+						<ActivityIndicator
+							className="my-2"
+							size="small"
+						/>
+					) : null
+				}
+				refreshControl={
+					<RefreshControl
+						refreshing={refreshing}
+						onRefresh={onRefresh}
 					/>
-				) : null
-			}
-			refreshControl={
-				<RefreshControl
-					refreshing={refreshing}
-					onRefresh={onRefresh}
-				/>
-			}
-		/>
+				}
+				onScroll={backBarOnScroll}
+				scrollEventThrottle={16}
+			/>
+			<BottomBackBar />
+		</View>
 	);
 }

@@ -181,6 +181,7 @@ function RootLayoutContent() {
 				<NotificationColdStartNav />
 				<Stack
 					screenOptions={{
+						headerShown: false,
 						gestureEnabled: true,
 						fullScreenGestureEnabled: true
 					}}

@@ -1,15 +1,22 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, ActivityIndicator, Image, ScrollView, TouchableOpacity } from "react-native";
+import { View, Text, ScrollView } from "react-native";
 import { router, useLocalSearchParams } from "expo-router";
 import LoadingIndicator from "@/components/LoadingIndicator";
 import UrunlerDetailedItemCard from "@/components/item/UrunlerDetailedItemCard";
 import AppTouchableOpacity from "@/components/AppTouchableOpacity";
+import BottomBackBar, {
+	BOTTOM_BACK_BAR_TOTAL_HEIGHT,
+	useBottomBackBarOnScroll
+} from "@/components/BottomBackBar";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function UrunlerItemDetailScreen() {
 	const { slug } = useLocalSearchParams<{ slug: string }>();
 	const [item, setItem] = useState<Item | null>(null);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
+	const insets = useSafeAreaInsets();
+	const backBarOnScroll = useBottomBackBarOnScroll();
 
 	useEffect(() => {
 		if (!slug) return;
@@ -63,38 +70,49 @@ export default function UrunlerItemDetailScreen() {
 	}
 
 	return (
-		<ScrollView className="p-2">
-			<View className="p-3 pb-10 bg-background">
-				<UrunlerDetailedItemCard item={item} />
+		<View style={{ flex: 1, paddingTop: insets.top }}>
+			<ScrollView
+				className="p-2"
+				onScroll={backBarOnScroll}
+				scrollEventThrottle={16}
+			>
+				<View
+					className="p-3 pb-10 bg-background"
+					style={{ paddingBottom: insets.bottom + BOTTOM_BACK_BAR_TOTAL_HEIGHT }}
+				>
+					<UrunlerDetailedItemCard item={item} />
 
-				<View className="flex-row flex-wrap items-center mt-4">
-					<Text
-						style={{ fontFamily: "Roboto_400Regular" }}
-						className="text-sm text-muted-foreground"
-						textBreakStrategy="simple"
-					>
-						Bir hata ile mi karşılaştınız?
-					</Text>
-
-					<AppTouchableOpacity
-						onPress={() => router.push("/(modals)/report-issue")}
-						hitSlop={12}
-					>
-						<Text className="px-3 py-1 text-sm text-foreground font-medium underline">
-							Hata Bildir
+					<View className="flex-row flex-wrap items-center mt-4">
+						<Text
+							style={{ fontFamily: "Roboto_400Regular" }}
+							className="text-sm text-muted-foreground"
+							textBreakStrategy="simple"
+						>
+							Bir hata ile mi karşılaştınız?
 						</Text>
-					</AppTouchableOpacity>
 
-					<AppTouchableOpacity
-						onPress={() => router.push("/(modals)/make-suggestion")}
-						hitSlop={12}
-					>
-						<Text className="px-3 pl-1 py-1 text-sm text-foreground font-medium underline">
-							Öneri Yap
-						</Text>
-					</AppTouchableOpacity>
+						<AppTouchableOpacity
+							onPress={() => router.push("/(modals)/report-issue")}
+							hitSlop={12}
+						>
+							<Text className="px-3 py-1 text-sm text-foreground font-medium underline">
+								Hata Bildir
+							</Text>
+						</AppTouchableOpacity>
+
+						<AppTouchableOpacity
+							onPress={() => router.push("/(modals)/make-suggestion")}
+							hitSlop={12}
+						>
+							<Text className="px-3 pl-1 py-1 text-sm text-foreground font-medium underline">
+								Öneri Yap
+							</Text>
+						</AppTouchableOpacity>
+					</View>
 				</View>
-			</View>
-		</ScrollView>
+			</ScrollView>
+
+			<BottomBackBar />
+		</View>
 	);
 }
