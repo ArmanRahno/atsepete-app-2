@@ -17,6 +17,7 @@ import Header from "@/components/header/Header";
 import HeaderIcon from "@/components/header/HeaderIcon";
 import HeaderSecondRow from "@/components/header/HeaderSecondRow";
 import { Card } from "@/components/shad-cn/card";
+import HeaderFirstRow from "@/components/header/HeaderFirstRow";
 
 const ForgotSchema = z.object({
 	email: z.string().email("Geçerli bir e-posta giriniz.")
@@ -85,7 +86,7 @@ export default function ForgotPasswordScreen() {
 	return (
 		<>
 			<Header className="shadow-none">
-				<HeaderIcon />
+				<HeaderFirstRow />
 				<HeaderSecondRow />
 			</Header>
 

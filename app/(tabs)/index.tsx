@@ -24,6 +24,7 @@ import { ChevronUp } from "lucide-react-native";
 import AppTouchableOpacity from "@/components/AppTouchableOpacity";
 import { useIsFocused } from "@react-navigation/native";
 import { lightMutedForeground } from "@/constants/Colors";
+import HeaderFirstRow from "@/components/header/HeaderFirstRow";
 
 const API_URL = "https://atsepete.net/api/application/page/homepage";
 
@@ -588,11 +589,11 @@ export default function HomeScreen() {
 	return (
 		<View style={styles.root}>
 			<Header>
-				<HeaderIcon />
-				<HeaderSecondRow
+				<HeaderFirstRow
 					setDisplayDialog={setDisplayDialog}
 					displaySortTouchable
 				/>
+				<HeaderSecondRow />
 			</Header>
 
 			<FilterAndSortDialog

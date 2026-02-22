@@ -17,6 +17,7 @@ import { Text } from "react-native";
 import { ChevronUp } from "lucide-react-native";
 import UrunlerItemCard from "@/components/item/item-card/UrunlerItemCard";
 import AppTouchableOpacity from "@/components/AppTouchableOpacity";
+import HeaderFirstRow from "@/components/header/HeaderFirstRow";
 
 const API_URL = "https://atsepete.net/api/application/page/barcode";
 
@@ -85,8 +86,8 @@ export default function BarkodScreen() {
 	return (
 		<>
 			<Header>
-				<HeaderIcon />
-				<HeaderSecondRow displaySortTouchable={false} />
+				<HeaderFirstRow displaySortTouchable={false} />
+				<HeaderSecondRow />
 			</Header>
 
 			{loading && <LoadingIndicator />}

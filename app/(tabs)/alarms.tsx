@@ -23,6 +23,7 @@ import HeaderSecondRow from "@/components/header/HeaderSecondRow";
 import { Payment } from "@/zod-schemas/save-user-payment-data";
 import AppTouchableOpacity from "@/components/AppTouchableOpacity";
 import { ChevronRight } from "lucide-react-native";
+import HeaderFirstRow from "@/components/header/HeaderFirstRow";
 
 const REFERRER_CODE_KEY = "user-referrer-code";
 
@@ -168,7 +169,7 @@ export default function AlarmScreen() {
 	return (
 		<>
 			<Header className="shadow-none">
-				<HeaderIcon />
+				<HeaderFirstRow />
 
 				<HeaderSecondRow />
 			</Header>

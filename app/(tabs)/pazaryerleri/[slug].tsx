@@ -1,4 +1,5 @@
 import Header from "@/components/header/Header";
+import HeaderFirstRow from "@/components/header/HeaderFirstRow";
 import HeaderIcon from "@/components/header/HeaderIcon";
 import HeaderSecondRow from "@/components/header/HeaderSecondRow";
 import HeaderText from "@/components/header/HeaderText";
@@ -132,7 +133,7 @@ const MarketplaceScreen = () => {
 	return (
 		<>
 			<Header>
-				<HeaderIcon />
+				<HeaderFirstRow />
 				<HeaderSecondRow />
 			</Header>
 

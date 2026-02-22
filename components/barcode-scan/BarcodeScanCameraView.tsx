@@ -4,6 +4,7 @@ import { Scan, X, Zap, ZapOff } from "lucide-react-native";
 import React, { Dispatch, SetStateAction, useCallback, useRef, useState } from "react";
 import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
 import AppTouchableOpacity from "../AppTouchableOpacity";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const BarcodeScanCameraView = ({
 	setIsCamViewOpen
@@ -14,6 +15,7 @@ const BarcodeScanCameraView = ({
 	const [isProcessingBarcode, setIsProcessingBarcode] = useState(false);
 	const [message, setMessage] = useState<string | null>(null);
 	const camRef = useRef<CameraView | null>(null);
+	const insets = useSafeAreaInsets();
 
 	const handleFlashlight = useCallback(() => {
 		setIsFlashlightOn(cur => !cur);
@@ -72,7 +74,7 @@ const BarcodeScanCameraView = ({
 					</View>
 				)}
 
-				<View style={styles.buttonContainer}>
+				<View style={[styles.buttonContainer, { top: insets.top }]}>
 					<AppTouchableOpacity
 						style={styles.button}
 						onPress={handleFlashlight}
@@ -130,7 +132,7 @@ const styles = StyleSheet.create({
 		flexDirection: "row",
 		justifyContent: "space-between",
 		alignItems: "center",
-		margin: 32
+		margin: 36
 	},
 	button: {
 		backgroundColor: "rgba(0,0,0,0.5)",

@@ -12,6 +12,7 @@ const HeaderIcon = () => {
 		<Pressable
 			className="self-center flex-row items-center gap-2"
 			onPress={handlePress}
+			hitSlop={8}
 		>
 			<View
 				className="bg-primary justify-center items-center rounded-full"
@@ -25,7 +26,7 @@ const HeaderIcon = () => {
 					strokeWidth={4}
 				/>
 			</View>
-			<HeaderText className="text-base">AtSepete.Net</HeaderText>
+			<HeaderText className="text-lg">At Sepete</HeaderText>
 		</Pressable>
 	);
 };

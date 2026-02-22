@@ -1,5 +1,6 @@
 import AppTouchableOpacity from "@/components/AppTouchableOpacity";
 import Header from "@/components/header/Header";
+import HeaderFirstRow from "@/components/header/HeaderFirstRow";
 import HeaderIcon from "@/components/header/HeaderIcon";
 import HeaderSecondRow from "@/components/header/HeaderSecondRow";
 import Marketplaces from "@/constants/Marketplaces";
@@ -10,7 +11,7 @@ const MarketplacesScreen = () => {
 	return (
 		<>
 			<Header>
-				<HeaderIcon />
+				<HeaderFirstRow />
 				<HeaderSecondRow />
 			</Header>
 

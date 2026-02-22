@@ -15,6 +15,7 @@ import DeleteAccountBtn from "@/components/account-page/DeleteAccountBtn";
 import PaymentOptions from "@/components/account-page/PaymentOptions";
 import VersionInfo from "@/components/VersionInfo";
 import NotificationSettingsForm from "@/components/account-page/NotificationSettingsForm";
+import HeaderFirstRow from "@/components/header/HeaderFirstRow";
 
 const REFERRER_CODE_KEY = "user-referrer-code";
 
@@ -121,7 +122,7 @@ export default function AccountScreen() {
 	return (
 		<>
 			<Header>
-				<HeaderIcon />
+				<HeaderFirstRow />
 				<HeaderSecondRow />
 			</Header>
 

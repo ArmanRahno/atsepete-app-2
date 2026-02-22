@@ -21,6 +21,7 @@ import { Text } from "react-native";
 import { ChevronUp } from "lucide-react-native";
 import UrunlerItemCard from "@/components/item/item-card/UrunlerItemCard";
 import AppTouchableOpacity from "@/components/AppTouchableOpacity";
+import HeaderFirstRow from "@/components/header/HeaderFirstRow";
 
 const API_URL = "https://atsepete.net/api/application/page/all-items";
 
@@ -147,11 +148,11 @@ export default function UrunlerScreen() {
 	return (
 		<>
 			<Header>
-				<HeaderIcon />
-				<HeaderSecondRow
+				<HeaderFirstRow
 					setDisplayDialog={setDisplayDialog}
 					displaySortTouchable
 				/>
+				<HeaderSecondRow />
 			</Header>
 
 			<FilterAndSortDialog
