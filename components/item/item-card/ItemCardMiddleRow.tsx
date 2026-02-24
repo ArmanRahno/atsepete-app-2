@@ -1,8 +1,8 @@
 import formatPrice from "@/lib/formatPrice";
 import { Link } from "expo-router";
-import { Pressable, Text, View } from "react-native";
+import { Pressable, Text, View, useWindowDimensions } from "react-native";
 
-const ItemCardMiddleRow = ({
+export default function ItemCardMiddleRow({
 	price_history,
 	last_price,
 	url_slug,
@@ -12,35 +12,95 @@ const ItemCardMiddleRow = ({
 	last_price: Item["last_price"];
 	url_slug: Item["url_slug"];
 	last_price_action_percent_magnitude: Item["last_price_action_percent_magnitude"];
-}) => {
+}) {
+	const { width } = useWindowDimensions();
+	const compact = width < 360;
+
+	const prev = price_history[price_history.length - 2]?.price;
+	const [lira, kurus = "00"] = formatPrice(last_price).split(",");
+
 	return (
 		<Link
 			href={`/indirimler/${url_slug}`}
 			asChild
 		>
-			<Pressable className="flex-row gap-2.5 items-baseline">
-				<Text className="text-destructive font-medium leading-tight line-through">
-					{formatPrice(price_history[price_history.length - 2].price)}
-					<Text className="font-normal">₺</Text>
-				</Text>
+			<Pressable className={compact ? "gap-1" : "flex-row items-end"}>
+				{!compact && (
+					<>
+						<View style={{ width: "30%", minWidth: 78 }}>
+							<Text
+								numberOfLines={1}
+								ellipsizeMode="tail"
+								className="text-destructive font-medium leading-tight line-through"
+							>
+								{prev ? formatPrice(prev) : "-"}
+								<Text className="font-normal">₺</Text>
+							</Text>
+						</View>
 
-				<Text className="text-emerald-600 leading-tight">
-					<Text className="text-2xl font-bold leading-tight">
-						{formatPrice(last_price).split(",")[0]}
-					</Text>
+						<View style={{ flex: 1, paddingHorizontal: 10 }}>
+							<Text
+								numberOfLines={1}
+								ellipsizeMode="tail"
+								className="text-emerald-600 leading-tight"
+							>
+								<Text className="text-xl font-bold leading-tight">{lira}</Text>
+								<Text className="font-medium leading-tight">
+									,{kurus}
+									<Text className="font-normal">₺</Text>
+								</Text>
+							</Text>
+						</View>
 
-					<Text className="font-medium leading-tight">
-						,{formatPrice(last_price).split(",")[1]}
-						<Text className="font-normal">₺</Text>
-					</Text>
-				</Text>
+						<View style={{ width: "15%", minWidth: 48 }}>
+							<Text
+								numberOfLines={1}
+								className="text-lg text-primary font-semibold leading-tight"
+							>
+								%{Math.round(last_price_action_percent_magnitude)}
+							</Text>
+						</View>
+					</>
+				)}
 
-				<Text className="text-lg text-primary font-semibold leading-tight">
-					%{Math.round(last_price_action_percent_magnitude)}
-				</Text>
+				{compact && (
+					<>
+						<View className="flex-row items-end">
+							<View className="flex-1">
+								<Text
+									numberOfLines={1}
+									ellipsizeMode="tail"
+									className="text-emerald-600 leading-tight"
+								>
+									<Text className="text-xl font-bold leading-tight">{lira}</Text>
+									<Text className="font-medium leading-tight">
+										,{kurus}
+										<Text className="font-normal">₺</Text>
+									</Text>
+								</Text>
+							</View>
+
+							<View className="min-w-[52px] items-end">
+								<Text
+									numberOfLines={1}
+									className="text-lg text-primary font-semibold leading-tight"
+								>
+									%{Math.round(last_price_action_percent_magnitude)}
+								</Text>
+							</View>
+						</View>
+
+						<Text
+							numberOfLines={1}
+							ellipsizeMode="tail"
+							className="text-destructive font-medium leading-tight line-through"
+						>
+							{prev ? formatPrice(prev) : "-"}
+							<Text className="font-normal">₺</Text>
+						</Text>
+					</>
+				)}
 			</Pressable>
 		</Link>
 	);
-};
-
-export default ItemCardMiddleRow;
+}

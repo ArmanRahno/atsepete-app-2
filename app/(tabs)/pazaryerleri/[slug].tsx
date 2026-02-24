@@ -172,21 +172,19 @@ const MarketplaceScreen = () => {
 				onEndReached={handleLoadMore}
 				onEndReachedThreshold={1.5}
 				ListHeaderComponent={
-					<View className="mt-4 mb-5">
-						<View className="flex-row flex-wrap justify-center items-center gap-3 py-3">
-							<View className="flex-1 min-w-0">
-								<HeaderText className="text-center flex-shrink">
-									Bütün {marketplaceLabel} ürünlerine alarm kur
-								</HeaderText>
-							</View>
+					<View className="flex-row flex-wrap justify-center items-center gap-3 py-3">
+						<View className="flex-1 min-w-0">
+							<HeaderText className="text-center flex-shrink">
+								Bütün {marketplaceLabel} ürünlerine alarm kur
+							</HeaderText>
+						</View>
 
-							<View style={{ flexShrink: 0 }}>
-								<MarketplaceListener
-									className="px-4 py-2"
-									marketplace={marketplace}
-									is_user_subscribed={userIsSubscribed}
-								/>
-							</View>
+						<View style={{ flexShrink: 0 }}>
+							<MarketplaceListener
+								className="px-4 py-2"
+								marketplace={marketplace}
+								is_user_subscribed={userIsSubscribed}
+							/>
 						</View>
 					</View>
 				}
