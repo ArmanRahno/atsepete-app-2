@@ -1,6 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Notifications from "expo-notifications";
-import { Linking, AppState } from "react-native";
+import { Linking, AppState, Platform } from "react-native";
 import { Bell } from "lucide-react-native";
 import { nativeApplicationVersion } from "expo-application";
 import { useCallback, useEffect, useRef } from "react";
@@ -59,10 +59,12 @@ export function useNotificationPermission() {
 		const token = await registerForPushNotificationsAsync();
 		if (!token) return;
 
+		const platform = String(Platform.OS).toLowerCase();
+
 		const res = await fetch(NOTIFICATION_TOKEN_ROUTE, {
 			method: "POST",
 			headers: { "Content-Type": "application/json" },
-			body: JSON.stringify({ token })
+			body: JSON.stringify({ token, platform })
 		});
 
 		const userRandId = await AsyncStorage.getItem("userRandId");
@@ -70,7 +72,7 @@ export function useNotificationPermission() {
 			await fetch(NOTIFICATION_INSTALL_ROUTE, {
 				method: "POST",
 				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify({ token, rand_id: userRandId })
+				body: JSON.stringify({ token, rand_id: userRandId, platform })
 			});
 		}
 

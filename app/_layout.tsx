@@ -36,9 +36,6 @@ import { useNotificationPermission } from "@/hooks/useNotificationPermission";
 import { ResetOnAuthContext } from "@/hooks/useResetOnAuth";
 import { OnboardingGate } from "@/components/onboarding/OnboardingGate";
 
-// const NOTIFICATION_TOKEN_API_URL =
-// 	"https://atsepete.net/api/application/notification/notification-token-on-install";
-
 const INITIAL_LAUNCH_API_URL = "https://atsepete.net/api/application/initial-launch";
 
 Notifications.setNotificationHandler({

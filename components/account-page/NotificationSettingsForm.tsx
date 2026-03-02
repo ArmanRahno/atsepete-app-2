@@ -20,8 +20,6 @@ type NotificationChannelSettings = {
 	enabled: boolean;
 	discounts_enabled: boolean;
 	discount_min_percent: number;
-	earnings_enabled: boolean;
-	earnings_min_amount: number;
 	frequency: "instant" | "daily";
 	daily_hour: number;
 	send_window_enabled: boolean;
@@ -39,15 +37,6 @@ const PercentOptions: Option<number>[] = [
 	{ label: "%20 ve üzeri", value: 20 },
 	{ label: "%30 ve üzeri", value: 30 },
 	{ label: "%40 ve üzeri", value: 40 }
-];
-
-const EarningsOptions: Option<number>[] = [
-	{ label: "Tümü", value: 0 },
-	{ label: "50", value: 50 },
-	{ label: "100", value: 100 },
-	{ label: "250", value: 250 },
-	{ label: "500", value: 500 },
-	{ label: "1000", value: 1000 }
 ];
 
 const FrequencyOptions: Option<"instant" | "daily">[] = [
@@ -229,12 +218,11 @@ export default function NotificationSettingsForm({
 	}, [value]);
 
 	const [open, setOpen] = useState<
-		null | "percent" | "earnings" | "freq" | "dailyHour" | "startHour" | "endHour"
+		null | "percent" | "freq" | "dailyHour" | "startHour" | "endHour"
 	>(null);
 
 	const enabled = Boolean(safeValue.enabled);
 	const discountsEnabled = Boolean(safeValue.discounts_enabled);
-	const earningsEnabled = Boolean(safeValue.earnings_enabled);
 	const sendWindowEnabled = Boolean(safeValue.send_window_enabled);
 	const frequency = safeValue.frequency === "daily" ? "daily" : "instant";
 
@@ -292,48 +280,6 @@ export default function NotificationSettingsForm({
 								{getLabel(
 									PercentOptions,
 									Number(safeValue.discount_min_percent ?? 0)
-								)}
-							</Text>
-							<ChevronDown
-								size={18}
-								color={lightForeground}
-								style={styles.chevron}
-							/>
-						</View>
-					</AppTouchableOpacity>
-				</View>
-			</Section>
-
-			<Section
-				title="Kazanç Bildirimleri"
-				description="Kazanç belli seviyeye gelince bildir."
-				disabled={wrapDisabled}
-				right={
-					<ThemedSwitch
-						value={earningsEnabled}
-						onValueChange={v => onChange({ earnings_enabled: v })}
-						disabled={disabled}
-					/>
-				}
-			>
-				<View
-					className={earningsEnabled ? "" : "opacity-60"}
-					pointerEvents={earningsEnabled ? "auto" : "none"}
-				>
-					<FieldLabel>Minimum kazanç (TL)</FieldLabel>
-					<AppTouchableOpacity
-						style={styles.trigger}
-						onPress={() => openIf("earnings")}
-					>
-						<View style={styles.triggerInner}>
-							<Text
-								style={styles.triggerText}
-								numberOfLines={1}
-								ellipsizeMode="tail"
-							>
-								{getLabel(
-									EarningsOptions,
-									Number(safeValue.earnings_min_amount ?? 0)
 								)}
 							</Text>
 							<ChevronDown
@@ -476,15 +422,6 @@ export default function NotificationSettingsForm({
 				value={Number(safeValue.discount_min_percent ?? 0)}
 				onClose={() => setOpen(null)}
 				onSelect={v => onChange({ discount_min_percent: Number(v) })}
-			/>
-
-			<PickerSheet
-				visible={open === "earnings"}
-				title="Minimum kazanç"
-				options={EarningsOptions}
-				value={Number(safeValue.earnings_min_amount ?? 0)}
-				onClose={() => setOpen(null)}
-				onSelect={v => onChange({ earnings_min_amount: Number(v) })}
 			/>
 
 			<PickerSheet

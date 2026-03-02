@@ -18,38 +18,12 @@ import addCategoryListener from "@/lib/addCategoryListener";
 import CategoriesList from "@/components/account-page/CategoriesList";
 import MarketplacesList from "@/components/account-page/MarketplacesList";
 import ItemsList from "@/components/account-page/ItemsList";
-import HeaderIcon from "@/components/header/HeaderIcon";
-import HeaderSecondRow from "@/components/header/HeaderSecondRow";
-import { Payment } from "@/zod-schemas/save-user-payment-data";
 import AppTouchableOpacity from "@/components/AppTouchableOpacity";
 import { ChevronRight } from "lucide-react-native";
+import HeaderSecondRow from "@/components/header/HeaderSecondRow";
 import HeaderFirstRow from "@/components/header/HeaderFirstRow";
 
 const REFERRER_CODE_KEY = "user-referrer-code";
-
-type EarningsPreviousPaymentsHistory = {
-	datetime: string;
-	payment_method: string;
-	payment_amount: number;
-};
-
-type EarningsHistory = {
-	datetime: string;
-	earning_action_type: string;
-	earning_amount: number;
-};
-
-export type Earnings = {
-	_id: string;
-	_id_user_account: string;
-	datetime_first_action: string;
-	datetime_last_action: string;
-	earnings_total: number;
-	earnings_paid_total: number;
-	earnings_unpaid_total: number;
-	earnings_previous_payments_history: EarningsPreviousPaymentsHistory[];
-	earnings_history: EarningsHistory[];
-};
 
 export type AccountAPIResponse =
 	| {
@@ -58,10 +32,7 @@ export type AccountAPIResponse =
 			items?: undefined;
 			categories?: undefined;
 			marketplaces?: undefined;
-			coins?: undefined;
 			referrer_code?: undefined;
-			earnings?: undefined;
-			payment_data?: Payment;
 			message?: undefined;
 	  }
 	| {
@@ -69,10 +40,7 @@ export type AccountAPIResponse =
 			items: Item[];
 			categories: string[];
 			marketplaces: string[];
-			coins: number;
-			referrer_code: string;
-			earnings: Earnings;
-			payment_data: Payment;
+			referrer_code?: string;
 			code?: undefined;
 			message?: undefined;
 	  }
@@ -83,10 +51,7 @@ export type AccountAPIResponse =
 			items?: undefined;
 			categories?: undefined;
 			marketplaces?: undefined;
-			coins?: undefined;
 			referrer_code?: undefined;
-			earnings?: undefined;
-			payment_data?: Payment;
 	  };
 
 type Mode = "ITEMS" | "CATEGORIES" | "MARKETPLACES";
@@ -115,9 +80,7 @@ export default function AlarmScreen() {
 				return;
 			}
 
-			const response = await fetch(
-				"https://atsepete.net/api/application/page/user-page?earnings=false"
-			);
+			const response = await fetch("https://atsepete.net/api/application/page/user-page");
 
 			if (!response.ok) {
 				throw new Error("Error fetching items");
@@ -170,7 +133,6 @@ export default function AlarmScreen() {
 		<>
 			<Header className="shadow-none">
 				<HeaderFirstRow />
-
 				<HeaderSecondRow />
 			</Header>
 
@@ -210,72 +172,92 @@ export default function AlarmScreen() {
 				</View>
 			)}
 
-			{isLoggedIn && mode === "ITEMS" && userData && userData.items && (
-				<ItemsList
-					items={userData.items}
-					onListenerSuccess={itemId => {
-						setUserData(prevState => {
-							if (!prevState || !prevState.items) {
-								return prevState;
-							}
-							return {
-								...prevState,
-								items: prevState.items.filter(item => item._id !== itemId)
-							};
-						});
-					}}
-				/>
-			)}
+			{isLoggedIn &&
+				mode === "ITEMS" &&
+				userData &&
+				"items" in userData &&
+				userData.items && (
+					<ItemsList
+						items={userData.items}
+						onListenerSuccess={itemId => {
+							setUserData(prevState => {
+								if (!prevState || !("items" in prevState) || !prevState.items) {
+									return prevState;
+								}
+								return {
+									...prevState,
+									items: prevState.items.filter(item => item._id !== itemId)
+								};
+							});
+						}}
+					/>
+				)}
 
-			{isLoggedIn && mode === "MARKETPLACES" && userData && userData.marketplaces && (
-				<MarketplacesList
-					onRemoveMarketplace={async item => {
-						setUserData(prevState => {
-							if (!prevState || !prevState.marketplaces) {
-								return prevState;
-							}
+			{isLoggedIn &&
+				mode === "MARKETPLACES" &&
+				userData &&
+				"marketplaces" in userData &&
+				userData.marketplaces && (
+					<MarketplacesList
+						onRemoveMarketplace={async item => {
+							setUserData(prevState => {
+								if (
+									!prevState ||
+									!("marketplaces" in prevState) ||
+									!prevState.marketplaces
+								) {
+									return prevState;
+								}
 
-							return {
-								...prevState,
-								marketplaces: prevState.marketplaces.filter(
-									marketplace => marketplace !== item
-								)
-							};
-						});
+								return {
+									...prevState,
+									marketplaces: prevState.marketplaces.filter(
+										marketplace => marketplace !== item
+									)
+								};
+							});
 
-						await addMarketplaceListener({
-							marketplace: item,
-							isUserSubscribed: true
-						});
-					}}
-					marketplaces={userData.marketplaces}
-				/>
-			)}
+							await addMarketplaceListener({
+								marketplace: item,
+								isUserSubscribed: true
+							});
+						}}
+						marketplaces={userData.marketplaces}
+					/>
+				)}
 
-			{isLoggedIn && mode === "CATEGORIES" && userData && userData.categories && (
-				<CategoriesList
-					categories={userData.categories}
-					onRemoveCategory={async item => {
-						await addCategoryListener({
-							category: item,
-							isUserSubscribed: true
-						});
+			{isLoggedIn &&
+				mode === "CATEGORIES" &&
+				userData &&
+				"categories" in userData &&
+				userData.categories && (
+					<CategoriesList
+						categories={userData.categories}
+						onRemoveCategory={async item => {
+							await addCategoryListener({
+								category: item,
+								isUserSubscribed: true
+							});
 
-						setUserData(prevState => {
-							if (!prevState || !prevState.categories) {
-								return prevState;
-							}
+							setUserData(prevState => {
+								if (
+									!prevState ||
+									!("categories" in prevState) ||
+									!prevState.categories
+								) {
+									return prevState;
+								}
 
-							return {
-								...prevState,
-								categories: prevState.categories.filter(
-									category => category !== item
-								)
-							};
-						});
-					}}
-				/>
-			)}
+								return {
+									...prevState,
+									categories: prevState.categories.filter(
+										category => category !== item
+									)
+								};
+							});
+						}}
+					/>
+				)}
 
 			{!isLoggedIn && <LoginAndRegisterFormsWrapper onSuccess={fetchUserPage} />}
 		</>

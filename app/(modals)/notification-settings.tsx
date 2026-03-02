@@ -83,7 +83,7 @@ export default function BildirimAyarlariModal() {
 				Authorization: `Bearer ${curSession}`
 			};
 
-			const r = await fetch(`${API_BASE}/api/application/page/user-page?earnings=false`, {
+			const r = await fetch(`${API_BASE}/api/application/page/user-page`, {
 				headers
 			});
 

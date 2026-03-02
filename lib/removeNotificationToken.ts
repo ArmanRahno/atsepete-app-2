@@ -10,15 +10,18 @@ const removeNotificationToken = async () => {
 		return;
 	}
 
-	// User must be logged in; the session cookie must be set.
 	const res = await fetch(REMOVE_NOTIFICATION_PUSH_TOKEN_ENDPOINT, {
 		method: "POST",
 		headers: { "Content-Type": "application/json" },
 		body: JSON.stringify({ token })
 	});
 
-	await AsyncStorage.removeItem("isPushTokenStored");
-	await AsyncStorage.removeItem("lastPermissionCheck");
+	if (res.ok) {
+		await AsyncStorage.removeItem("isPushTokenStored");
+		await AsyncStorage.removeItem("lastPermissionCheck");
+		await AsyncStorage.removeItem("lastPermissionCheckAppVersion");
+		await AsyncStorage.removeItem("lastTokenRegisterVersion");
+	}
 };
 
 export default removeNotificationToken;

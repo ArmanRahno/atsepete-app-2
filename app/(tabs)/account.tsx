@@ -4,17 +4,12 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router, useFocusEffect } from "expo-router";
 import LoadingIndicator from "@/components/LoadingIndicator";
 import LoginAndRegisterFormsWrapper from "@/components/forms/LoginAndRegisterFormsWrapper";
-import EarningsList from "@/components/account-page/EarningsList";
-import AccountSettings from "@/components/account-page/AccountSettings";
 import Header from "@/components/header/Header";
-import HeaderIcon from "@/components/header/HeaderIcon";
 import HeaderSecondRow from "@/components/header/HeaderSecondRow";
 import { AccountAPIResponse } from "./alarms";
 import LogOutBtn from "@/components/account-page/LogOutBtn";
 import DeleteAccountBtn from "@/components/account-page/DeleteAccountBtn";
-import PaymentOptions from "@/components/account-page/PaymentOptions";
 import VersionInfo from "@/components/VersionInfo";
-import NotificationSettingsForm from "@/components/account-page/NotificationSettingsForm";
 import HeaderFirstRow from "@/components/header/HeaderFirstRow";
 
 const REFERRER_CODE_KEY = "user-referrer-code";
@@ -130,12 +125,6 @@ export default function AccountScreen() {
 				<ScrollView>
 					<View className="p-2">
 						<View className="bg-background p-3 gap-4">
-							<AccountSettings userData={userData} />
-
-							<EarningsList earnings={userData.earnings} />
-
-							<PaymentOptions paymentData={userData.payment_data} />
-
 							<View className="mt-4">
 								<View className="mb-2">
 									<Text className="text-foreground font-semibold text-base">

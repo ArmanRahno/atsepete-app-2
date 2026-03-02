@@ -9,9 +9,6 @@ export const NotificationChannelSettingsSchema = z
 		discounts_enabled: z.boolean().default(true),
 		discount_min_percent: z.number().int().min(0).max(100).default(0),
 
-		earnings_enabled: z.boolean().default(false),
-		earnings_min_amount: z.number().min(0).default(0),
-
 		frequency: z.enum(["instant", "daily"]).default("instant"),
 		daily_hour: HourSchema.default(9),
 
