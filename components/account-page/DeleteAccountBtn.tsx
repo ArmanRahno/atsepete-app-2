@@ -1,6 +1,6 @@
 import { reloadAppAsync } from "expo";
 import { Alert, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import WebBrowser from "expo-web-browser";
+import * as WebBrowser from "expo-web-browser";
 import AppTouchableOpacity from "../AppTouchableOpacity";
 
 const DeleteAccountBtn = () => {

@@ -4,10 +4,6 @@ import { router, useLocalSearchParams } from "expo-router";
 import LoadingIndicator from "@/components/LoadingIndicator";
 import DetailedItemCard from "@/components/item/DetailedItemCard";
 import AppTouchableOpacity from "@/components/AppTouchableOpacity";
-import BottomBackBar, {
-	BOTTOM_BACK_BAR_TOTAL_HEIGHT,
-	useBottomBackBarOnScroll
-} from "@/components/BottomBackBar";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function ItemDetailScreen() {
@@ -17,7 +13,6 @@ export default function ItemDetailScreen() {
 	const [error, setError] = useState<string | null>(null);
 
 	const insets = useSafeAreaInsets();
-	const backBarOnScroll = useBottomBackBarOnScroll();
 
 	useEffect(() => {
 		if (!slug) return;
@@ -71,15 +66,14 @@ export default function ItemDetailScreen() {
 	}
 
 	return (
-		<View style={{ flex: 1, paddingTop: insets.top }}>
+		<View style={{ flex: 1 }}>
 			<ScrollView
 				className="p-2"
-				onScroll={backBarOnScroll}
 				scrollEventThrottle={16}
 			>
 				<View
 					className="p-3 pb-10 bg-background"
-					style={{ paddingBottom: insets.bottom + BOTTOM_BACK_BAR_TOTAL_HEIGHT }}
+					style={{ paddingBottom: insets.bottom }}
 				>
 					<DetailedItemCard item={item} />
 
@@ -112,8 +106,6 @@ export default function ItemDetailScreen() {
 					</View>
 				</View>
 			</ScrollView>
-
-			<BottomBackBar />
 		</View>
 	);
 }

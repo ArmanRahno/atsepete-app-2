@@ -47,10 +47,10 @@ export default function TabLayout() {
 					}
 				}}
 				backBehavior="history"
-				initialRouteName="index"
+				initialRouteName="(home)"
 			>
 				<Tabs.Screen
-					name="index"
+					name="(home)"
 					options={{
 						title: "Fırsatlar",
 						tabBarIcon: ({ color, focused }) => (
@@ -78,7 +78,7 @@ export default function TabLayout() {
 				/>
 
 				<Tabs.Screen
-					name="pazaryerleri"
+					name="(pazaryerleri)"
 					options={{
 						title: "Pazaryerleri",
 						tabBarIcon: ({ color, focused }) => (
@@ -92,15 +92,7 @@ export default function TabLayout() {
 				/>
 
 				<Tabs.Screen
-					name="ara"
-					listeners={{}}
-					options={{
-						href: null
-					}}
-				/>
-
-				<Tabs.Screen
-					name="kategoriler"
+					name="(kategoriler)"
 					options={{
 						title: "Kategoriler",
 						tabBarIcon: ({ color, focused }) => (
@@ -114,7 +106,8 @@ export default function TabLayout() {
 				/>
 
 				<Tabs.Screen
-					name="indirimler/[slug]"
+					name="ara"
+					listeners={{}}
 					options={{
 						href: null
 					}}

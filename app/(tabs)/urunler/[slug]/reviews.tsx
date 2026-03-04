@@ -14,10 +14,6 @@ import ReviewCard from "@/components/ReviewCard";
 import LoadingIndicator from "@/components/LoadingIndicator";
 import AppTouchableOpacity from "@/components/AppTouchableOpacity";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import BottomBackBar, {
-	BOTTOM_BACK_BAR_TOTAL_HEIGHT,
-	useBottomBackBarOnScroll
-} from "@/components/BottomBackBar";
 import { lightBackground } from "@/constants/Colors";
 
 const itemEndpoint = "https://atsepete.net/api/application/page/urunler-all-item";
@@ -43,8 +39,6 @@ export default function UrunlerReviewsScreen() {
 	const onEndReachedCalledDuringMomentum = useRef(false);
 
 	const insets = useSafeAreaInsets();
-
-	const backBarOnScroll = useBottomBackBarOnScroll();
 
 	const fetchItem = useCallback(
 		async (reset?: boolean) => {
@@ -161,7 +155,7 @@ export default function UrunlerReviewsScreen() {
 	}
 
 	return (
-		<View style={{ flex: 1, paddingTop: insets.top }}>
+		<View style={{ flex: 1 }}>
 			<FlatList
 				className="p-2"
 				style={{ flex: 1 }}
@@ -169,7 +163,7 @@ export default function UrunlerReviewsScreen() {
 					flexGrow: 1,
 					padding: 12,
 					backgroundColor: lightBackground,
-					paddingBottom: insets.bottom + BOTTOM_BACK_BAR_TOTAL_HEIGHT + 12
+					paddingBottom: insets.bottom + 12
 				}}
 				data={reviews}
 				keyExtractor={(_, index) => `review-${index}`}
@@ -225,10 +219,8 @@ export default function UrunlerReviewsScreen() {
 						onRefresh={onRefresh}
 					/>
 				}
-				onScroll={backBarOnScroll}
 				scrollEventThrottle={16}
 			/>
-			<BottomBackBar />
 		</View>
 	);
 }

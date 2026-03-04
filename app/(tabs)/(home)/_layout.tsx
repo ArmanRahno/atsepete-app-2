@@ -1,6 +1,6 @@
 import { Stack } from "expo-router";
 
-export default function MarketplacesLayout() {
+export default function HomeLayout() {
 	return (
 		<Stack
 			screenOptions={{

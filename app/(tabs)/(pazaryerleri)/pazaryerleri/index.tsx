@@ -21,7 +21,7 @@ const MarketplacesScreen = () => {
 				renderItem={({ item }) => (
 					<Link
 						key={item.value}
-						href={`/(tabs)/pazaryerleri/${item.value}`}
+						href={`/pazaryerleri/${item.value}`}
 						asChild
 					>
 						<AppTouchableOpacity className="py-1 h-16 bg-background justify-center items-center rounded-lg border border-border">

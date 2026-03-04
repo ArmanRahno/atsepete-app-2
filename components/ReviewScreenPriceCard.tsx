@@ -37,7 +37,7 @@ export default function ReviewScreenPriceCard({ item, type }: Props) {
 					<View>
 						<AppTouchableOpacity
 							onPress={() => {
-								router.push(`/(tabs)/pazaryerleri/${item.marketplace}`);
+								router.push(`/pazaryerleri/${item.marketplace}`);
 							}}
 						>
 							<Text className="text-lg font-semibold">
@@ -48,7 +48,7 @@ export default function ReviewScreenPriceCard({ item, type }: Props) {
 						<View className="flex-row">
 							<AppTouchableOpacity
 								onPress={() => {
-									router.push(`/(tabs)/kategoriler/${item.category}`);
+									router.push(`/kategoriler/${item.category}`);
 								}}
 							>
 								<Text className="text-muted-foreground capitalize">

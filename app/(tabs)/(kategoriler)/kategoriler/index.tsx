@@ -23,7 +23,7 @@ const CategoriesScreen = () => {
 				renderItem={({ item }) => (
 					<Link
 						key={item.value}
-						href={`/(tabs)/kategoriler/${item.value}`}
+						href={`/kategoriler/${item.value}`}
 						asChild
 					>
 						<AppTouchableOpacity className="flex-row gap-6 items-center w-full px-6 py-3 self-start bg-background border border-border rounded-lg">

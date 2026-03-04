@@ -30,7 +30,7 @@ export default function MarketplacesList({
 					>
 						{MarketplaceIcon && (
 							<MarketplaceIcon
-								onPress={() => router.push(`/(tabs)/pazaryerleri/${item}`)}
+								onPress={() => router.push(`/pazaryerleri/${item}`)}
 								style={{
 									transformOrigin: "left",
 									transform: [{ scale: 1.8 }]

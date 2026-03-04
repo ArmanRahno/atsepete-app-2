@@ -29,7 +29,7 @@ export default function CategoriesList({ categories, onRemoveCategory }: Categor
 						className="px-6 py-3 flex-row gap-3 justify-between items-center"
 					>
 						<Pressable
-							onPress={() => router.push(`/(tabs)/kategoriler/${item}`)}
+							onPress={() => router.push(`/kategoriler/${item}`)}
 							className="flex-row items-center gap-4"
 						>
 							<IconSymbol

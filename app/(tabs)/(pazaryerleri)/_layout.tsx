@@ -1,6 +1,10 @@
 import { Stack } from "expo-router";
 
-export default function UrunlerLayout() {
+export const unstable_settings = {
+	initialRouteName: "pazaryerleri"
+};
+
+export default function MarketplacesLayout() {
 	return (
 		<Stack
 			screenOptions={{
