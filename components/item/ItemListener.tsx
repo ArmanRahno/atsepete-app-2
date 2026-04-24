@@ -3,7 +3,6 @@ import { cn } from "@/lib/utils";
 import { useEffect, useRef, useState } from "react";
 import { ActivityIndicator, AppState } from "react-native";
 import Toast from "react-native-toast-message";
-import { ItemCardProps } from "./item-card/ItemCard";
 import { Bell, BellMinus, BellPlus } from "lucide-react-native";
 import { ClassNameValue } from "tailwind-merge";
 import AppTouchableOpacity from "../AppTouchableOpacity";
@@ -15,13 +14,21 @@ import { router } from "expo-router";
 
 const isGranted = (perm: any) => perm?.granted === true || perm?.status === "granted";
 
-const ItemListener = ({
-	item,
-	className,
-	onListenerSuccess
-}: ItemCardProps & { className?: ClassNameValue }) => {
+type ListenerItem = Item & {
+	is_user_subscribed?: boolean;
+	isUserNotificationActive?: boolean;
+};
+
+type ItemListenerProps = {
+	item: ListenerItem;
+	className?: ClassNameValue;
+	onListenerSuccess?: (itemId: string) => void;
+	initIsActive?: boolean;
+};
+
+const ItemListener = ({ item, className, onListenerSuccess, initIsActive }: ItemListenerProps) => {
 	const [isUserSubscribed, setIsUserSubscribed] = useState<boolean>(
-		item.is_user_subscribed || false
+		initIsActive ?? !!(item.is_user_subscribed || item.isUserNotificationActive)
 	);
 	const [isListenerPending, setIsListenerPending] = useState<boolean>(false);
 
@@ -140,10 +147,11 @@ const ItemListener = ({
 	return (
 		<AppTouchableOpacity
 			className={cn(
-				"px-4 py-2 rounded border border-border disabled:opacity-75 disabled:brightness-75 justify-center items-center",
+				"items-center justify-center rounded border border-border px-4 py-2 disabled:opacity-75 disabled:brightness-75",
 				isUserSubscribed ? "bg-emerald-500" : "bg-destructive",
 				className
 			)}
+			hitSlop={10}
 			disabled={isListenerPending}
 			onPress={async () => {
 				if (isListenerPending) return;

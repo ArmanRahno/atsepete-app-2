@@ -687,36 +687,15 @@ export default function HomeScreen() {
 						</>
 					}
 					keyExtractor={item => String(item._id)}
-					renderItem={({ item, index }) => {
-						const isFirst = index === 0;
-						const isLast = index === items.length - 1;
-
-						if (!isFirst && !isLast) {
-							return <MemoizedItemCard item={item} />;
-						}
-
-						const rounding = [
-							isFirst ? "rounded-t-lg" : "",
-							isLast ? "rounded-b-lg" : ""
-						]
-							.filter(Boolean)
-							.join(" ");
-
+					renderItem={({ item }) => {
 						return (
-							<View className={["border border-border", rounding].join(" ")}>
-								<View
-									className={["bg-background overflow-hidden", rounding].join(
-										" "
-									)}
-								>
-									<MemoizedItemCard
-										item={item}
-										className="border-0"
-									/>
-								</View>
-							</View>
+							<MemoizedItemCard
+								item={item}
+								displayItemListener
+							/>
 						);
 					}}
+					ItemSeparatorComponent={() => <View className="h-2" />}
 					refreshControl={
 						<RefreshControl
 							refreshing={refreshing}
@@ -762,7 +741,11 @@ export default function HomeScreen() {
 
 const styles = StyleSheet.create({
 	root: { flex: 1 },
-	listContent: { padding: 8, paddingBottom: 24 },
+	listContent: {
+		paddingHorizontal: 8,
+		paddingTop: 8,
+		paddingBottom: 24
+	},
 	newBanner: { top: 96 },
 	statusRow: {
 		flexDirection: "row",

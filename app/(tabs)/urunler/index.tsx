@@ -12,16 +12,15 @@ import {
 	View,
 	NativeSyntheticEvent,
 	NativeScrollEvent,
-	TouchableOpacity
+	StyleSheet
 } from "react-native";
 import FilterAndSortAppliedFilter from "@/components/FilterAndSortAppliedFilter";
-import HeaderIcon from "@/components/header/HeaderIcon";
 import HeaderSecondRow from "@/components/header/HeaderSecondRow";
 import { Text } from "react-native";
 import { ChevronUp } from "lucide-react-native";
-import UrunlerItemCard from "@/components/item/item-card/UrunlerItemCard";
 import AppTouchableOpacity from "@/components/AppTouchableOpacity";
 import HeaderFirstRow from "@/components/header/HeaderFirstRow";
+import ItemCard from "@/components/item/item-card/ItemCard";
 
 const API_URL = "https://atsepete.net/api/application/page/all-items";
 
@@ -34,7 +33,7 @@ const defaultFilters = {
 	sort: "en-yeni"
 };
 
-const MemoizedItemCard = memo(UrunlerItemCard);
+const MemoizedItemCard = memo(ItemCard);
 
 export default function UrunlerScreen() {
 	const [items, setItems] = useState<Item[]>([]);
@@ -224,40 +223,16 @@ export default function UrunlerScreen() {
 						</>
 					}
 					keyExtractor={item => item._id.toString()}
-					renderItem={({ item, index }) => {
-						const isFirst = index === 0;
-						const isLast = index === items.length - 1;
-
-						if (!isFirst && !isLast) {
-							return (
-								<MemoizedItemCard
-									key={item._id.toString()}
-									item={item}
-								/>
-							);
-						}
-
-						const rounding = [
-							isFirst ? "rounded-t-lg" : "",
-							isLast ? "rounded-b-lg" : ""
-						]
-							.filter(Boolean)
-							.join(" ");
-
+					renderItem={({ item }) => {
 						return (
-							<View
-								key={item._id.toString()}
-								className={["border border-border", rounding].join(" ")}
-							>
-								<View className={["overflow-hidden", rounding].join(" ")}>
-									<MemoizedItemCard
-										item={item}
-										className="border-0"
-									/>
-								</View>
-							</View>
+							<MemoizedItemCard
+								item={item}
+								displayItemListener
+								detailHrefPrefix="/urunler"
+							/>
 						);
 					}}
+					ItemSeparatorComponent={() => <View className="h-2" />}
 					refreshControl={
 						<RefreshControl
 							refreshing={refreshing}
@@ -273,7 +248,7 @@ export default function UrunlerScreen() {
 							</View>
 						) : null
 					}
-					className="p-2"
+					contentContainerStyle={styles.listContent}
 				/>
 			)}
 			{displayBackToTopBtn && (
@@ -289,3 +264,11 @@ export default function UrunlerScreen() {
 		</>
 	);
 }
+
+const styles = StyleSheet.create({
+	listContent: {
+		paddingHorizontal: 8,
+		paddingTop: 8,
+		paddingBottom: 24
+	}
+});

@@ -30,9 +30,12 @@ export default function ItemSuggestionsCarousel({
 
 	return (
 		<View className="mt-3">
-			<View className="mb-2">
-				<Text className="text-xl font-bold">Benzer Ürünler</Text>
-			</View>
+			<Text
+				className="mb-3 text-lg text-foreground"
+				style={{ fontFamily: "Roboto_700Bold" }}
+			>
+				Benzer Ürünler
+			</Text>
 
 			<Carousel
 				ref={ref}

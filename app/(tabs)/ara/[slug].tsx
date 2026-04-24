@@ -1,11 +1,10 @@
-import Header from "@/components/header/Header";
 import HeaderText from "@/components/header/HeaderText";
 import ItemCard from "@/components/item/item-card/ItemCard";
 import LoadingIndicator from "@/components/LoadingIndicator";
 import { useFocusEffect } from "expo-router";
 import { useSearchParams } from "expo-router/build/hooks";
 import React, { useState, useCallback, memo } from "react";
-import { FlatList, RefreshControl, ActivityIndicator, View, Text } from "react-native";
+import { FlatList, RefreshControl, ActivityIndicator, View, Text, StyleSheet } from "react-native";
 
 const API_URL = "https://atsepete.net/api/application/page/search";
 
@@ -108,37 +107,10 @@ const SearchScreen = () => {
 				}
 				data={items}
 				keyExtractor={item => item._id.toString()}
-				renderItem={({ item, index }) => {
-					const isFirst = index === 0;
-					const isLast = index === items.length - 1;
-
-					if (!isFirst && !isLast) {
-						return (
-							<MemoizedItemCard
-								key={item._id.toString()}
-								item={item}
-							/>
-						);
-					}
-
-					const rounding = [isFirst ? "rounded-t-lg" : "", isLast ? "rounded-b-lg" : ""]
-						.filter(Boolean)
-						.join(" ");
-
-					return (
-						<View
-							key={item._id.toString()}
-							className={["border border-border", rounding].join(" ")}
-						>
-							<View className={["overflow-hidden", rounding].join(" ")}>
-								<MemoizedItemCard
-									item={item}
-									className="border-0"
-								/>
-							</View>
-						</View>
-					);
+				renderItem={({ item }) => {
+					return <MemoizedItemCard item={item} />;
 				}}
+				ItemSeparatorComponent={() => <View className="h-2" />}
 				refreshControl={
 					<RefreshControl
 						refreshing={refreshing}
@@ -154,10 +126,18 @@ const SearchScreen = () => {
 						</View>
 					) : null
 				}
-				className="p-2"
+				contentContainerStyle={styles.listContent}
 			/>
 		</>
 	);
 };
 
 export default SearchScreen;
+
+const styles = StyleSheet.create({
+	listContent: {
+		paddingHorizontal: 8,
+		paddingTop: 8,
+		paddingBottom: 24
+	}
+});

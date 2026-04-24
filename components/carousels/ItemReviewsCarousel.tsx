@@ -42,7 +42,13 @@ export default function ItemReviewsCarousel({
 	return (
 		<View className="mt-3 gap-2">
 			<View className="mb-2 gap-2">
-				<Text className="text-xl font-bold">Ürün Yorumları</Text>
+				<Text
+					className="text-lg text-foreground"
+					style={{ fontFamily: "Roboto_700Bold" }}
+				>
+					Ürün Yorumları
+				</Text>
+
 				<View className="flex-row items-center gap-4">
 					<RatingStars value={rating} />
 

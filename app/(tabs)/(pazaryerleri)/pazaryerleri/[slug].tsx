@@ -10,7 +10,7 @@ import findMarketplaceLabel from "@/lib/findMarketplaceLabel";
 import { useFocusEffect } from "expo-router";
 import { useSearchParams } from "expo-router/build/hooks";
 import React, { useState, useCallback, memo, useRef } from "react";
-import { FlatList, RefreshControl, ActivityIndicator, View, Text } from "react-native";
+import { FlatList, RefreshControl, ActivityIndicator, View, Text, StyleSheet } from "react-native";
 
 const API_URL = "https://atsepete.net/api/application/page/with-params";
 const PAGE_SIZE = 18;
@@ -140,29 +140,10 @@ const MarketplaceScreen = () => {
 			<FlatList
 				data={items}
 				keyExtractor={item => item._id.toString()}
-				renderItem={({ item, index }) => {
-					const isFirst = index === 0;
-					const isLast = index === items.length - 1;
-
-					if (!isFirst && !isLast) {
-						return <MemoizedItemCard item={item} />;
-					}
-
-					const rounding = [isFirst ? "rounded-t-lg" : "", isLast ? "rounded-b-lg" : ""]
-						.filter(Boolean)
-						.join(" ");
-
-					return (
-						<View className={["border border-border", rounding].join(" ")}>
-							<View className={["overflow-hidden", rounding].join(" ")}>
-								<MemoizedItemCard
-									item={item}
-									className="border-0"
-								/>
-							</View>
-						</View>
-					);
+				renderItem={({ item }) => {
+					return <MemoizedItemCard item={item} />;
 				}}
+				ItemSeparatorComponent={() => <View className="h-2" />}
 				refreshControl={
 					<RefreshControl
 						refreshing={refreshing}
@@ -195,10 +176,18 @@ const MarketplaceScreen = () => {
 						</View>
 					) : null
 				}
-				className="p-2"
+				contentContainerStyle={styles.listContent}
 			/>
 		</>
 	);
 };
 
 export default MarketplaceScreen;
+
+const styles = StyleSheet.create({
+	listContent: {
+		paddingHorizontal: 8,
+		paddingTop: 8,
+		paddingBottom: 24
+	}
+});

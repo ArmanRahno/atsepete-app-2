@@ -3,21 +3,14 @@ import HeaderText from "@/components/header/HeaderText";
 import LoadingIndicator from "@/components/LoadingIndicator";
 import { useFocusEffect, useLocalSearchParams } from "expo-router";
 import React, { useState, useCallback, memo, useRef } from "react";
-import {
-	FlatList,
-	ActivityIndicator,
-	View,
-	NativeSyntheticEvent,
-	NativeScrollEvent,
-	TouchableOpacity
-} from "react-native";
+import { FlatList, View, NativeSyntheticEvent, NativeScrollEvent, StyleSheet } from "react-native";
 import HeaderIcon from "@/components/header/HeaderIcon";
 import HeaderSecondRow from "@/components/header/HeaderSecondRow";
 import { Text } from "react-native";
 import { ChevronUp } from "lucide-react-native";
-import UrunlerItemCard from "@/components/item/item-card/UrunlerItemCard";
 import AppTouchableOpacity from "@/components/AppTouchableOpacity";
 import HeaderFirstRow from "@/components/header/HeaderFirstRow";
+import ItemCard from "@/components/item/item-card/ItemCard";
 
 const API_URL = "https://atsepete.net/api/application/page/barcode";
 
@@ -26,7 +19,7 @@ type UrunlerPageData = {
 	message?: string;
 };
 
-const MemoizedItemCard = memo(UrunlerItemCard);
+const MemoizedItemCard = memo(ItemCard);
 
 export default function BarkodScreen() {
 	const { slug } = useLocalSearchParams();
@@ -112,43 +105,18 @@ export default function BarkodScreen() {
 						</>
 					}
 					keyExtractor={item => item._id.toString()}
-					renderItem={({ item, index }) => {
-						const isFirst = index === 0;
-						const isLast = index === items.length - 1;
-
-						if (!isFirst && !isLast) {
-							return (
-								<MemoizedItemCard
-									key={item._id.toString()}
-									item={item}
-								/>
-							);
-						}
-
-						const rounding = [
-							isFirst ? "rounded-t-lg" : "",
-							isLast ? "rounded-b-lg" : ""
-						]
-							.filter(Boolean)
-							.join(" ");
-
+					renderItem={({ item }) => {
 						return (
-							<View
-								key={item._id.toString()}
-								className={["border border-border", rounding].join(" ")}
-							>
-								<View className={["overflow-hidden", rounding].join(" ")}>
-									<MemoizedItemCard
-										item={item}
-										className="border-0"
-									/>
-								</View>
-							</View>
+							<MemoizedItemCard
+								item={item}
+								detailHrefPrefix="/urunler"
+							/>
 						);
 					}}
+					ItemSeparatorComponent={() => <View className="h-2" />}
 					ListFooterComponent={<View className="py-2" />}
 					onEndReachedThreshold={1.5}
-					className="p-2"
+					contentContainerStyle={styles.listContent}
 				/>
 			)}
 
@@ -165,3 +133,11 @@ export default function BarkodScreen() {
 		</>
 	);
 }
+
+const styles = StyleSheet.create({
+	listContent: {
+		paddingHorizontal: 8,
+		paddingTop: 8,
+		paddingBottom: 24
+	}
+});

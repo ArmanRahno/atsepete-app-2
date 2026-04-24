@@ -1,28 +1,22 @@
 import React from "react";
-import { View, Text } from "react-native";
-import { LinearGradient } from "expo-linear-gradient";
+import { Text, View } from "react-native";
+import { BadgePercent } from "lucide-react-native";
 
 export default function CheapestBadge() {
 	return (
-		<View
-			className="drop-shadow"
-			style={{
-				position: "absolute",
-				top: 12,
-				left: -40,
-				width: 120,
-				transform: [{ rotate: "-45deg" }],
-				zIndex: 1
-			}}
-		>
-			<LinearGradient
-				colors={["#ff8c00", "orangered"]}
-				start={{ x: 0, y: 0 }}
-				end={{ x: 1, y: 1 }}
-				style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
-			>
-				<Text className="text-xs text-white font-medium drop-shadow">En Ucuz!</Text>
-			</LinearGradient>
+		<View className="absolute left-3 top-3 z-10 rounded-full border border-emerald-100 bg-emerald-50 px-3 py-1.5">
+			<View className="flex-row items-center gap-1.5">
+				<BadgePercent
+					size={14}
+					color="#34d399"
+				/>
+				<Text
+					className="text-xs text-emerald-400"
+					style={{ fontFamily: "Roboto_700Bold" }}
+				>
+					En Ucuz
+				</Text>
+			</View>
 		</View>
 	);
 }

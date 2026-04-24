@@ -5,7 +5,7 @@ const RatingStars = ({ value }: { value: Item["rating"] }) => {
 	if (!value) return;
 
 	return (
-		<View className="self-start flex-row items-center gap-2 w-fit rounded px-2 py-1 bg-muted">
+		<View className="self-start flex-row items-center gap-2 w-fit rounded-full px-4 py-1 bg-muted">
 			<View className="relative">
 				<View className="flex-row">
 					{Array.from({ length: 5 }).map((_, i) => (

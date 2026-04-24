@@ -165,7 +165,7 @@ export default function ChangePasswordScreen() {
 						<AppTouchableOpacity
 							className="p-1"
 							onPress={() => router.push("/(tabs)/account-forgot-password")}
-							hitSlop={12}
+							hitSlop={8}
 						>
 							<Text
 								className="text-primary"

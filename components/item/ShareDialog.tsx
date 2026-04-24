@@ -8,9 +8,15 @@ interface ShareDialogProps {
 	shareUrl: string;
 	shareMessage: string;
 	pressableClassName?: ClassNameValue;
+	iconSize?: number;
 }
 
-const ShareDialog = ({ shareUrl, shareMessage, pressableClassName }: ShareDialogProps) => {
+const ShareDialog = ({
+	shareUrl,
+	shareMessage,
+	pressableClassName,
+	iconSize
+}: ShareDialogProps) => {
 	const nativeShare = async () => {
 		const content =
 			Platform.OS === "ios"
@@ -28,13 +34,13 @@ const ShareDialog = ({ shareUrl, shareMessage, pressableClassName }: ShareDialog
 		<>
 			<Pressable
 				className={cn(
-					"px-6 py-2 h-9 rounded border border-border justify-center items-center",
+					"px-6 py-2 h-9 rounded-xl border border-border justify-center items-center",
 					pressableClassName
 				)}
 				onPress={nativeShare}
 			>
 				<Share
-					size={20}
+					size={iconSize ?? 20}
 					color="#000"
 				/>
 			</Pressable>
