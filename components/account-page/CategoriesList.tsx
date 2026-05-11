@@ -1,13 +1,12 @@
 import React from "react";
-import { FlatList, Pressable, Text, TouchableOpacity, View } from "react-native";
-import { X } from "lucide-react-native";
-import { lightMutedForeground } from "@/constants/Colors";
+import { FlatList, Pressable, Text } from "react-native";
 import Categories from "@/constants/Categories";
 import findCategoryLabel from "@/lib/findCategoryLabel";
 import { router } from "expo-router";
 import { IconSymbol } from "../ui/IconSymbol";
 import { Card } from "../shad-cn/card";
 import CategoryListener from "../CategoryListener";
+import { useThemePalette } from "@/hooks/useThemePalette";
 
 type CategoriesListProps = {
 	categories: string[];
@@ -15,6 +14,8 @@ type CategoriesListProps = {
 };
 
 export default function CategoriesList({ categories, onRemoveCategory }: CategoriesListProps) {
+	const { colors } = useThemePalette();
+
 	return (
 		<FlatList
 			data={categories}
@@ -36,7 +37,7 @@ export default function CategoriesList({ categories, onRemoveCategory }: Categor
 								// @ts-expect-error Expect error instead of type assertion
 								name={categoryIconName}
 								size={40}
-								color={lightMutedForeground}
+								color={colors.mutedForeground}
 							/>
 
 							<Text className="pr-2 text-primary text-lg font-bold">{label}</Text>

@@ -8,9 +8,10 @@ import { router } from "expo-router";
 import ReviewStars from "./carousels/ReviewStars";
 import ShareDialog from "./item/ShareDialog";
 import { Undo2 } from "lucide-react-native";
-import { lightForeground } from "@/constants/Colors";
 import AppTouchableOpacity from "./AppTouchableOpacity";
 import ItemListener from "./item/ItemListener";
+import { useThemePalette } from "@/hooks/useThemePalette";
+import { semanticRed } from "@/constants/SemanticColors";
 
 interface Props {
 	item: Item;
@@ -18,6 +19,8 @@ interface Props {
 }
 
 export default function ReviewScreenPriceCard({ item, type }: Props) {
+	const { colors, isDark } = useThemePalette();
+	const red = semanticRed(isDark);
 	const previousPrice = item.price_history?.[item.price_history.length - 2]?.price;
 	const discount = Math.round(item.last_price_action_percent_magnitude);
 
@@ -79,13 +82,16 @@ export default function ReviewScreenPriceCard({ item, type }: Props) {
 					{(!!previousPrice || !!discount) && (
 						<View className="flex-row items-center gap-2">
 							{!!previousPrice && (
-								<Text className="line-through text-lg font-medium text-destructive">
+								<Text
+									className="line-through text-lg font-medium"
+									style={{ color: red }}
+								>
 									₺{formatPrice(previousPrice)}
 								</Text>
 							)}
 							{!!discount && (
-								<Text className="text-primary text-lg font-semibold">
-									%{discount}
+								<Text className="rounded-full bg-foreground px-2 py-1 text-lg font-semibold text-background">
+									-%{discount}
 								</Text>
 							)}
 						</View>
@@ -127,7 +133,7 @@ export default function ReviewScreenPriceCard({ item, type }: Props) {
 				}
 			>
 				<Undo2
-					color={lightForeground}
+					color={colors.text}
 					size={16}
 					strokeWidth={2.3}
 				/>

@@ -1,8 +1,7 @@
-import React from "react";
-import { View, Text, Image } from "react-native";
+import React, { useMemo } from "react";
+import { View, Text, Image, StyleSheet } from "react-native";
 import { PriceChart } from "./PriceChart";
 import { Calendar } from "lucide-react-native";
-import { lightMutedForeground } from "@/constants/Colors";
 import ItemSuggestionsCarousel from "../carousels/ItemSuggestionsCarousel";
 import Markdown from "react-native-markdown-display";
 import ItemReviewsCarousel from "../carousels/ItemReviewsCarousel";
@@ -10,6 +9,7 @@ import { Card } from "../shad-cn/card";
 import CheapestBadge from "./CheapestBadge";
 import UrunlerItemPriceCard from "./UrunlerItemPriceCard";
 import { Link } from "expo-router";
+import { useThemePalette } from "@/hooks/useThemePalette";
 
 type DetailedItemCardProps = {
 	item: Item;
@@ -18,6 +18,37 @@ type DetailedItemCardProps = {
 const MAX_DISPLAYED_DATA_POINTS = 20;
 
 export default function UrunlerDetailedItemCard({ item }: DetailedItemCardProps) {
+	const { colors } = useThemePalette();
+	const markdownStyles = useMemo(
+		() =>
+			StyleSheet.create({
+				body: {
+					color: colors.text
+				},
+				text: {
+					color: colors.text
+				},
+				paragraph: {
+					color: colors.text
+				},
+				heading1: {
+					color: colors.text
+				},
+				heading2: {
+					color: colors.text
+				},
+				heading3: {
+					color: colors.text
+				},
+				strong: {
+					color: colors.text
+				},
+				link: {
+					color: colors.primary
+				}
+			}),
+		[colors.primary, colors.text]
+	);
 	const priceHistorySubset = item.price_history.slice(
 		Math.max(0, item.price_history.length - MAX_DISPLAYED_DATA_POINTS)
 	);
@@ -53,7 +84,7 @@ export default function UrunlerDetailedItemCard({ item }: DetailedItemCardProps)
 						>
 							<Calendar
 								size={16}
-								color={lightMutedForeground}
+								color={colors.mutedForeground}
 							/>
 							<Text className="text-foreground font-medium">{dateText}</Text>
 							<Text className="text-muted-foreground">→</Text>
@@ -67,8 +98,10 @@ export default function UrunlerDetailedItemCard({ item }: DetailedItemCardProps)
 
 			{item.product_description?.length ? (
 				<View className="mt-6">
-					<Text className="text-lg font-semibold mb-2">Ürün Açıklaması</Text>
-					<Markdown>{item.product_description}</Markdown>
+					<Text className="text-lg font-semibold mb-2 text-foreground">
+						Ürün Açıklaması
+					</Text>
+					<Markdown style={markdownStyles}>{item.product_description}</Markdown>
 				</View>
 			) : null}
 

@@ -1,7 +1,7 @@
 import toastConfig from "@/lib/toastConfig";
 import "../global.css";
 
-import { DefaultTheme, ThemeProvider } from "@react-navigation/native";
+import { DefaultTheme, ThemeProvider as NavigationThemeProvider } from "@react-navigation/native";
 import { SplashScreen, Stack, useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -35,6 +35,7 @@ import { PermissionWarmupProvider } from "@/components/PermissionWarmupDialog";
 import { useNotificationPermission } from "@/hooks/useNotificationPermission";
 import { ResetOnAuthContext } from "@/hooks/useResetOnAuth";
 import { OnboardingGate } from "@/components/onboarding/OnboardingGate";
+import { AppThemeProvider, useAppTheme } from "@/components/AppThemeProvider";
 
 const INITIAL_LAUNCH_API_URL = "https://atsepete.net/api/application/initial-launch";
 
@@ -56,6 +57,7 @@ function RootLayoutContent() {
 	const notificationListener = useRef<Notifications.EventSubscription>(null);
 	const responseListener = useRef<Notifications.EventSubscription>(null);
 	const router = useRouter();
+	const { colors, isDark } = useAppTheme();
 
 	const { askAndStoreAccountPushToken } = useNotificationPermission();
 
@@ -171,10 +173,27 @@ function RootLayoutContent() {
 		})();
 	}, [askAndStoreAccountPushToken]);
 
+	const navigationTheme = useMemo(
+		() => ({
+			...DefaultTheme,
+			dark: isDark,
+			colors: {
+				...DefaultTheme.colors,
+				primary: colors.primary,
+				background: colors.background,
+				card: colors.card,
+				text: colors.text,
+				border: colors.border,
+				notification: colors.destructive
+			}
+		}),
+		[colors, isDark]
+	);
+
 	return (
 		<SafeAreaProvider>
-			<ThemeProvider value={DefaultTheme}>
-				<StatusBar style="dark" />
+			<NavigationThemeProvider value={navigationTheme}>
+				<StatusBar style={isDark ? "light" : "dark"} />
 				<NotificationColdStartNav />
 				<Stack
 					screenOptions={{
@@ -198,7 +217,7 @@ function RootLayoutContent() {
 					<Stack.Screen name="+not-found" />
 				</Stack>
 				<Toast config={toastConfig} />
-			</ThemeProvider>
+			</NavigationThemeProvider>
 		</SafeAreaProvider>
 	);
 }
@@ -216,10 +235,12 @@ export default function RootLayout() {
 	return (
 		<GestureHandlerRootView style={{ flex: 1 }}>
 			<ResetOnAuthContext.Provider value={ctxValue}>
-				<PermissionWarmupProvider>
-					<OnboardingGate />
-					<RootLayoutContent key={resetOnAuthEpoch} />
-				</PermissionWarmupProvider>
+				<AppThemeProvider>
+					<PermissionWarmupProvider>
+						<OnboardingGate />
+						<RootLayoutContent key={resetOnAuthEpoch} />
+					</PermissionWarmupProvider>
+				</AppThemeProvider>
 			</ResetOnAuthContext.Provider>
 		</GestureHandlerRootView>
 	);

@@ -1,4 +1,3 @@
-import { lightMutedForeground } from "@/constants/Colors";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
 import { Search } from "lucide-react-native";
@@ -6,11 +5,13 @@ import { useEffect, useState } from "react";
 import { Keyboard, Text, TextInput, View, Platform } from "react-native";
 import BarcodeScanButton from "../barcode-scan/BarcodeScanButton";
 import AppTouchableOpacity from "../AppTouchableOpacity";
+import { useThemePalette } from "@/hooks/useThemePalette";
 
 const endpoint = "https://atsepete.net/api/application/action/search-suggestion";
 
 const HeaderSearchInput = () => {
 	const router = useRouter();
+	const { colors } = useThemePalette();
 	const [query, setQuery] = useState("");
 	const [suggestions, setSuggestions] = useState<{ name: string; url_slug: string }[]>([]);
 	const [showSuggestions, setShowSuggestions] = useState(false);
@@ -82,7 +83,7 @@ const HeaderSearchInput = () => {
 			<Text className="mx-1 p-2">
 				<Search
 					size={24}
-					color={lightMutedForeground}
+					color={colors.mutedForeground}
 				/>
 			</Text>
 

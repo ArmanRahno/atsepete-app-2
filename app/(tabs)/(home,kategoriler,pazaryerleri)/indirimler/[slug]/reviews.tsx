@@ -14,7 +14,7 @@ import ReviewCard from "@/components/ReviewCard";
 import LoadingIndicator from "@/components/LoadingIndicator";
 import AppTouchableOpacity from "@/components/AppTouchableOpacity";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { lightBackground } from "@/constants/Colors";
+import { useThemePalette } from "@/hooks/useThemePalette";
 
 const itemEndpoint = "https://atsepete.net/api/application/page/item";
 const reviewsEndpoint = "https://atsepete.net/api/application/page/reviews";
@@ -22,6 +22,7 @@ const reviewsEndpoint = "https://atsepete.net/api/application/page/reviews";
 const MemoizedReviewCard = memo(ReviewCard);
 
 export default function UrunlerReviewsScreen() {
+	const { colors } = useThemePalette();
 	const searchParams = useSearchParams();
 	const slug = searchParams.get("slug");
 
@@ -153,14 +154,17 @@ export default function UrunlerReviewsScreen() {
 	}
 
 	return (
-		<View style={{ flex: 1 }}>
+		<View
+			className="bg-background"
+			style={{ flex: 1 }}
+		>
 			<FlatList
 				className="p-2"
 				style={{ flex: 1 }}
 				contentContainerStyle={{
 					flexGrow: 1,
 					padding: 12,
-					backgroundColor: lightBackground,
+					backgroundColor: colors.background,
 					paddingBottom: insets.bottom + 12
 				}}
 				data={reviews}

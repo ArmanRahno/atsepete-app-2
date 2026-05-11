@@ -1,7 +1,6 @@
 import AppTouchableOpacity from "@/components/AppTouchableOpacity";
 import Header from "@/components/header/Header";
 import HeaderFirstRow from "@/components/header/HeaderFirstRow";
-import HeaderIcon from "@/components/header/HeaderIcon";
 import HeaderSecondRow from "@/components/header/HeaderSecondRow";
 import Marketplaces from "@/constants/Marketplaces";
 import { Link } from "expo-router";
@@ -24,7 +23,7 @@ const MarketplacesScreen = () => {
 						href={`/pazaryerleri/${item.value}`}
 						asChild
 					>
-						<AppTouchableOpacity className="py-1 h-16 bg-background justify-center items-center rounded-lg border border-border">
+						<AppTouchableOpacity className="py-1 h-16 bg-secondary dark:bg-white justify-center items-center rounded-lg border border-border">
 							<item.Icon style={{ transform: [{ scale: 1.5 }] }} />
 						</AppTouchableOpacity>
 					</Link>

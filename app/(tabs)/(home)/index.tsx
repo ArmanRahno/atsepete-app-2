@@ -23,8 +23,8 @@ import HeaderSecondRow from "@/components/header/HeaderSecondRow";
 import { ChevronUp } from "lucide-react-native";
 import AppTouchableOpacity from "@/components/AppTouchableOpacity";
 import { useIsFocused } from "@react-navigation/native";
-import { lightMutedForeground } from "@/constants/Colors";
 import HeaderFirstRow from "@/components/header/HeaderFirstRow";
+import { useThemePalette } from "@/hooks/useThemePalette";
 
 const API_URL = "https://atsepete.net/api/application/page/homepage";
 
@@ -62,6 +62,7 @@ const concatUniqueById = (first: Item[], second: Item[]) => {
 
 export default function HomeScreen() {
 	const isFocused = useIsFocused();
+	const { colors } = useThemePalette();
 
 	const [items, setItems] = useState<Item[]>([]);
 	const [totalItems, setTotalItems] = useState<number>(0);
@@ -668,7 +669,7 @@ export default function HomeScreen() {
 											Liste güncelleniyor…
 										</Text>
 										<ActivityIndicator
-											color={lightMutedForeground}
+											color={colors.mutedForeground}
 											size={10}
 											style={styles.statusSpinner}
 										/>
@@ -731,7 +732,7 @@ export default function HomeScreen() {
 					onPress={handleScrollToTop}
 				>
 					<Text>
-						<ChevronUp />
+						<ChevronUp color={colors.text} />
 					</Text>
 				</AppTouchableOpacity>
 			)}

@@ -1,16 +1,16 @@
 import AppTouchableOpacity from "@/components/AppTouchableOpacity";
 import Header from "@/components/header/Header";
 import HeaderFirstRow from "@/components/header/HeaderFirstRow";
-import HeaderIcon from "@/components/header/HeaderIcon";
 import HeaderSecondRow from "@/components/header/HeaderSecondRow";
-import HeaderText from "@/components/header/HeaderText";
 import { IconSymbol } from "@/components/ui/IconSymbol";
 import Categories from "@/constants/Categories";
-import { lightMutedForeground, lightPrimary, lightSecondary } from "@/constants/Colors";
 import { Link } from "expo-router";
-import { FlatList, Text, TouchableOpacity } from "react-native";
+import { FlatList, Text } from "react-native";
+import { useThemePalette } from "@/hooks/useThemePalette";
 
 const CategoriesScreen = () => {
+	const { colors } = useThemePalette();
+
 	return (
 		<>
 			<Header>
@@ -26,12 +26,12 @@ const CategoriesScreen = () => {
 						href={`/kategoriler/${item.value}`}
 						asChild
 					>
-						<AppTouchableOpacity className="flex-row gap-6 items-center w-full px-6 py-3 self-start bg-background border border-border rounded-lg">
+						<AppTouchableOpacity className="flex-row gap-6 items-center w-full px-6 py-3 self-start bg-card border border-border rounded-lg">
 							<IconSymbol
 								// @ts-expect-error Expect error instead of type assertion
 								name={item.icon}
 								size={32}
-								color={lightMutedForeground}
+								color={colors.mutedForeground}
 							/>
 							<Text className="text-xl font-medium text-foreground">
 								{item.label}

@@ -11,6 +11,7 @@ import { usePermissionWarmup } from "../PermissionWarmupDialog";
 import { openSettings } from "expo-linking";
 import * as Notifications from "expo-notifications";
 import { router } from "expo-router";
+import { useThemePalette } from "@/hooks/useThemePalette";
 
 const isGranted = (perm: any) => perm?.granted === true || perm?.status === "granted";
 
@@ -27,10 +28,29 @@ type ItemListenerProps = {
 };
 
 const ItemListener = ({ item, className, onListenerSuccess, initIsActive }: ItemListenerProps) => {
+	const { colors } = useThemePalette();
 	const [isUserSubscribed, setIsUserSubscribed] = useState<boolean>(
 		initIsActive ?? !!(item.is_user_subscribed || item.isUserNotificationActive)
 	);
 	const [isListenerPending, setIsListenerPending] = useState<boolean>(false);
+
+	const isDarkMode =
+		colors.background?.toLowerCase?.() === "#0c0a08" ||
+		colors.card?.toLowerCase?.() === "#1f1a16";
+
+	const listenerButtonColors = isUserSubscribed
+		? {
+				backgroundColor: isDarkMode ? "rgba(2,44,34,0.70)" : "#ECFDF5",
+				borderColor: isDarkMode ? "rgba(52,211,153,0.45)" : "rgba(16,185,129,0.45)",
+				iconColor: isDarkMode ? "#A7F3D0" : "#047857",
+				shadowColor: "rgba(16,185,129,0.20)"
+			}
+		: {
+				backgroundColor: isDarkMode ? "rgba(69,10,10,0.70)" : "#FEF2F2",
+				borderColor: isDarkMode ? "rgba(248,113,113,0.45)" : "rgba(239,68,68,0.45)",
+				iconColor: isDarkMode ? "#FECACA" : "#B91C1C",
+				shadowColor: "rgba(239,68,68,0.20)"
+			};
 
 	const { askAndStoreAccountPushToken } = useNotificationPermission();
 	const { showPermissionDialog } = usePermissionWarmup();
@@ -147,10 +167,18 @@ const ItemListener = ({ item, className, onListenerSuccess, initIsActive }: Item
 	return (
 		<AppTouchableOpacity
 			className={cn(
-				"items-center justify-center rounded border border-border px-4 py-2 disabled:opacity-75 disabled:brightness-75",
-				isUserSubscribed ? "bg-emerald-500" : "bg-destructive",
+				"items-center justify-center rounded-full border px-4 py-2 disabled:opacity-75 disabled:brightness-75",
 				className
 			)}
+			style={{
+				backgroundColor: listenerButtonColors.backgroundColor,
+				borderColor: listenerButtonColors.borderColor,
+				shadowColor: "#000",
+				shadowOffset: { width: 0, height: 2 },
+				shadowOpacity: 0.1,
+				shadowRadius: 6,
+				elevation: 4
+			}}
 			hitSlop={10}
 			disabled={isListenerPending}
 			onPress={async () => {
@@ -219,16 +247,18 @@ const ItemListener = ({ item, className, onListenerSuccess, initIsActive }: Item
 			{!isListenerPending && isUserSubscribed && (
 				<BellMinus
 					size={20}
-					color="#fff"
+					color={listenerButtonColors.iconColor}
 				/>
 			)}
+
 			{!isListenerPending && !isUserSubscribed && (
 				<BellPlus
 					size={20}
-					color="#fff"
+					color={listenerButtonColors.iconColor}
 				/>
 			)}
-			{isListenerPending && <ActivityIndicator className="text-white" />}
+
+			{isListenerPending && <ActivityIndicator color={listenerButtonColors.iconColor} />}
 		</AppTouchableOpacity>
 	);
 };

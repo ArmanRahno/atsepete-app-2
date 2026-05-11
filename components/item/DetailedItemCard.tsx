@@ -1,13 +1,21 @@
 import React, { useMemo } from "react";
 import { View, Text, StyleSheet, ScrollView } from "react-native";
 import Markdown from "react-native-markdown-display";
-import { TrendingDown, TrendingUp, BarChart3 } from "lucide-react-native";
+import {
+	Activity,
+	BarChart3,
+	CircleDot,
+	Percent,
+	TrendingDown,
+	TrendingUp
+} from "lucide-react-native";
 import formatPrice from "@/lib/formatPrice";
 import { PriceChart } from "./PriceChart";
 import ItemSuggestionsCarousel from "../carousels/ItemSuggestionsCarousel";
 import ItemReviewsCarousel from "../carousels/ItemReviewsCarousel";
 import ItemPriceCard from "./ItemPriceCard";
-import { lightMutedForeground } from "@/constants/Colors";
+import { useThemePalette } from "@/hooks/useThemePalette";
+import { semanticGreen, semanticRed } from "@/constants/SemanticColors";
 
 const THIRTY_DAYS_MS = 30 * 24 * 60 * 60 * 1000;
 
@@ -76,7 +84,7 @@ const formatDateObj = (value: Date | string | null | undefined) => {
 };
 
 function Section({ children, className = "" }: { children: React.ReactNode; className?: string }) {
-	return <View className={`rounded-[24px] bg-background p-4 ${className}`}>{children}</View>;
+	return <View className={`rounded-[24px] bg-card p-4 ${className}`}>{children}</View>;
 }
 
 function StatCard({
@@ -91,43 +99,82 @@ function StatCard({
 	icon?: React.ReactNode;
 }) {
 	return (
-		<View className="flex-1 rounded-2xl bg-background px-3 py-3">
+		<View
+			className="rounded-2xl border border-border bg-card px-3 py-3"
+			style={{ width: "48.5%", minHeight: 96 }}
+		>
 			<View className="min-h-[64px] flex-1 justify-between">
-				<View>
-					<Text
-						className="text-[10px] uppercase tracking-[0.08em] text-muted-foreground"
-						style={styles.statLabel}
-					>
-						{label}
-					</Text>
+				<Text
+					className="text-[10px] uppercase tracking-[0.08em] text-muted-foreground"
+					style={styles.statLabel}
+				>
+					{label}
+				</Text>
 
-					<View className="mt-1 flex-row items-center gap-1.5">
-						{icon}
-						<Text
-							className="flex-1 text-sm text-foreground"
-							numberOfLines={1}
-							style={styles.statValue}
-						>
-							{value}
-						</Text>
-					</View>
+				<View className="flex-1 flex-row items-center gap-1.5 py-1">
+					{icon}
+					<Text
+						className="flex-1 text-sm text-foreground"
+						numberOfLines={1}
+						style={styles.statValue}
+					>
+						{value}
+					</Text>
 				</View>
 
-				{!!subtle && (
-					<Text
-						className="mt-2 text-[11px] text-muted-foreground"
-						numberOfLines={1}
-						style={styles.statSubtle}
-					>
-						{subtle}
-					</Text>
-				)}
+				<Text
+					className="text-[11px] text-muted-foreground"
+					numberOfLines={1}
+					style={styles.statSubtle}
+				>
+					{subtle || " "}
+				</Text>
 			</View>
 		</View>
 	);
 }
 
 export default function DetailedItemCard({ item }: DetailedItemCardProps) {
+	const { colors, isDark } = useThemePalette();
+	const red = semanticRed(isDark);
+	const green = semanticGreen(isDark);
+	const markdownStyles = useMemo(
+		() =>
+			StyleSheet.create({
+				body: {
+					color: colors.text,
+					fontFamily: "Roboto_400Regular"
+				},
+				text: {
+					color: colors.text
+				},
+				paragraph: {
+					color: colors.text
+				},
+				heading1: {
+					color: colors.text
+				},
+				heading2: {
+					color: colors.text
+				},
+				heading3: {
+					color: colors.text
+				},
+				strong: {
+					color: colors.text
+				},
+				bullet_list: {
+					color: colors.text
+				},
+				ordered_list: {
+					color: colors.text
+				},
+				link: {
+					color: colors.primary
+				}
+			}),
+		[colors.primary, colors.text]
+	);
 	const {
 		sortedPriceHistory,
 		latestHistory,
@@ -203,7 +250,7 @@ export default function DetailedItemCard({ item }: DetailedItemCardProps) {
 
 			{recent30History.length > 0 && (
 				<View className="mt-5">
-					<View className="flex-row gap-2">
+					<View className="flex-row flex-wrap gap-2">
 						<StatCard
 							label="30 Gün Düşük"
 							value={
@@ -215,6 +262,12 @@ export default function DetailedItemCard({ item }: DetailedItemCardProps) {
 								recent30LowestPoint
 									? formatDateObj(recent30LowestPoint.date_time).formattedDate
 									: ""
+							}
+							icon={
+								<TrendingDown
+									size={15}
+									color="#10b981"
+								/>
 							}
 						/>
 
@@ -230,16 +283,39 @@ export default function DetailedItemCard({ item }: DetailedItemCardProps) {
 									? formatDateObj(recent30HighestPoint.date_time).formattedDate
 									: ""
 							}
+							icon={
+								<TrendingUp
+									size={15}
+									color="#ef4444"
+								/>
+							}
 						/>
 
 						<StatCard
 							label="30 Gün Hareket"
 							value={recent30MoveCount}
-							subtle={`${recent30DecreaseCount} düşüş / ${recent30IncreaseCount} artış`}
+							subtle="Son 30 gün"
 							icon={
 								<BarChart3
 									size={15}
-									color={lightMutedForeground}
+									color={colors.mutedForeground}
+								/>
+							}
+						/>
+
+						<StatCard
+							label="İndirim"
+							value={
+								typeof item.last_price_action_percent_magnitude === "number" &&
+								item.last_price_action_percent_magnitude > 0
+									? `-%${Math.round(item.last_price_action_percent_magnitude)}`
+									: "---"
+							}
+							subtle="Son hareket"
+							icon={
+								<Percent
+									size={15}
+									color={colors.primary}
 								/>
 							}
 						/>
@@ -259,12 +335,27 @@ export default function DetailedItemCard({ item }: DetailedItemCardProps) {
 			</Section>
 
 			<Section className="mt-5">
-				<Text
-					className="mb-4 text-lg text-foreground"
-					style={styles.sectionTitle}
-				>
-					Son hareketler
-				</Text>
+				<View className="mb-4 flex-row items-center justify-between gap-3">
+					<Text
+						className="text-lg text-foreground"
+						style={styles.sectionTitle}
+					>
+						Son hareketler
+					</Text>
+
+					<View className="flex-row items-center gap-1.5 rounded-full border border-border bg-secondary/70 px-2.5 py-1">
+						<Activity
+							size={14}
+							color={colors.mutedForeground}
+						/>
+						<Text
+							className="text-xs text-muted-foreground"
+							style={styles.chip}
+						>
+							{latestHistory.length} değişim
+						</Text>
+					</View>
+				</View>
 
 				<ScrollView
 					nestedScrollEnabled
@@ -285,7 +376,7 @@ export default function DetailedItemCard({ item }: DetailedItemCardProps) {
 						return (
 							<View
 								key={`${pricePoint.date_time.toString()}-${index}`}
-								className="rounded-xl bg-background border border-border px-3 py-3"
+								className="rounded-xl bg-card border border-border px-3 py-3"
 							>
 								<View className="flex-row items-start justify-between gap-3">
 									<Text
@@ -297,16 +388,16 @@ export default function DetailedItemCard({ item }: DetailedItemCardProps) {
 
 									{isUp ? (
 										<View
-											className="flex-row items-center gap-1.5 bg-red-50 px-2 py-1"
+											className="flex-row items-center gap-1.5 border border-red-700/25 bg-red-700/10 px-2 py-1 dark:border-red-500/20 dark:bg-red-500/20"
 											style={{ borderRadius: 8 }}
 										>
 											<TrendingUp
 												size={12}
-												color="#dc2626"
+												color={red}
 											/>
 											<Text
-												className="text-[11px] text-red-600"
-												style={styles.chip}
+												className="text-[11px]"
+												style={[styles.chip, { color: red }]}
 											>
 												{hasMagnitude
 													? `%${Math.round(
@@ -317,16 +408,16 @@ export default function DetailedItemCard({ item }: DetailedItemCardProps) {
 										</View>
 									) : isDown ? (
 										<View
-											className="flex-row items-center gap-1.5 bg-emerald-50 px-2 py-1"
+											className="flex-row items-center gap-1.5 border border-emerald-700/30 bg-emerald-700/20 px-2 py-1 dark:border-emerald-500/20 dark:bg-emerald-500/20"
 											style={{ borderRadius: 8 }}
 										>
 											<TrendingDown
 												size={12}
-												color="#047857"
+												color={green}
 											/>
 											<Text
-												className="text-[11px] text-emerald-700"
-												style={styles.chip}
+												className="text-[11px]"
+												style={[styles.chip, { color: green }]}
 											>
 												{hasMagnitude
 													? `%${Math.round(
@@ -335,7 +426,23 @@ export default function DetailedItemCard({ item }: DetailedItemCardProps) {
 													: "Düştü"}
 											</Text>
 										</View>
-									) : null}
+									) : (
+										<View
+											className="flex-row items-center gap-1.5 bg-secondary px-2 py-1"
+											style={{ borderRadius: 8 }}
+										>
+											<CircleDot
+												size={12}
+												color={colors.mutedForeground}
+											/>
+											<Text
+												className="text-[11px] text-muted-foreground"
+												style={styles.chip}
+											>
+												İlk fiyat
+											</Text>
+										</View>
+									)}
 								</View>
 
 								<Text
@@ -359,7 +466,7 @@ export default function DetailedItemCard({ item }: DetailedItemCardProps) {
 						Ürün Açıklaması
 					</Text>
 
-					<Markdown>{item.product_description}</Markdown>
+					<Markdown style={markdownStyles}>{item.product_description}</Markdown>
 				</Section>
 			)}
 
@@ -383,14 +490,14 @@ export default function DetailedItemCard({ item }: DetailedItemCardProps) {
 			{item.ai_review && (
 				<Section className="mt-6">
 					<Text
-						className="mb-2 text-base text-secondary-foreground"
+						className="mb-2 text-base text-foreground"
 						style={styles.sectionTitle}
 					>
 						Yapay Zeka Değerlendirmeler Özeti
 					</Text>
 
 					<Text
-						className="text-secondary-foreground"
+						className="text-foreground"
 						style={styles.body}
 					>
 						{item.ai_review}

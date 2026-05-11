@@ -11,6 +11,7 @@ import AppTouchableOpacity from "../AppTouchableOpacity";
 import { useNotificationPermission } from "@/hooks/useNotificationPermission";
 import { useResetOnAuth } from "@/hooks/useResetOnAuth";
 import { useRouter } from "expo-router";
+import { useThemePalette } from "@/hooks/useThemePalette";
 
 const LoginSchema = z.object({
 	email: z.string().email("Geçerli bir e-posta giriniz."),
@@ -18,6 +19,7 @@ const LoginSchema = z.object({
 });
 
 export default function LoginForm({ onSuccess }: { onSuccess: () => void }) {
+	const { colors } = useThemePalette();
 	const [serverMessage, setServerMessage] = useState<string>("");
 
 	const { askAndStoreAccountPushToken } = useNotificationPermission();
@@ -96,16 +98,28 @@ export default function LoginForm({ onSuccess }: { onSuccess: () => void }) {
 
 	return (
 		<>
-			<Text className="text-xl font-semibold mb-3 text-center">Giriş</Text>
+			<Text
+				className="text-xl font-semibold mb-3 text-center"
+				style={{ color: colors.text }}
+			>
+				Giriş
+			</Text>
 
-			<Text className="mt-3">E-posta</Text>
+			<Text
+				className="mt-3"
+				style={{ color: colors.text }}
+			>
+				E-posta
+			</Text>
 			<Controller
 				control={control}
 				name="email"
 				render={({ field: { onChange, onBlur, value } }) => (
 					<TextInput
-						className="border border-gray-300 p-2 rounded mt-1 text-foreground placeholder:text-muted-foreground"
+						className="border border-border bg-card p-2 rounded mt-1 text-foreground"
 						placeholder="E-posta adresi"
+						placeholderTextColor={colors.mutedForeground}
+						style={{ color: colors.text }}
 						keyboardType="email-address"
 						autoCapitalize="none"
 						onBlur={onBlur}
@@ -118,15 +132,22 @@ export default function LoginForm({ onSuccess }: { onSuccess: () => void }) {
 				<Text className="text-red-500 mt-1 text-sm">{errors.email.message as string}</Text>
 			)}
 
-			<Text className="mt-3">Şifre</Text>
+			<Text
+				className="mt-3"
+				style={{ color: colors.text }}
+			>
+				Şifre
+			</Text>
 			<Controller
 				control={control}
 				name="password"
 				render={({ field: { onChange, onBlur, value } }) => (
 					<>
 						<TextInput
-							className="border border-gray-300 p-2 rounded mt-1 text-foreground placeholder:text-muted-foreground"
+							className="border border-border bg-card p-2 rounded mt-1 text-foreground"
 							placeholder="Şifreniz"
+							placeholderTextColor={colors.mutedForeground}
+							style={{ color: colors.text }}
 							secureTextEntry
 							autoCapitalize="none"
 							onBlur={onBlur}

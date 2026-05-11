@@ -9,6 +9,7 @@ import { auth } from "@/lib/auth/firebase";
 import AppTouchableOpacity from "../AppTouchableOpacity";
 import { useNotificationPermission } from "@/hooks/useNotificationPermission";
 import { useResetOnAuth } from "@/hooks/useResetOnAuth";
+import { useThemePalette } from "@/hooks/useThemePalette";
 
 type Props = {
 	onSuccess: () => void;
@@ -16,6 +17,7 @@ type Props = {
 };
 
 const ContinueWithGoogleBtn = ({ onSuccess, setServerMessage }: Props) => {
+	const { colors } = useThemePalette();
 	const [loading, setLoading] = useState(false);
 
 	const { askAndStoreAccountPushToken } = useNotificationPermission();
@@ -105,7 +107,7 @@ const ContinueWithGoogleBtn = ({ onSuccess, setServerMessage }: Props) => {
 		>
 			{loading ? (
 				<ActivityIndicator
-					color="black"
+					color={colors.text}
 					size={20}
 				/>
 			) : (

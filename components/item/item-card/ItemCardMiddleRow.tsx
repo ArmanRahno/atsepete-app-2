@@ -1,4 +1,6 @@
 import formatPrice from "@/lib/formatPrice";
+import { semanticGreen, semanticRed } from "@/constants/SemanticColors";
+import { useThemePalette } from "@/hooks/useThemePalette";
 import { Link } from "expo-router";
 import { Pressable, Text, View, useWindowDimensions } from "react-native";
 
@@ -14,6 +16,9 @@ export default function ItemCardMiddleRow({
 	last_price_action_percent_magnitude: Item["last_price_action_percent_magnitude"];
 }) {
 	const { width } = useWindowDimensions();
+	const { isDark } = useThemePalette();
+	const red = semanticRed(isDark);
+	const green = semanticGreen(isDark);
 	const compact = width < 360;
 
 	const prev = price_history[price_history.length - 2]?.price;
@@ -31,7 +36,8 @@ export default function ItemCardMiddleRow({
 							<Text
 								numberOfLines={1}
 								ellipsizeMode="tail"
-								className="text-destructive font-medium leading-tight line-through"
+								className="font-medium leading-tight line-through"
+								style={{ color: red }}
 							>
 								{prev ? formatPrice(prev) : "-"}
 								<Text className="font-normal">₺</Text>
@@ -42,7 +48,8 @@ export default function ItemCardMiddleRow({
 							<Text
 								numberOfLines={1}
 								ellipsizeMode="tail"
-								className="text-emerald-600 leading-tight"
+								className="leading-tight"
+								style={{ color: green }}
 							>
 								<Text className="text-xl font-bold leading-tight">{lira}</Text>
 								<Text className="font-medium leading-tight">
@@ -55,9 +62,9 @@ export default function ItemCardMiddleRow({
 						<View style={{ width: "15%", minWidth: 48 }}>
 							<Text
 								numberOfLines={1}
-								className="text-lg text-primary font-semibold leading-tight"
+								className="text-lg text-foreground font-semibold leading-tight"
 							>
-								%{Math.round(last_price_action_percent_magnitude)}
+								-%{Math.round(last_price_action_percent_magnitude)}
 							</Text>
 						</View>
 					</>
@@ -70,7 +77,8 @@ export default function ItemCardMiddleRow({
 								<Text
 									numberOfLines={1}
 									ellipsizeMode="tail"
-									className="text-emerald-600 leading-tight"
+									className="leading-tight"
+									style={{ color: green }}
 								>
 									<Text className="text-xl font-bold leading-tight">{lira}</Text>
 									<Text className="font-medium leading-tight">
@@ -83,9 +91,9 @@ export default function ItemCardMiddleRow({
 							<View className="min-w-[52px] items-end">
 								<Text
 									numberOfLines={1}
-									className="text-lg text-primary font-semibold leading-tight"
+									className="text-lg text-foreground font-semibold leading-tight"
 								>
-									%{Math.round(last_price_action_percent_magnitude)}
+									-%{Math.round(last_price_action_percent_magnitude)}
 								</Text>
 							</View>
 						</View>
@@ -93,7 +101,8 @@ export default function ItemCardMiddleRow({
 						<Text
 							numberOfLines={1}
 							ellipsizeMode="tail"
-							className="text-destructive font-medium leading-tight line-through"
+							className="font-medium leading-tight line-through"
+							style={{ color: red }}
 						>
 							{prev ? formatPrice(prev) : "-"}
 							<Text className="font-normal">₺</Text>

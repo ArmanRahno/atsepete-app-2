@@ -1,10 +1,8 @@
 import React, { useRef, useState } from "react";
-import { View, Text, Dimensions } from "react-native";
-import Carousel, { ICarouselInstance, Pagination } from "react-native-reanimated-carousel";
+import { View, Text } from "react-native";
+import Carousel, { ICarouselInstance } from "react-native-reanimated-carousel";
 import { useSharedValue } from "react-native-reanimated";
 import ItemSuggestionCard from "./ItemSuggestionCard";
-import { lightPrimary, lightSecondary } from "@/constants/Colors";
-import { CustomConfig } from "react-native-reanimated-carousel/lib/typescript/types";
 
 export default function ItemSuggestionsCarousel({
 	suggestions
@@ -16,6 +14,7 @@ export default function ItemSuggestionsCarousel({
 	const [carouselHeight, setCarouselHeight] = useState<number>(0);
 
 	const itemWidth = 170;
+	const defaultCarouselHeight = 352;
 
 	if (!suggestions || suggestions.length === 0) {
 		return null;
@@ -43,7 +42,7 @@ export default function ItemSuggestionsCarousel({
 				onProgressChange={progress}
 				loop={true}
 				width={itemWidth}
-				height={carouselHeight || undefined}
+				height={carouselHeight || defaultCarouselHeight}
 				snapEnabled={false}
 				pagingEnabled={true}
 				style={{
@@ -53,6 +52,7 @@ export default function ItemSuggestionsCarousel({
 				containerStyle={{ width: "100%" }}
 				renderItem={({ item }) => (
 					<View
+						className="h-[352px]"
 						onLayout={event => {
 							const { height } = event.nativeEvent.layout;
 							setCarouselHeight(prevHeight => Math.max(prevHeight, height));

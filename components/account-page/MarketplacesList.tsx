@@ -1,7 +1,5 @@
 import React from "react";
-import { FlatList, Text, TouchableOpacity, View } from "react-native";
-import { X } from "lucide-react-native";
-import { lightMutedForeground } from "@/constants/Colors";
+import { FlatList, Text, View } from "react-native";
 import Marketplaces from "@/constants/Marketplaces";
 import { router } from "expo-router";
 import { Card } from "../shad-cn/card";
@@ -29,13 +27,14 @@ export default function MarketplacesList({
 						className="px-6 py-3 flex-row gap-3 justify-between items-center"
 					>
 						{MarketplaceIcon && (
-							<MarketplaceIcon
-								onPress={() => router.push(`/pazaryerleri/${item}`)}
-								style={{
-									transformOrigin: "left",
-									transform: [{ scale: 1.8 }]
-								}}
-							/>
+							<View className="h-10 w-32 items-center justify-center overflow-hidden rounded-lg bg-white px-3 py-2">
+								<MarketplaceIcon
+									onPress={() => router.push(`/pazaryerleri/${item}`)}
+									style={{
+										transform: [{ scale: 1.18 }]
+									}}
+								/>
+							</View>
 						)}
 
 						<MarketplaceListener

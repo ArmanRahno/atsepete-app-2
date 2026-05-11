@@ -154,19 +154,17 @@ const CategoryScreen = () => {
 				onEndReachedThreshold={1.5}
 				ListHeaderComponent={
 					<View className="flex-row flex-wrap justify-center items-center gap-3 py-3">
-						<View className="flex-1 min-w-0">
-							<HeaderText className="text-center flex-shrink">
+						<View className="min-w-0 shrink">
+							<HeaderText className="text-center">
 								Bütün {categoryLabel} ürünlerine alarm kur
 							</HeaderText>
 						</View>
 
-						<View style={{ flexShrink: 0 }}>
-							<CategoryListener
-								className="px-4 py-2"
-								category={category}
-								is_user_subscribed={userIsSubscribed}
-							/>
-						</View>
+						<CategoryListener
+							className="px-4 py-2"
+							category={category}
+							is_user_subscribed={userIsSubscribed}
+						/>
 					</View>
 				}
 				ListFooterComponent={

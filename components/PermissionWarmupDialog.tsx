@@ -3,7 +3,7 @@ import React, { createContext, useCallback, useContext, useState, ReactNode } fr
 import { Modal, Pressable, View, Text } from "react-native";
 import { X } from "lucide-react-native";
 import AppTouchableOpacity from "./AppTouchableOpacity";
-import { lightPrimary } from "@/constants/Colors";
+import { useThemePalette } from "@/hooks/useThemePalette";
 
 type PermissionDialogMode = "request" | "settings";
 
@@ -28,6 +28,7 @@ type PermissionDialogContextType = {
 const PermissionDialogContext = createContext<PermissionDialogContextType | null>(null);
 
 export const PermissionWarmupProvider = ({ children }: { children: ReactNode }) => {
+	const { colors } = useThemePalette();
 	const [config, setConfig] = useState<PermissionWarmupConfig | null>(null);
 	const [visible, setVisible] = useState(false);
 	const [loading, setLoading] = useState(false);
@@ -82,7 +83,7 @@ export const PermissionWarmupProvider = ({ children }: { children: ReactNode }) 
 					onPress={handleCancel}
 				>
 					<View
-						className="rounded-3xl bg-white px-6 py-6"
+						className="rounded-3xl bg-card px-6 py-6"
 						onStartShouldSetResponder={() => true}
 					>
 						<AppTouchableOpacity
@@ -90,7 +91,10 @@ export const PermissionWarmupProvider = ({ children }: { children: ReactNode }) 
 							hitSlop={24}
 							className="absolute top-4 right-4 p-1 rounded-full"
 						>
-							<X size={24} />
+							<X
+								size={24}
+								color={colors.text}
+							/>
 						</AppTouchableOpacity>
 
 						{config?.icon && (
@@ -100,13 +104,15 @@ export const PermissionWarmupProvider = ({ children }: { children: ReactNode }) 
 						)}
 
 						{config?.title && (
-							<Text className="text-xl font-bold text-center mb-2">
+							<Text className="text-xl font-bold text-center text-foreground mb-2">
 								{config.title}
 							</Text>
 						)}
 
 						{config?.description && (
-							<Text className="text-base text-center mb-3">{config.description}</Text>
+							<Text className="text-base text-center text-foreground mb-3">
+								{config.description}
+							</Text>
 						)}
 
 						{config?.bulletPoints?.length ? (
@@ -116,8 +122,10 @@ export const PermissionWarmupProvider = ({ children }: { children: ReactNode }) 
 										key={idx.toString()}
 										className="flex-row items-start mb-1.5"
 									>
-										<Text className="text-base mr-2">•</Text>
-										<Text className="flex-1 text-base">{point}</Text>
+										<Text className="text-base text-muted-foreground mr-2">•</Text>
+										<Text className="flex-1 text-base text-foreground">
+											{point}
+										</Text>
 									</View>
 								))}
 							</View>
@@ -134,9 +142,9 @@ export const PermissionWarmupProvider = ({ children }: { children: ReactNode }) 
 								disabled={loading}
 								onPress={handleConfirm}
 								className="w-full rounded-xl py-3 items-center justify-center"
-								style={{ backgroundColor: lightPrimary }}
+								style={{ backgroundColor: colors.primary }}
 							>
-								<Text className="font-semibold text-white">
+								<Text className="font-semibold text-primary-foreground">
 									{config?.primaryLabel ??
 										(config?.mode === "settings" ? "Ayarları Aç" : "İzin ver")}
 								</Text>
@@ -146,9 +154,9 @@ export const PermissionWarmupProvider = ({ children }: { children: ReactNode }) 
 								disabled={loading}
 								onPress={handleCancel}
 								className="w-full rounded-xl py-3 items-center justify-center"
-								style={{ backgroundColor: "#F2F2F2" }}
+								style={{ backgroundColor: colors.secondary }}
 							>
-								<Text className="font-semibold">
+								<Text className="font-semibold text-secondary-foreground">
 									{config?.secondaryLabel ?? "Şimdilik geç"}
 								</Text>
 							</AppTouchableOpacity>

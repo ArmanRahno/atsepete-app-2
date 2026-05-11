@@ -1,13 +1,14 @@
-import { lightMutedForeground } from "@/constants/Colors";
 import { Filter } from "lucide-react-native";
-import { TouchableOpacity } from "react-native";
 import AppTouchableOpacity from "../AppTouchableOpacity";
+import { useThemePalette } from "@/hooks/useThemePalette";
 
 const HeaderFilterAndSortTouchable = ({
 	setDisplayDialog
 }: {
 	setDisplayDialog: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
+	const { colors } = useThemePalette();
+
 	return (
 		<AppTouchableOpacity
 			onPress={() => setDisplayDialog(true)}
@@ -16,7 +17,7 @@ const HeaderFilterAndSortTouchable = ({
 		>
 			<Filter
 				size={24}
-				color={lightMutedForeground}
+				color={colors.mutedForeground}
 			/>
 		</AppTouchableOpacity>
 	);

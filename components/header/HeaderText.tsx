@@ -10,7 +10,11 @@ const HeaderText = ({
 	children: ReactNode;
 	className?: ClassNameValue;
 }) => {
-	return <Text className={cn("text-lg text-center font-semibold", className)}>{children}</Text>;
+	return (
+		<Text className={cn("text-lg text-center font-semibold text-foreground", className)}>
+			{children}
+		</Text>
+	);
 };
 
 export default HeaderText;

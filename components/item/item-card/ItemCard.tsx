@@ -5,12 +5,14 @@ import formatPrice from "@/lib/formatPrice";
 import getPreviousPrice from "@/lib/getPreviousPrice";
 import { cn } from "@/lib/utils";
 import { Href, Link } from "expo-router";
-import { TrendingDown, TrendingUp } from "lucide-react-native";
+import { CheckCircle2, TrendingDown, TrendingUp, XCircle } from "lucide-react-native";
 import React from "react";
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 import { ClassNameValue } from "tailwind-merge";
 import ItemListener from "../ItemListener";
 import { IconSymbol } from "@/components/ui/IconSymbol";
+import { useThemePalette } from "@/hooks/useThemePalette";
+import { semanticGreen, semanticRed } from "@/constants/SemanticColors";
 
 const THIRTY_DAYS_MS = 30 * 24 * 60 * 60 * 1000;
 
@@ -46,6 +48,9 @@ export default function ItemCard({
 	detailHrefPrefix = "/indirimler",
 	onListenerTrigger
 }: ItemCardProps) {
+	const { colors, isDark } = useThemePalette();
+	const red = semanticRed(isDark);
+	const green = semanticGreen(isDark);
 	const detailHref: Href =
 		detailHrefPrefix === "/urunler"
 			? {
@@ -118,13 +123,15 @@ export default function ItemCard({
 			: null;
 
 	const initListenerActive = !!(item.is_user_subscribed || item.isUserNotificationActive);
+	const isUnavailable = !!item.is_discount_unavailable && !!item.discount_unavailability_cause;
+	const statusColor = isUnavailable ? red : green;
 
 	const cheapestChip =
 		item.is_cheapest || isRecent30Low ? (
-			<View className="rounded-xl bg-primary/10 px-2.5 py-1.5">
+			<View className="min-h-7 items-center justify-center rounded-full bg-foreground px-2.5 py-1.5">
 				<Text
-					className="text-[11px] text-primary"
-					style={fontStyles.medium}
+					className="text-center text-[11px] leading-4 text-background"
+					style={fontStyles.bold}
 				>
 					En Ucuz
 				</Text>
@@ -134,27 +141,27 @@ export default function ItemCard({
 	const priceMoveChip =
 		changeAmountFromPrevious !== null ? (
 			changeIsDown ? (
-				<View className="flex-row items-center gap-1.5 rounded-xl bg-emerald-50 px-2.5 py-1.5">
+				<View className="flex-row items-center gap-1.5 rounded-full border border-emerald-700/30 bg-emerald-700/20 px-2.5 py-1.5 dark:border-emerald-500/20 dark:bg-emerald-500/20">
 					<TrendingDown
 						size={14}
-						color="#047857"
+						color={green}
 					/>
 					<Text
-						className="text-[11px] text-emerald-700"
-						style={fontStyles.medium}
+						className="text-[11px]"
+						style={[fontStyles.medium, { color: green }]}
 					>
 						₺{formatPrice(Math.abs(changeAmountFromPrevious))} düştü
 					</Text>
 				</View>
 			) : changeIsUp ? (
-				<View className="flex-row items-center gap-1.5 rounded-xl bg-red-50 px-2.5 py-1.5">
+				<View className="flex-row items-center gap-1.5 rounded-full border border-red-700/25 bg-red-700/10 px-2.5 py-1.5 dark:border-red-500/20 dark:bg-red-500/20">
 					<TrendingUp
 						size={14}
-						color="#dc2626"
+						color={red}
 					/>
 					<Text
-						className="text-[11px] text-red-600"
-						style={fontStyles.medium}
+						className="text-[11px]"
+						style={[fontStyles.medium, { color: red }]}
 					>
 						₺{formatPrice(Math.abs(changeAmountFromPrevious))} yükseldi
 					</Text>
@@ -171,7 +178,9 @@ export default function ItemCard({
 				>
 					<Pressable className="shrink-0 flex-row items-center">
 						{hasMarketplaceIcon && MarketplaceIcon ? (
-							<MarketplaceIcon />
+							<View className="rounded-lg bg-white px-2 py-1">
+								<MarketplaceIcon />
+							</View>
 						) : (
 							<Text
 								className="text-xs text-muted-foreground"
@@ -204,7 +213,7 @@ export default function ItemCard({
 							<IconSymbol
 								name={categoryIconName as any}
 								size={14}
-								color="#6b7280"
+								color={colors.mutedForeground}
 							/>
 						) : null}
 
@@ -238,7 +247,7 @@ export default function ItemCard({
 	);
 
 	return (
-		<View className={cn("rounded-2xl border border-border/70 bg-background p-4", className)}>
+		<View className={cn("rounded-2xl border border-border/70 bg-card p-4", className)}>
 			<View className="flex-row gap-4">
 				<Link
 					href={detailHref}
@@ -253,6 +262,7 @@ export default function ItemCard({
 						}}
 					>
 						<View
+							className="relative overflow-hidden rounded-xl bg-white p-3"
 							style={{
 								width: "100%",
 								aspectRatio: 1,
@@ -260,6 +270,17 @@ export default function ItemCard({
 								alignItems: "center"
 							}}
 						>
+							{!!lastActionPercent && (
+								<View className="absolute left-2 top-2 z-[2] rounded-full border border-black/10 bg-foreground px-2 py-1 shadow-sm dark:border-white/10">
+									<Text
+										className="text-xs text-background"
+										style={fontStyles.bold}
+									>
+										-%{lastActionPercent}
+									</Text>
+								</View>
+							)}
+
 							<Image
 								source={{ uri: item.image_link }}
 								resizeMode="contain"
@@ -290,17 +311,6 @@ export default function ItemCard({
 						<View className="min-w-0 flex-1">
 							<MetaInfo />
 						</View>
-
-						{!!lastActionPercent && (
-							<View className="shrink-0 rounded-xl bg-primary/10 px-3 py-1.5">
-								<Text
-									className="text-[13px] text-primary"
-									style={fontStyles.bold}
-								>
-									%{lastActionPercent}
-								</Text>
-							</View>
-						)}
 					</View>
 
 					<Link
@@ -320,27 +330,30 @@ export default function ItemCard({
 					</Link>
 
 					<View className="mt-3 flex-row flex-wrap items-end gap-x-3 gap-y-1">
-						{typeof previousPrice === "number" && (
-							<Text
-								className="text-base text-red-600"
-								style={[fontStyles.medium, { textDecorationLine: "line-through" }]}
-							>
-								₺{formatPrice(previousPrice)}
-							</Text>
-						)}
-
 						<Text
 							className="text-2xl text-foreground"
 							style={fontStyles.bold}
 						>
 							₺{formatPrice(currentPrice)}
 						</Text>
+
+						{typeof previousPrice === "number" && (
+							<Text
+								className="text-base"
+								style={[
+									fontStyles.medium,
+									{ color: red, textDecorationLine: "line-through" }
+								]}
+							>
+								₺{formatPrice(previousPrice)}
+							</Text>
+						)}
 					</View>
 
 					<View className="mt-auto flex-row items-end justify-between gap-3 pt-3">
 						<View className="min-w-0 flex-1 flex-row flex-wrap gap-2">
-							{priceMoveChip}
 							{cheapestChip}
+							{priceMoveChip}
 						</View>
 
 						{displayItemListener && !!item._id && (
@@ -353,16 +366,37 @@ export default function ItemCard({
 						)}
 					</View>
 
-					{!!item.is_discount_unavailable && !!item.discount_unavailability_cause && (
-						<View className="mt-3 rounded-xl border border-red-200 bg-red-50 px-3 py-2.5">
+					<View
+						className={cn(
+							"mt-3 rounded-lg border px-3 py-2.5",
+							isUnavailable
+								? "border-red-700/25 bg-red-700/10 dark:border-red-500/20 dark:bg-red-500/20"
+								: "border-emerald-700/30 bg-emerald-700/20 dark:border-emerald-500/20 dark:bg-emerald-500/20"
+						)}
+					>
+						<View className="flex-row items-center gap-2">
+							{isUnavailable ? (
+								<XCircle
+									size={15}
+									color={statusColor}
+								/>
+							) : (
+								<CheckCircle2
+									size={15}
+									color={statusColor}
+								/>
+							)}
 							<Text
-								className="text-xs text-red-600"
-								style={fontStyles.regular}
+								className="min-w-0 flex-1 text-xs"
+								style={[fontStyles.medium, { color: statusColor }]}
+								numberOfLines={2}
 							>
-								{item.discount_unavailability_cause}
+								{isUnavailable
+									? item.discount_unavailability_cause
+									: "Fırsat hala devam ediyor"}
 							</Text>
 						</View>
-					)}
+					</View>
 				</View>
 			</View>
 		</View>

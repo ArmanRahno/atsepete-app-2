@@ -16,9 +16,9 @@ import {
 } from "lucide-react-native";
 import { cn } from "@/lib/utils";
 import { ClassNameValue } from "tailwind-merge";
-import { lightPrimary, lightSecondary } from "@/constants/Colors";
 import Share from "react-native-share";
 import AppTouchableOpacity from "./AppTouchableOpacity";
+import { useThemePalette } from "@/hooks/useThemePalette";
 
 type ShareQRDialogProps = {
 	url: string;
@@ -33,6 +33,7 @@ const ShareQRDialog: React.FC<ShareQRDialogProps> = ({
 	caption,
 	pressableClassName
 }) => {
+	const { colors } = useThemePalette();
 	const [visible, setVisible] = useState(false);
 	const [copied, setCopied] = useState(false);
 	const [saving, setSaving] = useState(false);
@@ -172,7 +173,10 @@ const ShareQRDialog: React.FC<ShareQRDialogProps> = ({
 					pressableClassName
 				)}
 			>
-				<QrCode size={20} />
+				<QrCode
+					size={20}
+					color={colors.text}
+				/>
 			</Pressable>
 
 			<Modal
@@ -186,11 +190,13 @@ const ShareQRDialog: React.FC<ShareQRDialogProps> = ({
 					onPress={close}
 				>
 					<View
-						className="mx-6 my-auto rounded-2xl bg-white px-4 py-6"
+						className="mx-6 my-auto rounded-2xl bg-card px-4 py-6"
 						onStartShouldSetResponder={() => true}
 					>
 						{title && (
-							<Text className="text-xl font-bold text-center mb-2">{title}</Text>
+							<Text className="text-xl font-bold text-center text-foreground mb-2">
+								{title}
+							</Text>
 						)}
 
 						<View className="self-center bg-white p-3 rounded-xl shadow-sm mb-4">
@@ -209,7 +215,7 @@ const ShareQRDialog: React.FC<ShareQRDialogProps> = ({
 						</View>
 
 						<Text
-							className="text-lg font-medium text-center mb-4"
+							className="text-lg font-medium text-center text-foreground mb-4"
 							numberOfLines={1}
 							ellipsizeMode="tail"
 						>
@@ -245,14 +251,14 @@ const ShareQRDialog: React.FC<ShareQRDialogProps> = ({
 								onPress={handleSave}
 								disabled={!url || saving}
 								className="flex-1 flex-row items-center justify-center rounded-xl p-3 opacity-100 disabled:opacity-60"
-								style={{ backgroundColor: lightPrimary }}
+								style={{ backgroundColor: colors.primary }}
 							>
 								<Download
-									color="#fff"
+									color={colors.primaryForeground}
 									size={16}
 									style={{ marginRight: 6 }}
 								/>
-								<Text className="font-medium text-white">Kaydet</Text>
+								<Text className="font-medium text-primary-foreground">Kaydet</Text>
 							</AppTouchableOpacity>
 
 							<AppTouchableOpacity
@@ -265,16 +271,18 @@ const ShareQRDialog: React.FC<ShareQRDialogProps> = ({
 										<Check
 											size={16}
 											style={{ marginRight: 6 }}
+											color={colors.text}
 										/>
-										<Text className="font-medium">Kopyalandı</Text>
+										<Text className="font-medium text-foreground">Kopyalandı</Text>
 									</>
 								) : (
 									<>
 										<ClipboardIcon
 											size={16}
 											style={{ marginRight: 6 }}
+											color={colors.text}
 										/>
-										<Text className="font-medium">Kopyala</Text>
+										<Text className="font-medium text-foreground">Kopyala</Text>
 									</>
 								)}
 							</AppTouchableOpacity>
@@ -283,13 +291,14 @@ const ShareQRDialog: React.FC<ShareQRDialogProps> = ({
 								onPress={handleShare}
 								disabled={!shareMessage}
 								className="flex-1 flex-row items-center justify-center rounded-xl p-3 opacity-100 disabled:opacity-60"
-								style={{ backgroundColor: lightSecondary }}
+								style={{ backgroundColor: colors.secondary }}
 							>
 								<Share2
 									size={16}
 									style={{ marginRight: 6 }}
+									color={colors.secondaryForeground}
 								/>
-								<Text className="font-medium">Paylaş</Text>
+								<Text className="font-medium text-secondary-foreground">Paylaş</Text>
 							</AppTouchableOpacity>
 						</View>
 
@@ -298,7 +307,10 @@ const ShareQRDialog: React.FC<ShareQRDialogProps> = ({
 							hitSlop={24}
 							className="absolute top-3 right-3 p-1 rounded-full"
 						>
-							<X size={24} />
+							<X
+								size={24}
+								color={colors.text}
+							/>
 						</AppTouchableOpacity>
 					</View>
 				</Pressable>

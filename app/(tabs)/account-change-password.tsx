@@ -18,6 +18,7 @@ import HeaderIcon from "@/components/header/HeaderIcon";
 import HeaderSecondRow from "@/components/header/HeaderSecondRow";
 import { Card } from "@/components/shad-cn/card";
 import HeaderFirstRow from "@/components/header/HeaderFirstRow";
+import { useThemePalette } from "@/hooks/useThemePalette";
 
 const ChangeSchema = z
 	.object({
@@ -44,6 +45,7 @@ const ENDPOINT = "https://atsepete.net/api/application/auth/change-password";
 
 export default function ChangePasswordScreen() {
 	const router = useRouter();
+	const { colors } = useThemePalette();
 
 	const [serverError, setServerError] = useState("");
 	const [successOpen, setSuccessOpen] = useState(false);
@@ -136,7 +138,9 @@ export default function ChangePasswordScreen() {
 			>
 				<View className="flex-1 bg-black/50 items-center justify-center p-4">
 					<View className="w-full max-w-[420px] bg-background rounded-xl p-4">
-						<Text className="text-lg font-semibold text-center">Şifre Güncellendi</Text>
+						<Text className="text-lg font-semibold text-center text-foreground">
+							Şifre Güncellendi
+						</Text>
 						<Text className="text-muted-foreground text-center mt-2">
 							{successMessage}
 						</Text>
@@ -158,10 +162,20 @@ export default function ChangePasswordScreen() {
 				behavior="padding"
 			>
 				<Card className="p-4">
-					<Text className="text-xl font-semibold mb-3 text-center">Şifre Değiştir</Text>
+					<Text
+						className="text-xl font-semibold mb-3 text-center"
+						style={{ color: colors.text }}
+					>
+						Şifre Değiştir
+					</Text>
 
 					<View className="flex-row justify-between">
-						<Text className="mt-2">Mevcut Şifre</Text>
+						<Text
+							className="mt-2"
+							style={{ color: colors.text }}
+						>
+							Mevcut Şifre
+						</Text>
 						<AppTouchableOpacity
 							className="p-1"
 							onPress={() => router.push("/(tabs)/account-forgot-password")}
@@ -181,8 +195,10 @@ export default function ChangePasswordScreen() {
 						name="oldPassword"
 						render={({ field: { onChange, onBlur, value } }) => (
 							<TextInput
-								className="border border-gray-300 p-2 rounded mt-1 text-foreground placeholder:text-muted-foreground"
+								className="border border-border bg-card p-2 rounded mt-1 text-foreground"
 								placeholder="Mevcut şifreniz"
+								placeholderTextColor={colors.mutedForeground}
+								style={{ color: colors.text }}
 								secureTextEntry
 								autoCapitalize="none"
 								onBlur={onBlur}
@@ -199,14 +215,21 @@ export default function ChangePasswordScreen() {
 
 					<View className="h-[1px] bg-border mt-4" />
 
-					<Text className="mt-4">Yeni Şifre</Text>
+					<Text
+						className="mt-4"
+						style={{ color: colors.text }}
+					>
+						Yeni Şifre
+					</Text>
 					<Controller
 						control={control}
 						name="newPassword"
 						render={({ field: { onChange, onBlur, value } }) => (
 							<TextInput
-								className="border border-gray-300 p-2 rounded mt-1 text-foreground placeholder:text-muted-foreground"
+								className="border border-border bg-card p-2 rounded mt-1 text-foreground"
 								placeholder="Yeni şifre"
+								placeholderTextColor={colors.mutedForeground}
+								style={{ color: colors.text }}
 								secureTextEntry
 								autoCapitalize="none"
 								onBlur={onBlur}
@@ -221,14 +244,21 @@ export default function ChangePasswordScreen() {
 						</Text>
 					)}
 
-					<Text className="mt-3">Yeni Şifre (Tekrar)</Text>
+					<Text
+						className="mt-3"
+						style={{ color: colors.text }}
+					>
+						Yeni Şifre (Tekrar)
+					</Text>
 					<Controller
 						control={control}
 						name="confirmNewPassword"
 						render={({ field: { onChange, onBlur, value } }) => (
 							<TextInput
-								className="border border-gray-300 p-2 rounded mt-1 text-foreground placeholder:text-muted-foreground"
+								className="border border-border bg-card p-2 rounded mt-1 text-foreground"
 								placeholder="Yeni şifre tekrar"
+								placeholderTextColor={colors.mutedForeground}
+								style={{ color: colors.text }}
 								secureTextEntry
 								autoCapitalize="none"
 								onBlur={onBlur}

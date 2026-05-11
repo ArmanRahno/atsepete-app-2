@@ -1,4 +1,3 @@
-import { lightMutedForeground } from "@/constants/Colors";
 import { Camera as CameraIcon } from "lucide-react-native";
 import { AppState, Text, View } from "react-native";
 import { useEffect, useRef, useState } from "react";
@@ -7,8 +6,10 @@ import { usePermissionWarmup } from "../PermissionWarmupDialog";
 import { openSettings } from "expo-linking";
 import AppTouchableOpacity from "../AppTouchableOpacity";
 import { Camera } from "expo-camera";
+import { useThemePalette } from "@/hooks/useThemePalette";
 
 const BarcodeScanButton = () => {
+	const { colors } = useThemePalette();
 	const [isCamViewOpen, setIsCamViewOpen] = useState<boolean>(false);
 
 	const [pendingCamOpenAfterSettings, setPendingCamOpenAfterSettings] = useState(false);
@@ -109,7 +110,7 @@ const BarcodeScanButton = () => {
 				<Text className="mx-1 p-2.5">
 					<CameraIcon
 						size={24}
-						color={lightMutedForeground}
+						color={colors.mutedForeground}
 					/>
 				</Text>
 			</AppTouchableOpacity>

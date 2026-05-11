@@ -1,15 +1,16 @@
-import { lightMutedForeground } from "@/constants/Colors";
 import { router } from "expo-router";
 import { User } from "lucide-react-native";
 import React from "react";
 import AppTouchableOpacity from "../AppTouchableOpacity";
 import { useAuthStatus } from "@/hooks/useAuthStatus";
+import { useThemePalette } from "@/hooks/useThemePalette";
 
 const HeaderProfileTouchable = () => {
 	const { isLoggedIn } = useAuthStatus();
+	const { colors } = useThemePalette();
 
 	const iconColor =
-		isLoggedIn === null ? lightMutedForeground : isLoggedIn ? "#22c55e" : "#ef4444";
+		isLoggedIn === null ? colors.mutedForeground : isLoggedIn ? "#22c55e" : colors.destructive;
 
 	return (
 		<AppTouchableOpacity

@@ -15,9 +15,11 @@ import Animated, {
 	useAnimatedStyle,
 	useSharedValue
 } from "react-native-reanimated";
+import { useThemePalette } from "@/hooks/useThemePalette";
 
 function HeroSquare({ item, scrollY }: { item: Item; scrollY: SharedValue<number> }) {
 	const { width } = useWindowDimensions();
+	const { colors, isDark } = useThemePalette();
 	const size = width;
 
 	const squareAnimatedStyle = useAnimatedStyle(() => ({
@@ -67,40 +69,46 @@ function HeroSquare({ item, scrollY }: { item: Item; scrollY: SharedValue<number
 
 	return (
 		<View
-			className="overflow-hidden bg-white"
-			style={{ height: size }}
+			className="overflow-hidden"
+			style={{ height: size, backgroundColor: "#FFFFFF" }}
 		>
 			<Animated.View style={[StyleSheet.absoluteFillObject, squareAnimatedStyle]}>
-				<View className="flex-1 bg-white">
-					<View className="flex-1 items-center justify-center bg-white p-6 pb-12">
+				<View
+					className="flex-1"
+					style={{ backgroundColor: "#FFFFFF" }}
+				>
+					<View
+						className="flex-1 items-center justify-center p-6 pb-12"
+						style={{ backgroundColor: "#FFFFFF" }}
+					>
 						<Image
 							source={{ uri: item.image_link }}
 							resizeMode="contain"
 							style={{ width: "100%", height: "100%" }}
 						/>
 					</View>
-
-					<Animated.View
-						pointerEvents="none"
-						style={[StyleSheet.absoluteFillObject, blurOverlayStyle]}
-					>
-						<BlurView
-							intensity={48}
-							tint="light"
-							style={StyleSheet.absoluteFillObject}
-						/>
-					</Animated.View>
-
-					<Animated.View
-						pointerEvents="none"
-						style={[
-							StyleSheet.absoluteFillObject,
-							{ backgroundColor: "#ffffff" },
-							dimOverlayStyle
-						]}
-					/>
 				</View>
 			</Animated.View>
+
+			<Animated.View
+				pointerEvents="none"
+				style={[StyleSheet.absoluteFillObject, blurOverlayStyle]}
+			>
+				<BlurView
+					intensity={48}
+					tint={isDark ? "dark" : "light"}
+					style={StyleSheet.absoluteFillObject}
+				/>
+			</Animated.View>
+
+			<Animated.View
+				pointerEvents="none"
+				style={[
+					StyleSheet.absoluteFillObject,
+					{ backgroundColor: colors.background },
+					dimOverlayStyle
+				]}
+			/>
 
 			{item.is_cheapest && <CheapestBadge />}
 		</View>
@@ -199,14 +207,24 @@ export default function ItemDetailScreen() {
 							onPress={() => router.push("/(modals)/report-issue")}
 							hitSlop={12}
 						>
-							<Text style={styles.footerLink}>Hata Bildir</Text>
+							<Text
+								className="text-muted-foreground"
+								style={styles.footerLink}
+							>
+								Hata Bildir
+							</Text>
 						</AppTouchableOpacity>
 
 						<AppTouchableOpacity
 							onPress={() => router.push("/(modals)/make-suggestion")}
 							hitSlop={12}
 						>
-							<Text style={[styles.footerLink, { paddingLeft: 4 }]}>Öneri Yap</Text>
+							<Text
+								className="text-muted-foreground"
+								style={[styles.footerLink, { paddingLeft: 4 }]}
+							>
+								Öneri Yap
+							</Text>
 						</AppTouchableOpacity>
 					</View>
 				</View>

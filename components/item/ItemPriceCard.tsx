@@ -10,8 +10,10 @@ import ShareDialog from "./ShareDialog";
 import ItemListener from "./ItemListener";
 import AppTouchableOpacity from "../AppTouchableOpacity";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { TrendingDown, TrendingUp } from "lucide-react-native";
+import { CheckCircle2, TrendingDown, TrendingUp, XCircle } from "lucide-react-native";
 import { IconSymbol } from "@/components/ui/IconSymbol";
+import { useThemePalette } from "@/hooks/useThemePalette";
+import { semanticGreen, semanticRed } from "@/constants/SemanticColors";
 
 const REFERRER_CODE_KEY = "user-referrer-code";
 const THIRTY_DAYS_MS = 30 * 24 * 60 * 60 * 1000;
@@ -39,6 +41,10 @@ const styles = StyleSheet.create({
 });
 
 export default function ItemPriceCard({ item }: ItemPriceCardProps) {
+	const { colors, isDark } = useThemePalette();
+	const red = semanticRed(isDark);
+	const green = semanticGreen(isDark);
+
 	if (!item) return null;
 
 	const marketplaceValue =
@@ -96,6 +102,8 @@ export default function ItemPriceCard({ item }: ItemPriceCardProps) {
 		item.last_price_action_percent_magnitude > 0
 			? Math.round(item.last_price_action_percent_magnitude)
 			: null;
+	const isUnavailable = !!item.is_discount_unavailable && !!item.discount_unavailability_cause;
+	const statusColor = isUnavailable ? red : green;
 
 	const [shareUrl, setShareUrl] = useState(`https://atsepete.net/indirimler/${item.url_slug}`);
 
@@ -134,19 +142,21 @@ export default function ItemPriceCard({ item }: ItemPriceCardProps) {
 		: null;
 
 	return (
-		<View className="rounded-[24px] bg-background p-4">
+		<View className="rounded-[24px] bg-card p-4">
 			<View className="flex-row items-center justify-between gap-3">
 				{marketplaceHref ? (
 					<Link
 						href={marketplaceHref}
 						asChild
 					>
-						<Pressable className="rounded-lg">
+						<Pressable className="h-10 w-36 items-center justify-center overflow-hidden rounded-lg bg-white px-4 py-2">
 							{MarketplaceIcon ? (
 								<View
+									className="items-center justify-center"
 									style={{
-										transform: [{ scale: 1.5 }],
-										transformOrigin: "left center"
+										width: 124,
+										height: 28,
+										transform: [{ scale: 1.12 }]
 									}}
 								>
 									<MarketplaceIcon />
@@ -167,14 +177,14 @@ export default function ItemPriceCard({ item }: ItemPriceCardProps) {
 
 				{!!lastActionPercent && (
 					<View
-						className="bg-primary px-3.5 py-2"
-						style={{ borderRadius: 10 }}
+						className="border border-black/10 bg-foreground px-3.5 py-2 dark:border-white/10"
+						style={{ borderRadius: 999 }}
 					>
 						<Text
-							className="text-base text-primary-foreground"
+							className="text-base text-background"
 							style={styles.bold}
 						>
-							%{lastActionPercent}
+							-%{lastActionPercent}
 						</Text>
 					</View>
 				)}
@@ -192,7 +202,7 @@ export default function ItemPriceCard({ item }: ItemPriceCardProps) {
 									<IconSymbol
 										name={categoryIconName as any}
 										size={20}
-										color="#6b7280"
+										color={colors.mutedForeground}
 									/>
 								) : null}
 
@@ -231,24 +241,6 @@ export default function ItemPriceCard({ item }: ItemPriceCardProps) {
 					/>
 				</View>
 
-				{typeof previousPrice === "number" && (
-					<View className="mb-2 flex-row items-center gap-2">
-						<Text
-							className="text-sm text-muted-foreground"
-							style={styles.regular}
-						>
-							Önce
-						</Text>
-
-						<Text
-							className="text-lg text-red-600"
-							style={[styles.medium, { textDecorationLine: "line-through" }]}
-						>
-							₺{formatPrice(previousPrice)}
-						</Text>
-					</View>
-				)}
-
 				<View>
 					<Text
 						className="text-sm text-muted-foreground"
@@ -265,22 +257,43 @@ export default function ItemPriceCard({ item }: ItemPriceCardProps) {
 					</Text>
 				</View>
 
+				{typeof previousPrice === "number" && (
+					<View className="mt-2 flex-row items-center gap-2">
+						<Text
+							className="text-sm text-muted-foreground"
+							style={styles.regular}
+						>
+							Önce
+						</Text>
+
+						<Text
+							className="text-lg"
+							style={[
+								styles.medium,
+								{ color: red, textDecorationLine: "line-through" }
+							]}
+						>
+							₺{formatPrice(previousPrice)}
+						</Text>
+					</View>
+				)}
+
 				{(recent30History.length > 0 || changeAmountFromPrevious !== null) && (
 					<View className="mt-3 gap-2">
 						{recent30History.length > 0 &&
 							(isRecent30Low ? (
 								<View
-									className="self-start bg-emerald-50 px-2.5 py-1.5"
+									className="self-start border border-emerald-700/30 bg-emerald-700/20 px-2.5 py-1.5 dark:border-emerald-500/20 dark:bg-emerald-500/20"
 									style={{ borderRadius: 8 }}
 								>
 									<View className="flex-row items-center gap-2">
 										<TrendingDown
 											size={16}
-											color="#047857"
+											color={green}
 										/>
 										<Text
-											className="text-sm text-emerald-700"
-											style={styles.medium}
+											className="text-sm"
+											style={[styles.medium, { color: green }]}
 										>
 											Son 30 gündeki en düşük fiyat
 										</Text>
@@ -306,17 +319,17 @@ export default function ItemPriceCard({ item }: ItemPriceCardProps) {
 						{changeAmountFromPrevious !== null &&
 							(changeIsDown ? (
 								<View
-									className="self-start bg-emerald-50 px-2.5 py-1.5"
+									className="self-start border border-emerald-700/30 bg-emerald-700/20 px-2.5 py-1.5 dark:border-emerald-500/20 dark:bg-emerald-500/20"
 									style={{ borderRadius: 8 }}
 								>
 									<View className="flex-row items-center gap-2">
 										<TrendingDown
 											size={16}
-											color="#047857"
+											color={green}
 										/>
 										<Text
-											className="text-sm text-emerald-700"
-											style={styles.medium}
+											className="text-sm"
+											style={[styles.medium, { color: green }]}
 										>
 											Son kayda göre ₺
 											{formatPrice(Math.abs(changeAmountFromPrevious))} düştü
@@ -325,17 +338,17 @@ export default function ItemPriceCard({ item }: ItemPriceCardProps) {
 								</View>
 							) : changeIsUp ? (
 								<View
-									className="self-start bg-red-50 px-2.5 py-1.5"
+									className="self-start border border-red-700/25 bg-red-700/10 px-2.5 py-1.5 dark:border-red-500/20 dark:bg-red-500/20"
 									style={{ borderRadius: 8 }}
 								>
 									<View className="flex-row items-center gap-2">
 										<TrendingUp
 											size={16}
-											color="#dc2626"
+											color={red}
 										/>
 										<Text
-											className="text-sm text-red-600"
-											style={styles.medium}
+											className="text-sm"
+											style={[styles.medium, { color: red }]}
 										>
 											Son kayda göre ₺
 											{formatPrice(Math.abs(changeAmountFromPrevious))}{" "}
@@ -348,16 +361,35 @@ export default function ItemPriceCard({ item }: ItemPriceCardProps) {
 				)}
 			</View>
 
-			{!!item.is_discount_unavailable && !!item.discount_unavailability_cause && (
-				<View className="mt-4 rounded-lg bg-red-50 px-3 py-2">
+			<View
+				className={`mt-4 rounded-lg border px-3 py-2 ${
+					isUnavailable
+						? "border-red-700/25 bg-red-700/10 dark:border-red-500/20 dark:bg-red-500/20"
+						: "border-emerald-700/30 bg-emerald-700/20 dark:border-emerald-500/20 dark:bg-emerald-500/20"
+				}`}
+			>
+				<View className="flex-row items-center gap-2">
+					{isUnavailable ? (
+						<XCircle
+							size={16}
+							color={statusColor}
+						/>
+					) : (
+						<CheckCircle2
+							size={16}
+							color={statusColor}
+						/>
+					)}
 					<Text
-						className="text-sm text-red-600"
-						style={styles.regular}
+						className="min-w-0 flex-1 text-sm"
+						style={[styles.medium, { color: statusColor }]}
 					>
-						{item.discount_unavailability_cause}
+						{isUnavailable
+							? item.discount_unavailability_cause
+							: "Fırsat hala devam ediyor"}
 					</Text>
 				</View>
-			)}
+			</View>
 
 			<View className="mt-4 flex-row gap-2">
 				<ShareDialog
@@ -386,7 +418,7 @@ export default function ItemPriceCard({ item }: ItemPriceCardProps) {
 				className="mt-4 text-[11px] leading-4 text-muted-foreground"
 				style={styles.disclaimer}
 			>
-				AtSepete.net, Amazon, HepsiBurada, Trendyol, N11, MediaMarkt, Pazarama, İdefix, D&R,
+				AtSepete, Amazon, HepsiBurada, Trendyol, N11, MediaMarkt, Pazarama, İdefix, D&R,
 				Çiçeksepeti, Türkcell Pasaj, Koçtaş, PttAVM, Avansas, Teknosa ve diğer markaların
 				resmi temsilcisi değildir. Belirtilen markalar ve diğerleri ilgili firmalara aittir.
 				Bu sitedeki bağlantılardan satın alım yapmanız durumunda komisyon kazanabiliriz.

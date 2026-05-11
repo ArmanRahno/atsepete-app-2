@@ -1,4 +1,3 @@
-import { lightMutedForeground } from "@/constants/Colors";
 import Marketplaces from "@/constants/Marketplaces";
 import findCategoryLabel from "@/lib/findCategoryLabel";
 import getFormattedTimeDifference from "@/lib/getFormattedTimeDifference";

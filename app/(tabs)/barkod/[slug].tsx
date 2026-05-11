@@ -11,6 +11,7 @@ import { ChevronUp } from "lucide-react-native";
 import AppTouchableOpacity from "@/components/AppTouchableOpacity";
 import HeaderFirstRow from "@/components/header/HeaderFirstRow";
 import ItemCard from "@/components/item/item-card/ItemCard";
+import { useThemePalette } from "@/hooks/useThemePalette";
 
 const API_URL = "https://atsepete.net/api/application/page/barcode";
 
@@ -22,6 +23,7 @@ type UrunlerPageData = {
 const MemoizedItemCard = memo(ItemCard);
 
 export default function BarkodScreen() {
+	const { colors } = useThemePalette();
 	const { slug } = useLocalSearchParams();
 	const [items, setItems] = useState<Item[]>([]);
 
@@ -126,7 +128,7 @@ export default function BarkodScreen() {
 					onPress={handleScrollToTop}
 				>
 					<Text>
-						<ChevronUp />
+						<ChevronUp color={colors.text} />
 					</Text>
 				</AppTouchableOpacity>
 			)}

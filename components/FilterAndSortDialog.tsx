@@ -1,11 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { Modal, View, Text, TextInput, StyleSheet, Pressable, Alert, Platform } from "react-native";
-import SelectDropdown from "react-native-select-dropdown";
-import { lightBorder, lightMutedForeground } from "../constants/Colors";
-import { cn } from "@/lib/utils";
-import { ChevronDown } from "lucide-react-native";
+import { Modal, View, Text, TextInput, Pressable, Alert, Platform } from "react-native";
 import AppTouchableOpacity from "./AppTouchableOpacity";
 import { Dropdown } from "react-native-element-dropdown";
+import { useThemePalette } from "@/hooks/useThemePalette";
 
 export const SORT_OPTIONS = [
 	{ label: "En Yeni", value: "en-yeni" },
@@ -32,6 +29,7 @@ type FilterAndSortDialogProps = {
 
 export default function FilterAndSortDialog(props: FilterAndSortDialogProps) {
 	const { visible, onClose, onApply, onClearFilters, filters } = props;
+	const { colors } = useThemePalette();
 
 	const [minPrice, setMinPrice] = useState(filters.minPrice || "");
 	const [maxPrice, setMaxPrice] = useState(filters.maxPrice || "");
@@ -81,12 +79,20 @@ export default function FilterAndSortDialog(props: FilterAndSortDialogProps) {
 					className="w-5/6 max-w-96 bg-background p-5 rounded-lg gap-4"
 					onPress={() => {}}
 				>
-					<Text className="text-lg text-foreground font-semibold">
+					<Text
+						className="text-lg font-semibold"
+						style={{ color: colors.text }}
+					>
 						Filtrele ve Sırala
 					</Text>
 
 					<View className="gap-1">
-						<Text className="font-medium">Sıralama</Text>
+						<Text
+							className="font-medium"
+							style={{ color: colors.text }}
+						>
+							Sıralama
+						</Text>
 
 						<Dropdown
 							data={SORT_OPTIONS}
@@ -99,13 +105,21 @@ export default function FilterAndSortDialog(props: FilterAndSortDialogProps) {
 								paddingHorizontal: 12,
 								borderRadius: 8,
 								borderWidth: 1,
-								borderColor: lightBorder
+								borderColor: colors.border,
+								backgroundColor: colors.background
 							}}
 							containerStyle={{
 								borderRadius: 8,
 								overflow: "hidden",
+								backgroundColor: colors.popover,
+								borderColor: colors.border,
 								marginTop: Platform.select({ android: -16, ios: 0, default: 0 })
 							}}
+							selectedTextStyle={{ color: colors.text }}
+							itemTextStyle={{ color: colors.popoverText }}
+							activeColor={colors.secondary}
+							placeholderStyle={{ color: colors.mutedForeground }}
+							iconColor={colors.mutedForeground}
 						/>
 
 						{/* {SORT_OPTIONS.map(option => (
@@ -125,20 +139,29 @@ export default function FilterAndSortDialog(props: FilterAndSortDialogProps) {
 					</View>
 
 					<View className="gap-1">
-						<Text className="font-medium">Fiyat Aralığı</Text>
+						<Text
+							className="font-medium"
+							style={{ color: colors.text }}
+						>
+							Fiyat Aralığı
+						</Text>
 						<View className="flex-row gap-2 items-center">
 							<TextInput
 								className="flex-1 rounded-lg px-4 py-2.5 border border-border text-lg text-foreground placeholder:text-muted-foreground"
 								placeholder="Min."
+								placeholderTextColor={colors.mutedForeground}
+								style={{ color: colors.text }}
 								keyboardType="numeric"
 								value={minPrice}
 								onChangeText={setMinPrice}
 								numberOfLines={1}
 							/>
-							<Text>-</Text>
+							<Text className="text-muted-foreground">-</Text>
 							<TextInput
 								className="flex-1 rounded-lg px-4 py-2.5 border border-border text-lg text-foreground placeholder:text-muted-foreground"
 								placeholder="Max."
+								placeholderTextColor={colors.mutedForeground}
+								style={{ color: colors.text }}
 								keyboardType="numeric"
 								value={maxPrice}
 								onChangeText={setMaxPrice}
@@ -180,7 +203,3 @@ export default function FilterAndSortDialog(props: FilterAndSortDialogProps) {
 		</Modal>
 	);
 }
-
-const styles = StyleSheet.create({
-	dropdown: { padding: 8, borderRadius: 8 }
-});

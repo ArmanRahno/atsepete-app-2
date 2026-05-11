@@ -19,15 +19,8 @@ import { Check, ChevronRight, Play } from "lucide-react-native";
 import Svg, { G, Path } from "react-native-svg";
 
 import AppTouchableOpacity from "@/components/AppTouchableOpacity";
-import {
-	lightBackground,
-	lightForeground,
-	lightMutedForeground,
-	lightPrimary,
-	lightMuted,
-	lightBorder
-} from "@/constants/Colors";
 import AtSepeteIcon from "@/assets/icons/AtSepeteIcon";
+import { useThemePalette } from "@/hooks/useThemePalette";
 
 export const ONBOARDING_KEY = "onboarding_seen_v1";
 
@@ -93,6 +86,7 @@ function YoutubeLogoBadge(props: { width?: number; height?: number }) {
 export default function OnboardingScreen() {
 	const router = useRouter();
 	const { width } = useWindowDimensions();
+	const { colors } = useThemePalette();
 
 	const slides: Slide[] = [
 		{
@@ -105,7 +99,7 @@ export default function OnboardingScreen() {
 				"Yeni indirimler sürekli eklenir",
 				"Hızlı ve temiz liste"
 			],
-			gradient: [lightPrimary, "#0B1220"],
+			gradient: [colors.primary, "#0B1220"],
 			accent: "#8F00FF"
 		},
 		{
@@ -142,7 +136,7 @@ export default function OnboardingScreen() {
 		}
 	];
 
-	const primaryBright = useMemo(() => lightenHex(lightPrimary, 0.06), []);
+	const primaryBright = useMemo(() => lightenHex(colors.primary, 0.06), [colors.primary]);
 
 	const listRef = useRef<FlatList<Slide>>(null);
 	const [index, setIndex] = useState(0);
@@ -193,7 +187,7 @@ export default function OnboardingScreen() {
 	}, []);
 
 	return (
-		<View style={[styles.root, { backgroundColor: lightBackground }]}>
+		<View style={[styles.root, { backgroundColor: colors.background }]}>
 			<Stack.Screen options={{ headerShown: false }} />
 
 			<View style={styles.topBar}>
@@ -201,20 +195,20 @@ export default function OnboardingScreen() {
 					<AtSepeteIcon
 						width={22}
 						height={22}
-						fill={lightPrimary}
+						fill={colors.primary}
 					/>
-					<Text style={[styles.brandText, { color: lightForeground }]}>ATSEPETE.NET</Text>
+					<Text style={[styles.brandText, { color: colors.text }]}>ATSEPETE</Text>
 				</View>
 
 				<View style={styles.topRight}>
-					<Text style={[styles.stepText, { color: lightMutedForeground }]}>
+					<Text style={[styles.stepText, { color: colors.mutedForeground }]}>
 						{index + 1}/{slides.length}
 					</Text>
 					<AppTouchableOpacity
 						onPress={finish}
 						style={styles.skipBtn}
 					>
-						<Text style={[styles.skipText, { color: lightMutedForeground }]}>Geç</Text>
+						<Text style={[styles.skipText, { color: colors.mutedForeground }]}>Geç</Text>
 					</AppTouchableOpacity>
 				</View>
 			</View>
@@ -266,10 +260,10 @@ export default function OnboardingScreen() {
 							<View
 								style={[
 									styles.bodyCard,
-									{ borderColor: lightBorder, backgroundColor: lightBackground }
+									{ borderColor: colors.border, backgroundColor: colors.background }
 								]}
 							>
-								<Text style={[styles.sectionTitle, { color: lightForeground }]}>
+								<Text style={[styles.sectionTitle, { color: colors.text }]}>
 									Özellikler
 								</Text>
 
@@ -278,14 +272,22 @@ export default function OnboardingScreen() {
 										key={`${item.key}-${i}`}
 										style={styles.bulletRow}
 									>
-										<View style={styles.bulletIcon}>
+										<View
+											style={[
+												styles.bulletIcon,
+												{
+													backgroundColor: colors.background,
+													borderColor: colors.border
+												}
+											]}
+										>
 											<Check
 												color={accentBright}
 												size={16}
 											/>
 										</View>
 										<Text
-											style={[styles.bulletText, { color: lightForeground }]}
+											style={[styles.bulletText, { color: colors.text }]}
 										>
 											{b}
 										</Text>
@@ -295,7 +297,7 @@ export default function OnboardingScreen() {
 								{item.youtubeId && (
 									<AppTouchableOpacity
 										onPress={() => openYoutube(item.youtubeId)}
-										style={[styles.youtubeRow, { borderColor: lightBorder }]}
+										style={[styles.youtubeRow, { borderColor: colors.border }]}
 									>
 										<View style={styles.youtubeThumbWrap}>
 											<Image
@@ -319,7 +321,7 @@ export default function OnboardingScreen() {
 											<Text
 												style={[
 													styles.youtubeTitle,
-													{ color: lightForeground }
+													{ color: colors.text }
 												]}
 											>
 												Kullanım videosu
@@ -328,12 +330,12 @@ export default function OnboardingScreen() {
 												<View style={styles.pill}>
 													<Play
 														size={14}
-														color={lightPrimary}
+														color={colors.primary}
 													/>
 													<Text
 														style={[
 															styles.pillText,
-															{ color: lightPrimary }
+															{ color: colors.primary }
 														]}
 													>
 														YouTube’da izle
@@ -351,7 +353,7 @@ export default function OnboardingScreen() {
 
 			<View style={styles.bottom}>
 				<View
-					style={[styles.progressTrack, { backgroundColor: lightMuted }]}
+					style={[styles.progressTrack, { backgroundColor: colors.muted }]}
 					onLayout={e => setTrackW(e.nativeEvent.layout.width)}
 				>
 					<Animated.View
@@ -386,12 +388,12 @@ export default function OnboardingScreen() {
 					style={[styles.primaryBtn, { backgroundColor: primaryBright }]}
 					onPress={onNext}
 				>
-					<Text style={[styles.primaryText, { color: lightBackground }]}>
+					<Text style={[styles.primaryText, { color: colors.primaryForeground }]}>
 						{isLast ? "Başla" : "İleri"}
 					</Text>
 					<ChevronRight
 						size={18}
-						color={lightBackground}
+						color={colors.primaryForeground}
 					/>
 				</AppTouchableOpacity>
 			</View>
@@ -458,9 +460,7 @@ const styles = StyleSheet.create({
 		borderRadius: 8,
 		alignItems: "center",
 		justifyContent: "center",
-		backgroundColor: lightBackground,
-		borderWidth: 1,
-		borderColor: lightBorder
+		borderWidth: 1
 	},
 
 	bulletText: { fontSize: 14, fontWeight: "800" },

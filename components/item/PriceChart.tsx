@@ -15,8 +15,10 @@ import {
 } from "@shopify/react-native-skia";
 import { Easing, SharedValue, useDerivedValue, withTiming } from "react-native-reanimated";
 import { Area, CartesianChart, ChartBounds, Line, useChartPressState } from "victory-native";
-import { lightForeground, lightMutedForeground, lightPrimary } from "@/constants/Colors";
 import formatPrice from "@/lib/formatPrice";
+import { useThemePalette } from "@/hooks/useThemePalette";
+
+type ChartThemeColors = ReturnType<typeof useThemePalette>["colors"];
 
 type PricePoint = Item["price_history"][number];
 
@@ -80,6 +82,7 @@ function formatTRYWorklet(value: number) {
 }
 
 export const PriceChart = ({ data }: { data: PricePoint[] }) => {
+	const { colors, isDark } = useThemePalette();
 	const { state, isActive } = useChartPressState({ x: 0, y: { price: 0 } });
 
 	const realChartData = useMemo<ChartPoint[]>(() => {
@@ -169,14 +172,12 @@ export const PriceChart = ({ data }: { data: PricePoint[] }) => {
 	const lastPriceLabel =
 		typeof lastPrice === "number" ? `Son fiyat: ₺${formatPrice(lastPrice)}` : "";
 
-	const isTailPressed = () => Number(state.x.value.value ?? 0) > lastRealIndex;
-
 	return (
 		<View className="mt-1 mb-1 h-[260px]">
 			<CartesianChart
 				renderOutside={({ chartBounds }) => (
 					<>
-						{isActive && !isTailPressed() ? (
+						{isActive ? (
 							<>
 								<VerticalLine
 									stateX={state.x.position}
@@ -191,6 +192,8 @@ export const PriceChart = ({ data }: { data: PricePoint[] }) => {
 									x={state.x.position}
 									y={state.y.price.position}
 									chartBounds={chartBounds}
+									colors={colors}
+									isDark={isDark}
 								/>
 							</>
 						) : null}
@@ -202,8 +205,8 @@ export const PriceChart = ({ data }: { data: PricePoint[] }) => {
 				domainPadding={{ top: 28, bottom: 20 }}
 				axisOptions={{
 					font: genericFont,
-					labelColor: lightMutedForeground,
-					lineColor: "rgba(107,114,128,0.16)",
+					labelColor: colors.mutedForeground,
+					lineColor: isDark ? "rgba(173,165,153,0.18)" : "rgba(83,73,65,0.16)",
 					labelOffset: 8,
 					formatYLabel(label) {
 						return `₺${formatPrice(Number(label))}`;
@@ -213,6 +216,8 @@ export const PriceChart = ({ data }: { data: PricePoint[] }) => {
 				xAxis={{
 					tickCount: 8,
 					font: genericFont,
+					labelColor: colors.mutedForeground,
+					lineColor: isDark ? "rgba(173,165,153,0.18)" : "rgba(83,73,65,0.16)",
 					labelRotate: -45,
 					formatXLabel(label) {
 						const raw = Number(label);
@@ -241,7 +246,7 @@ export const PriceChart = ({ data }: { data: PricePoint[] }) => {
 							<Line
 								curveType={"stepAfter" as never}
 								points={points.price}
-								color={lightPrimary}
+								color={colors.primary}
 								strokeWidth={3}
 							/>
 
@@ -267,6 +272,8 @@ export const PriceChart = ({ data }: { data: PricePoint[] }) => {
 									font={genericFont}
 									chartBounds={chartBounds}
 									y={lastRealPoint.y}
+									colors={colors}
+									isDark={isDark}
 								/>
 							) : null}
 						</>
@@ -281,12 +288,16 @@ function LastPriceGuide({
 	label,
 	font,
 	chartBounds,
-	y
+	y,
+	colors,
+	isDark
 }: {
 	label: string;
 	font: SkFont | null;
 	chartBounds: ChartBounds;
 	y: number;
+	colors: ChartThemeColors;
+	isDark: boolean;
 }) {
 	if (!font) return null;
 
@@ -311,7 +322,7 @@ function LastPriceGuide({
 				width={pillWidth}
 				height={pillHeight}
 				r={10}
-				color="rgba(255,255,255,0.96)"
+				color={isDark ? colors.card : colors.background}
 			/>
 
 			<RoundedRect
@@ -330,7 +341,7 @@ function LastPriceGuide({
 				y={pillTop + 14}
 				font={font}
 				text={label}
-				color={lightPrimary}
+				color={colors.primary}
 			/>
 		</>
 	);
@@ -343,7 +354,9 @@ function ToolTip({
 	text2,
 	priceFont,
 	dateFont,
-	chartBounds
+	chartBounds,
+	colors,
+	isDark
 }: {
 	x: SharedValue<number>;
 	y: SharedValue<number>;
@@ -352,6 +365,8 @@ function ToolTip({
 	priceFont: SkFont | null;
 	dateFont: SkFont | null;
 	chartBounds: ChartBounds;
+	colors: ChartThemeColors;
+	isDark: boolean;
 }) {
 	return (
 		<>
@@ -359,14 +374,14 @@ function ToolTip({
 				cx={x}
 				cy={y}
 				r={7}
-				color="white"
+				color={isDark ? colors.background : colors.card}
 			/>
 
 			<Circle
 				cx={x}
 				cy={y}
 				r={4.5}
-				color={lightPrimary}
+				color={colors.primary}
 			/>
 
 			<HoverBox
@@ -377,6 +392,8 @@ function ToolTip({
 				priceFont={priceFont}
 				dateFont={dateFont}
 				chartBounds={chartBounds}
+				colors={colors}
+				isDark={isDark}
 			/>
 		</>
 	);
@@ -389,7 +406,9 @@ function HoverBox({
 	text2,
 	priceFont,
 	dateFont,
-	chartBounds
+	chartBounds,
+	colors,
+	isDark
 }: {
 	x: SharedValue<number>;
 	y: SharedValue<number>;
@@ -398,6 +417,8 @@ function HoverBox({
 	priceFont: SkFont | null;
 	dateFont: SkFont | null;
 	chartBounds: ChartBounds;
+	colors: ChartThemeColors;
+	isDark: boolean;
 }) {
 	const boxWidth = useDerivedValue(() => Math.max(88, text1.value.length * 8.4 + 16));
 	const boxHeight = 46;
@@ -437,7 +458,7 @@ function HoverBox({
 				width={boxWidth}
 				height={boxHeight}
 				r={12}
-				color="rgba(255,255,255,0.96)"
+				color={isDark ? colors.card : colors.background}
 			/>
 
 			<RoundedRect
@@ -456,7 +477,7 @@ function HoverBox({
 				y={text1Y}
 				font={priceFont}
 				text={text1}
-				color={lightForeground}
+				color={colors.text}
 			/>
 
 			<SkiaText
@@ -464,7 +485,7 @@ function HoverBox({
 				y={text2Y}
 				font={dateFont}
 				text={text2}
-				color={lightMutedForeground}
+				color={colors.mutedForeground}
 			/>
 		</>
 	);

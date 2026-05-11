@@ -12,6 +12,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import z from "zod";
 import { router } from "expo-router";
 import AppTouchableOpacity from "./AppTouchableOpacity";
+import { useThemePalette } from "@/hooks/useThemePalette";
 
 const MakeSuggestionSchema = z.object({
 	email: z.string().email("Hatalı email."),
@@ -28,6 +29,7 @@ type MakeSuggestionFormProps = {};
 const API_URL = "https://atsepete.net/api/application/action/user-suggestion";
 
 export default function MakeSuggestionForm({}: MakeSuggestionFormProps) {
+	const { colors } = useThemePalette();
 	const [isPending, setIsPending] = useState(false);
 
 	const {
@@ -82,7 +84,10 @@ export default function MakeSuggestionForm({}: MakeSuggestionFormProps) {
 				<Text className="text-lg text-foreground font-semibold">Öneri Yap</Text>
 
 				<View className="gap-1">
-					<Text className="font-medium">
+					<Text
+						className="font-medium"
+						style={{ color: colors.text }}
+					>
 						Email Adresi <Text className="text-destructive">*</Text>
 					</Text>
 					<Controller
@@ -92,6 +97,8 @@ export default function MakeSuggestionForm({}: MakeSuggestionFormProps) {
 							<TextInput
 								className="rounded-lg px-4 py-2 border border-border text-foreground placeholder:text-muted-foreground"
 								placeholder="john-doe@gmail.com"
+								placeholderTextColor={colors.mutedForeground}
+								style={{ color: colors.text }}
 								keyboardType="email-address"
 								autoCapitalize="none"
 								autoCorrect={false}
@@ -107,7 +114,12 @@ export default function MakeSuggestionForm({}: MakeSuggestionFormProps) {
 				</View>
 
 				<View className="gap-1">
-					<Text className="font-medium">Başlık</Text>
+					<Text
+						className="font-medium"
+						style={{ color: colors.text }}
+					>
+						Başlık
+					</Text>
 					<Controller
 						name="title"
 						control={control}
@@ -115,6 +127,8 @@ export default function MakeSuggestionForm({}: MakeSuggestionFormProps) {
 							<TextInput
 								className="rounded-lg px-4 py-2 border border-border text-foreground placeholder:text-muted-foreground"
 								placeholder="Önerinizin başlığı"
+								placeholderTextColor={colors.mutedForeground}
+								style={{ color: colors.text }}
 								onChangeText={field.onChange}
 								value={field.value}
 								editable={!isPending}
@@ -127,7 +141,10 @@ export default function MakeSuggestionForm({}: MakeSuggestionFormProps) {
 				</View>
 
 				<View className="gap-1">
-					<Text className="font-medium">
+					<Text
+						className="font-medium"
+						style={{ color: colors.text }}
+					>
 						Açıklama <Text className="text-destructive">*</Text>
 					</Text>
 					<Controller
@@ -138,6 +155,8 @@ export default function MakeSuggestionForm({}: MakeSuggestionFormProps) {
 								multiline
 								className="text-sm rounded-lg px-4 py-2 border border-border text-foreground placeholder:text-muted-foreground"
 								placeholder="Önerinizin detaylı açıklaması"
+								placeholderTextColor={colors.mutedForeground}
+								style={{ color: colors.text }}
 								onChangeText={field.onChange}
 								value={field.value}
 								editable={!isPending}

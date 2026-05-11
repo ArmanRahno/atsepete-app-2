@@ -10,11 +10,11 @@ import {
 	FlatList,
 	Dimensions
 } from "react-native";
-import { lightBackground, lightBorder, lightForeground, lightPrimary } from "@/constants/Colors";
 import { NotificationChannelSettingsSchema } from "@/zod-schemas/notification-settings";
 import AppTouchableOpacity from "@/components/AppTouchableOpacity";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { ChevronDown } from "lucide-react-native";
+import { useThemePalette } from "@/hooks/useThemePalette";
 
 type NotificationChannelSettings = {
 	enabled: boolean;
@@ -63,13 +63,15 @@ function ThemedSwitch({
 	onValueChange: (v: boolean) => void;
 	disabled?: boolean;
 }) {
+	const { colors } = useThemePalette();
+
 	return (
 		<Switch
 			value={value}
 			onValueChange={onValueChange}
 			disabled={disabled}
-			trackColor={{ false: lightBorder, true: lightPrimary }}
-			ios_backgroundColor={lightBorder}
+			trackColor={{ false: colors.border, true: colors.primary }}
+			ios_backgroundColor={colors.border}
 			thumbColor={Platform.OS === "android" ? "#fff" : undefined}
 		/>
 	);
@@ -90,7 +92,7 @@ function Section({
 }) {
 	return (
 		<View
-			className={`rounded-xl border border-border bg-background p-4 ${
+			className={`rounded-xl border border-border bg-card p-4 ${
 				disabled ? "opacity-60" : ""
 			}`}
 			pointerEvents={disabled ? "none" : "auto"}
@@ -133,6 +135,7 @@ function PickerSheet<T>({
 }) {
 	const screenH = Dimensions.get("window").height;
 	const maxSheetH = Math.min(520, Math.max(260, Math.floor(screenH * 0.6)));
+	const { colors } = useThemePalette();
 
 	const insets = useSafeAreaInsets();
 
@@ -148,19 +151,29 @@ function PickerSheet<T>({
 				onPress={onClose}
 			/>
 
-			<View style={[styles.sheet, { maxHeight: maxSheetH, bottom: insets.bottom + 12 }]}>
+			<View
+				style={[
+					styles.sheet,
+					{
+						maxHeight: maxSheetH,
+						bottom: insets.bottom + 12,
+						backgroundColor: colors.background,
+						borderColor: colors.border
+					}
+				]}
+			>
 				<View style={styles.sheetHeader}>
-					<Text style={styles.sheetTitle}>{title}</Text>
+					<Text style={[styles.sheetTitle, { color: colors.text }]}>{title}</Text>
 					<AppTouchableOpacity
 						onPress={onClose}
 						hitSlop={12}
 						className="px-2 py-1 rounded-md"
 					>
-						<Text style={styles.sheetClose}>Kapat</Text>
+						<Text style={[styles.sheetClose, { color: colors.text }]}>Kapat</Text>
 					</AppTouchableOpacity>
 				</View>
 
-				<View style={styles.sheetDivider} />
+				<View style={[styles.sheetDivider, { backgroundColor: colors.border }]} />
 
 				<FlatList
 					data={options}
@@ -178,22 +191,27 @@ function PickerSheet<T>({
 								className="px-4 py-3"
 								style={[
 									styles.optionRow,
-									selected ? styles.optionRowSelected : null
+									selected ? { backgroundColor: colors.secondary } : null
 								]}
 							>
 								<Text
 									style={[
 										styles.optionText,
-										selected ? styles.optionTextSelected : null
+										{ color: colors.text },
+										selected ? { color: colors.primary } : null
 									]}
 								>
 									{item.label}
 								</Text>
-								{selected ? <Text style={styles.check}>✓</Text> : null}
+								{selected ? (
+									<Text style={[styles.check, { color: colors.primary }]}>✓</Text>
+								) : null}
 							</AppTouchableOpacity>
 						);
 					}}
-					ItemSeparatorComponent={() => <View style={styles.optionDivider} />}
+					ItemSeparatorComponent={() => (
+						<View style={[styles.optionDivider, { backgroundColor: colors.border }]} />
+					)}
 				/>
 				<View style={{ height: 12 }} />
 			</View>
@@ -210,6 +228,7 @@ export default function NotificationSettingsForm({
 	onChange: (patch: Partial<NotificationChannelSettings>) => void;
 	disabled?: boolean;
 }) {
+	const { colors } = useThemePalette();
 	const safeValue = useMemo<NotificationChannelSettings>(() => {
 		const parsed = NotificationChannelSettingsSchema.safeParse(value ?? {});
 		return parsed.success
@@ -234,6 +253,19 @@ export default function NotificationSettingsForm({
 			setOpen(key);
 		},
 		[disabled]
+	);
+
+	const triggerStyle = useMemo(
+		() => [
+			styles.trigger,
+			{ backgroundColor: colors.background, borderColor: colors.border }
+		],
+		[colors]
+	);
+
+	const triggerTextStyle = useMemo(
+		() => [styles.triggerText, { color: colors.text }],
+		[colors]
 	);
 
 	return (
@@ -268,12 +300,12 @@ export default function NotificationSettingsForm({
 				>
 					<FieldLabel>Minimum indirim Oranı</FieldLabel>
 					<AppTouchableOpacity
-						style={styles.trigger}
+						style={triggerStyle}
 						onPress={() => openIf("percent")}
 					>
 						<View style={styles.triggerInner}>
 							<Text
-								style={styles.triggerText}
+								style={triggerTextStyle}
 								numberOfLines={1}
 								ellipsizeMode="tail"
 							>
@@ -284,7 +316,7 @@ export default function NotificationSettingsForm({
 							</Text>
 							<ChevronDown
 								size={18}
-								color={lightForeground}
+								color={colors.text}
 								style={styles.chevron}
 							/>
 						</View>
@@ -299,12 +331,12 @@ export default function NotificationSettingsForm({
 			>
 				<FieldLabel>Sıklık</FieldLabel>
 				<AppTouchableOpacity
-					style={styles.trigger}
+					style={triggerStyle}
 					onPress={() => openIf("freq")}
 				>
 					<View style={styles.triggerInner}>
 						<Text
-							style={styles.triggerText}
+							style={triggerTextStyle}
 							numberOfLines={1}
 							ellipsizeMode="tail"
 						>
@@ -312,7 +344,7 @@ export default function NotificationSettingsForm({
 						</Text>
 						<ChevronDown
 							size={18}
-							color={lightForeground}
+							color={colors.text}
 							style={styles.chevron}
 						/>
 					</View>
@@ -324,12 +356,12 @@ export default function NotificationSettingsForm({
 				>
 					<FieldLabel>Günlük saat</FieldLabel>
 					<AppTouchableOpacity
-						style={styles.trigger}
+						style={triggerStyle}
 						onPress={() => openIf("dailyHour")}
 					>
 						<View style={styles.triggerInner}>
 							<Text
-								style={styles.triggerText}
+								style={triggerTextStyle}
 								numberOfLines={1}
 								ellipsizeMode="tail"
 							>
@@ -337,7 +369,7 @@ export default function NotificationSettingsForm({
 							</Text>
 							<ChevronDown
 								size={18}
-								color={lightForeground}
+								color={colors.text}
 								style={styles.chevron}
 							/>
 						</View>
@@ -364,12 +396,12 @@ export default function NotificationSettingsForm({
 					<View>
 						<FieldLabel>Başlangıç</FieldLabel>
 						<AppTouchableOpacity
-							style={styles.trigger}
+							style={triggerStyle}
 							onPress={() => openIf("startHour")}
 						>
 							<View style={styles.triggerInner}>
 								<Text
-									style={styles.triggerText}
+									style={triggerTextStyle}
 									numberOfLines={1}
 									ellipsizeMode="tail"
 								>
@@ -380,7 +412,7 @@ export default function NotificationSettingsForm({
 								</Text>
 								<ChevronDown
 									size={18}
-									color={lightForeground}
+									color={colors.text}
 									style={styles.chevron}
 								/>
 							</View>
@@ -390,12 +422,12 @@ export default function NotificationSettingsForm({
 					<View>
 						<FieldLabel>Bitiş</FieldLabel>
 						<AppTouchableOpacity
-							style={styles.trigger}
+							style={triggerStyle}
 							onPress={() => openIf("endHour")}
 						>
 							<View style={styles.triggerInner}>
 								<Text
-									style={styles.triggerText}
+									style={triggerTextStyle}
 									numberOfLines={1}
 									ellipsizeMode="tail"
 								>
@@ -406,7 +438,7 @@ export default function NotificationSettingsForm({
 								</Text>
 								<ChevronDown
 									size={18}
-									color={lightForeground}
+									color={colors.text}
 									style={styles.chevron}
 								/>
 							</View>
@@ -480,10 +512,8 @@ const styles = StyleSheet.create({
 		position: "absolute",
 		left: 12,
 		right: 12,
-		backgroundColor: lightBackground,
 		borderRadius: 16,
 		borderWidth: 1,
-		borderColor: lightBorder,
 		overflow: "hidden"
 	},
 	sheetHeader: {
@@ -494,51 +524,37 @@ const styles = StyleSheet.create({
 		justifyContent: "space-between"
 	},
 	sheetTitle: {
-		color: lightForeground,
 		fontSize: 15,
 		fontWeight: "700"
 	},
 	sheetClose: {
-		color: lightForeground,
 		fontSize: 14,
 		fontWeight: "600",
 		opacity: 0.8
 	},
 	sheetDivider: {
-		height: 1,
-		backgroundColor: lightBorder
+		height: 1
 	},
 	optionRow: {
 		flexDirection: "row",
 		alignItems: "center",
 		justifyContent: "space-between"
 	},
-	optionRowSelected: {
-		backgroundColor: "rgba(0,0,0,0.03)"
-	},
 	optionText: {
-		color: lightForeground,
 		fontSize: 14,
 		fontWeight: "600"
 	},
-	optionTextSelected: {
-		color: lightForeground
-	},
 	check: {
-		color: lightPrimary,
 		fontSize: 16,
 		fontWeight: "800"
 	},
 	optionDivider: {
-		height: 1,
-		backgroundColor: "rgba(0,0,0,0.04)"
+		height: 1
 	},
 
 	trigger: {
-		backgroundColor: lightBackground,
 		borderRadius: 10,
 		borderWidth: 1,
-		borderColor: lightBorder,
 		paddingHorizontal: 12,
 		paddingVertical: 10,
 		minHeight: 44,
@@ -551,7 +567,6 @@ const styles = StyleSheet.create({
 		gap: 10
 	},
 	triggerText: {
-		color: lightForeground,
 		fontSize: 14,
 		fontWeight: "600",
 		flex: 1

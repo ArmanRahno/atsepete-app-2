@@ -3,6 +3,7 @@ import { Share } from "lucide-react-native";
 import { Platform } from "react-native";
 import { cn } from "@/lib/utils";
 import { ClassNameValue } from "tailwind-merge";
+import { useThemePalette } from "@/hooks/useThemePalette";
 
 interface ShareDialogProps {
 	shareUrl: string;
@@ -17,6 +18,8 @@ const ShareDialog = ({
 	pressableClassName,
 	iconSize
 }: ShareDialogProps) => {
+	const { colors } = useThemePalette();
+
 	const nativeShare = async () => {
 		const content =
 			Platform.OS === "ios"
@@ -34,14 +37,14 @@ const ShareDialog = ({
 		<>
 			<Pressable
 				className={cn(
-					"px-6 py-2 h-9 rounded-xl border border-border justify-center items-center",
+					"px-6 py-2 h-9 rounded-xl border border-border bg-card justify-center items-center",
 					pressableClassName
 				)}
 				onPress={nativeShare}
 			>
 				<Share
 					size={iconSize ?? 20}
-					color="#000"
+					color={colors.text}
 				/>
 			</Pressable>
 		</>

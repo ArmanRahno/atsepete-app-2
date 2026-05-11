@@ -1,70 +1,155 @@
-// Light Mode Colors
-export const lightBackground = "#FFFFFF"; // hsl(0, 0%, 100%)
-export const lightForeground = "#031207"; // hsl(224, 71.4%, 4.1%)
-export const lightCard = "#FFFFFF"; // hsl(0, 0%, 100%)
-export const lightCardForeground = "#031207"; // hsl(224, 71.4%, 4.1%)
-export const lightPopover = "#FFFFFF"; // hsl(0, 0%, 100%)
-export const lightPopoverForeground = "#031207"; // hsl(224, 71.4%, 4.1%)
-export const lightPrimary = "#7C3AED"; // hsl(262.1, 83.3%, 57.8%)
-export const lightPrimaryForeground = "#F9FBF9"; // hsl(210, 20%, 98%)
-export const lightSecondary = "#f3f4f6"; // hsl(220, 14.3%, 95.9%)
-export const lightSecondaryForeground = "#112718"; // hsl(220.9, 39.3%, 11%)
-export const lightMuted = "#F3F6F4"; // hsl(220, 14.3%, 95.9%)
-export const lightMutedForeground = "#6b7280"; // hsl(220, 8.9%, 46.1%)
-export const lightAccent = "#F3F6F4"; // hsl(220, 14.3%, 95.9%)
-export const lightAccentForeground = "#112718"; // hsl(220.9, 39.3%, 11%)
-export const lightDestructive = "#EF4444"; // hsl(0, 84.2%, 60.2%)
-export const lightDestructiveForeground = "#F9FBF9"; // hsl(210, 20%, 98%)
-export const lightBorder = "#E5EBE7"; // hsl(220, 13%, 91%)
-export const lightInput = "#E5EBE7"; // hsl(220, 13%, 91%)
-export const lightRing = "#AB39ED"; // hsl(262.1, 83.3%, 57.8%)
-export const lightChart1 = "#E7C950"; // hsl(12, 76%, 61%) (approx)
-export const lightChart2 = "#299D37"; // hsl(173, 58%, 39%) (approx)
-export const lightChart3 = "#265347"; // hsl(197, 37%, 24%) (approx)
-export const lightChart4 = "#E88C68"; // hsl(43, 74%, 66%) (approx)
-export const lightChart5 = "#F4B262"; // hsl(27, 87%, 67%) (approx)
+export type AppColorScheme = "light" | "dark";
 
-// Dark Mode Colors
-export const darkBackground = "#031207"; // hsl(224, 71.4%, 4.1%)
-export const darkForeground = "#F9FBF9"; // hsl(210, 20%, 98%)
-export const darkCard = "#031207"; // hsl(224, 71.4%, 4.1%)
-export const darkCardForeground = "#F9FBF9"; // hsl(210, 20%, 98%)
-export const darkPopover = "#031207"; // hsl(224, 71.4%, 4.1%)
-export const darkPopoverForeground = "#F9FBF9"; // hsl(210, 20%, 98%)
-export const darkPrimary = "#6D28D9"; // hsl(263.4, 70%, 50.4%)
-export const darkPrimaryForeground = "#F9FBF9"; // hsl(210, 20%, 98%)
-export const darkSecondary = "#1F3729"; // hsl(215, 27.9%, 16.9%)
-export const darkSecondaryForeground = "#F9FBF9"; // hsl(210, 20%, 98%)
-export const darkMuted = "#1F3729"; // hsl(215, 27.9%, 16.9%)
-export const darkMutedForeground = "#9CAFA3"; // hsl(217.9, 10.6%, 64.9%)
-export const darkAccent = "#1F3729"; // hsl(215, 27.9%, 16.9%)
-export const darkAccentForeground = "#F9FBF9"; // hsl(210, 20%, 98%)
-export const darkDestructive = "#7F1D1D"; // hsl(0, 62.8%, 30.6%)
-export const darkDestructiveForeground = "#F9FBF9"; // hsl(210, 20%, 98%)
-export const darkBorder = "#1F3729"; // hsl(215, 27.9%, 16.9%)
-export const darkInput = "#1F3729"; // hsl(215, 27.9%, 16.9%)
-export const darkRing = "#9428D9"; // hsl(263.4, 70%, 50.4%)
-export const darkChart1 = "#26D961"; // hsl(220, 70%, 50%) (approx)
-export const darkChart2 = "#2DB85B"; // hsl(160, 60%, 45%) (approx)
-export const darkChart3 = "#E88C30"; // hsl(30, 80%, 55%) (approx)
-export const darkChart4 = "#8356DB"; // hsl(280, 65%, 60%) (approx)
-export const darkChart5 = "#E2366F"; // hsl(340, 75%, 55%) (approx)
+export const APP_THEME_STORAGE_KEY = "atsepete-color-scheme";
+
+export const ThemeHsl = {
+	light: {
+		background: "36 28% 92%",
+		foreground: "24 18% 6%",
+		card: "39 36% 96%",
+		cardForeground: "24 18% 12%",
+		popover: "39 36% 96%",
+		popoverForeground: "24 18% 12%",
+		primary: "262.1 83.3% 57.8%",
+		primaryForeground: "210 20% 98%",
+		secondary: "34 22% 82%",
+		secondaryForeground: "24 18% 16%",
+		muted: "34 18% 80%",
+		mutedForeground: "27 12% 29%",
+		accent: "32 21% 80%",
+		accentForeground: "24 18% 14%",
+		destructive: "0 76% 56%",
+		destructiveForeground: "210 20% 98%",
+		border: "30 16% 64%",
+		input: "30 16% 64%",
+		ring: "262.1 83.3% 57.8%"
+	},
+	dark: {
+		background: "30 18% 4%",
+		foreground: "38 26% 88%",
+		card: "30 17% 6%",
+		cardForeground: "38 28% 91%",
+		popover: "30 17% 6%",
+		popoverForeground: "38 28% 91%",
+		primary: "262.1 83.3% 57.8%",
+		primaryForeground: "210 20% 98%",
+		secondary: "30 10% 15%",
+		secondaryForeground: "38 28% 91%",
+		muted: "30 9% 15%",
+		mutedForeground: "34 11% 64%",
+		accent: "29 10% 16%",
+		accentForeground: "38 28% 91%",
+		destructive: "0 58% 46%",
+		destructiveForeground: "210 20% 98%",
+		border: "30 9% 20%",
+		input: "30 9% 20%",
+		ring: "262.1 83.3% 57.8%"
+	}
+} as const;
+
+export const lightBackground = "#F0ECE5";
+export const lightForeground = "#120F0D";
+export const lightCard = "#F8F6F1";
+export const lightCardForeground = "#241D19";
+export const lightPopover = "#F8F6F1";
+export const lightPopoverForeground = "#241D19";
+export const lightPrimary = "#7C3AED";
+export const lightPrimaryForeground = "#F9FAFB";
+export const lightSecondary = "#DBD2C7";
+export const lightSecondaryForeground = "#302721";
+export const lightMuted = "#D5CDC3";
+export const lightMutedForeground = "#534941";
+export const lightAccent = "#D7CDC1";
+export const lightAccentForeground = "#2A221D";
+export const lightDestructive = "#E43A3A";
+export const lightDestructiveForeground = "#F9FAFB";
+export const lightBorder = "#B2A395";
+export const lightInput = "#B2A395";
+export const lightRing = "#7C3AED";
+export const lightChart1 = "#E7C950";
+export const lightChart2 = "#299D37";
+export const lightChart3 = "#265347";
+export const lightChart4 = "#E88C68";
+export const lightChart5 = "#F4B262";
+
+export const darkBackground = "#0C0A08";
+export const darkForeground = "#E8E3D8";
+export const darkCard = "#120F0D";
+export const darkCardForeground = "#EEEAE2";
+export const darkPopover = "#120F0D";
+export const darkPopoverForeground = "#EEEAE2";
+export const darkPrimary = "#7C3AED";
+export const darkPrimaryForeground = "#F9FAFB";
+export const darkSecondary = "#2A2622";
+export const darkSecondaryForeground = "#EEEAE2";
+export const darkMuted = "#2A2623";
+export const darkMutedForeground = "#ADA599";
+export const darkAccent = "#2D2925";
+export const darkAccentForeground = "#EEEAE2";
+export const darkDestructive = "#B93131";
+export const darkDestructiveForeground = "#F9FAFB";
+export const darkBorder = "#38332E";
+export const darkInput = "#38332E";
+export const darkRing = "#7C3AED";
+export const darkChart1 = "#7C3AED";
+export const darkChart2 = "#2DB85B";
+export const darkChart3 = "#E88C30";
+export const darkChart4 = "#8356DB";
+export const darkChart5 = "#E2366F";
 
 export const Colors = {
 	light: {
 		text: lightForeground,
 		background: lightBackground,
+		card: lightCard,
+		cardText: lightCardForeground,
+		popover: lightPopover,
+		popoverText: lightPopoverForeground,
 		tint: lightPrimary,
-		icon: lightSecondary,
-		tabIconDefault: lightSecondary,
+		primary: lightPrimary,
+		primaryForeground: lightPrimaryForeground,
+		secondary: lightSecondary,
+		secondaryForeground: lightSecondaryForeground,
+		muted: lightMuted,
+		mutedForeground: lightMutedForeground,
+		accent: lightAccent,
+		accentForeground: lightAccentForeground,
+		destructive: lightDestructive,
+		destructiveForeground: lightDestructiveForeground,
+		border: lightBorder,
+		input: lightInput,
+		ring: lightRing,
+		icon: lightMutedForeground,
+		tabIconDefault: lightMutedForeground,
 		tabIconSelected: lightPrimary
 	},
 	dark: {
 		text: darkForeground,
 		background: darkBackground,
+		card: darkCard,
+		cardText: darkCardForeground,
+		popover: darkPopover,
+		popoverText: darkPopoverForeground,
 		tint: darkPrimary,
-		icon: darkSecondary,
-		tabIconDefault: darkSecondary,
+		primary: darkPrimary,
+		primaryForeground: darkPrimaryForeground,
+		secondary: darkSecondary,
+		secondaryForeground: darkSecondaryForeground,
+		muted: darkMuted,
+		mutedForeground: darkMutedForeground,
+		accent: darkAccent,
+		accentForeground: darkAccentForeground,
+		destructive: darkDestructive,
+		destructiveForeground: darkDestructiveForeground,
+		border: darkBorder,
+		input: darkInput,
+		ring: darkRing,
+		icon: darkMutedForeground,
+		tabIconDefault: darkMutedForeground,
 		tabIconSelected: darkPrimary
 	}
 };
+
+export function getThemeColors(scheme: AppColorScheme) {
+	return Colors[scheme];
+}

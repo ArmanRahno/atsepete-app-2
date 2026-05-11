@@ -18,6 +18,7 @@ import HeaderIcon from "@/components/header/HeaderIcon";
 import HeaderSecondRow from "@/components/header/HeaderSecondRow";
 import { Card } from "@/components/shad-cn/card";
 import HeaderFirstRow from "@/components/header/HeaderFirstRow";
+import { useThemePalette } from "@/hooks/useThemePalette";
 
 const ForgotSchema = z.object({
 	email: z.string().email("Geçerli bir e-posta giriniz.")
@@ -33,6 +34,7 @@ const ENDPOINT = "https://atsepete.net/api/application/auth/password-reset/reque
 
 export default function ForgotPasswordScreen() {
 	const router = useRouter();
+	const { colors } = useThemePalette();
 
 	const [serverError, setServerError] = useState<string>("");
 	const [successOpen, setSuccessOpen] = useState(false);
@@ -98,7 +100,9 @@ export default function ForgotPasswordScreen() {
 			>
 				<View className="flex-1 bg-black/50 items-center justify-center p-4">
 					<View className="w-full max-w-[420px] bg-background rounded-xl p-4">
-						<Text className="text-lg font-semibold text-center">Başarılı</Text>
+						<Text className="text-lg font-semibold text-center text-foreground">
+							Başarılı
+						</Text>
 
 						<Text className="text-muted-foreground text-center mt-2">
 							{successMessage}
@@ -121,16 +125,28 @@ export default function ForgotPasswordScreen() {
 				behavior="padding"
 			>
 				<Card className="p-4">
-					<Text className="text-xl font-semibold mb-3 text-center">Şifremi Unuttum</Text>
+					<Text
+						className="text-xl font-semibold mb-3 text-center"
+						style={{ color: colors.text }}
+					>
+						Şifremi Unuttum
+					</Text>
 
-					<Text className="mt-3">E-posta</Text>
+					<Text
+						className="mt-3"
+						style={{ color: colors.text }}
+					>
+						E-posta
+					</Text>
 					<Controller
 						control={control}
 						name="email"
 						render={({ field: { onChange, onBlur, value } }) => (
 							<TextInput
-								className="border border-gray-300 p-2 rounded mt-1 text-foreground placeholder:text-muted-foreground"
+								className="border border-border bg-card p-2 rounded mt-1 text-foreground"
 								placeholder="E-posta adresi"
+								placeholderTextColor={colors.mutedForeground}
+								style={{ color: colors.text }}
 								keyboardType="email-address"
 								autoCapitalize="none"
 								onBlur={onBlur}

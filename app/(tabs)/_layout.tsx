@@ -4,13 +4,14 @@ import { Platform } from "react-native";
 
 import { HapticTab } from "@/components/HapticTab";
 import TabBarBackground from "@/components/ui/TabBarBackground";
-import { Colors, lightBackground } from "@/constants/Colors";
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
-import { Bell, Boxes, Grid3x3, Package, ShoppingBag, Sparkles, Store } from "lucide-react-native";
+import { Bell, Boxes, Grid3x3, Sparkles, Store } from "lucide-react-native";
 import { View } from "react-native";
+import { useAppTheme } from "@/components/AppThemeProvider";
 
 export default function TabLayout() {
 	const insets = useSafeAreaInsets();
+	const { colors } = useAppTheme();
 
 	return (
 		<SafeAreaView
@@ -19,28 +20,36 @@ export default function TabLayout() {
 		>
 			<Tabs
 				screenOptions={{
-					tabBarActiveTintColor: Colors["light"].tint,
+					tabBarActiveTintColor: colors.tabIconSelected,
+					tabBarInactiveTintColor: colors.tabIconDefault,
 					headerShown: false,
 					tabBarButton: HapticTab,
 					tabBarBackground: () =>
 						Platform.OS === "ios" ? (
-							<View style={{ flex: 1, backgroundColor: lightBackground }} />
+							<View style={{ flex: 1, backgroundColor: colors.background }} />
 						) : (
 							TabBarBackground
-						),
+					),
 					popToTopOnBlur: true,
-					tabBarStyle: Platform.select({
-						ios: {
-							height: 66 + insets.bottom,
-							paddingBottom: insets.bottom,
-							paddingTop: 6
-						},
-						default: {
-							height: 66 + insets.bottom,
-							paddingBottom: insets.bottom,
-							paddingTop: 6
-						}
-					}),
+					tabBarItemStyle: {
+						backgroundColor: colors.background
+					},
+					tabBarStyle: {
+						...(Platform.select({
+							ios: {
+								height: 66 + insets.bottom,
+								paddingBottom: insets.bottom,
+								paddingTop: 6
+							},
+							default: {
+								height: 66 + insets.bottom,
+								paddingBottom: insets.bottom,
+								paddingTop: 6
+							}
+						}) || {}),
+						backgroundColor: colors.background,
+						borderTopColor: colors.border
+					},
 					tabBarLabelStyle: {
 						fontSize: 11,
 						marginTop: 4

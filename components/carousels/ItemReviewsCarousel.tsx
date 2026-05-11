@@ -5,10 +5,10 @@ import { useSharedValue } from "react-native-reanimated";
 import ItemReviewCard from "./ItemReviewCard";
 import { Card } from "../shad-cn/card";
 import { ChevronRight, ChevronRightCircle } from "lucide-react-native";
-import { lightForeground, lightPrimary } from "@/constants/Colors";
 import RatingStars from "./RatingStars";
 import { router } from "expo-router";
 import AppTouchableOpacity from "../AppTouchableOpacity";
+import { useThemePalette } from "@/hooks/useThemePalette";
 
 type LocalReview = NonNullable<Item["reviews"]>[number];
 
@@ -27,6 +27,7 @@ export default function ItemReviewsCarousel({
 	reviews,
 	type
 }: ItemReviewsCarouselProps) {
+	const { colors } = useThemePalette();
 	const ref = useRef<ICarouselInstance>(null);
 	const progress = useSharedValue<number>(0);
 	const [carouselHeight, setCarouselHeight] = useState<number>(0);
@@ -64,7 +65,7 @@ export default function ItemReviewsCarousel({
 					>
 						<Text className="text-lg text-primary font-medium">Tümü</Text>
 						<ChevronRight
-							color={lightPrimary}
+							color={colors.primary}
 							size={20}
 							strokeWidth={2.3}
 						/>
@@ -116,7 +117,7 @@ export default function ItemReviewsCarousel({
 												Tüm Yorumlar
 											</Text>
 											<ChevronRightCircle
-												color={lightForeground}
+												color={colors.text}
 												size={20}
 											/>
 										</Card>

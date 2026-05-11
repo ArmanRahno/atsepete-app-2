@@ -11,6 +11,7 @@ import LogOutBtn from "@/components/account-page/LogOutBtn";
 import DeleteAccountBtn from "@/components/account-page/DeleteAccountBtn";
 import VersionInfo from "@/components/VersionInfo";
 import HeaderFirstRow from "@/components/header/HeaderFirstRow";
+import ThemeToggleRow from "@/components/account-page/ThemeToggleRow";
 
 const REFERRER_CODE_KEY = "user-referrer-code";
 
@@ -27,7 +28,7 @@ function RowButton({
 		<TouchableOpacity
 			onPress={onPress}
 			activeOpacity={0.85}
-			className="w-full flex-row items-center justify-between rounded-xl border border-border bg-background px-4 py-3"
+			className="w-full flex-row items-center justify-between rounded-xl border border-border bg-card px-4 py-3"
 		>
 			<View className="flex-1 pr-3">
 				<Text className="text-foreground font-semibold">{title}</Text>
@@ -122,10 +123,25 @@ export default function AccountScreen() {
 			</Header>
 
 			{isLoggedIn && userData && (
-				<ScrollView>
+				<ScrollView className="bg-background">
 					<View className="p-2">
 						<View className="bg-background p-3 gap-4">
 							<View className="mt-4">
+								<View className="mb-2">
+									<Text className="text-foreground font-semibold text-base">
+										Uygulama Ayarları
+									</Text>
+									<Text className="text-muted-foreground text-xs mt-1">
+										Görünüm, bildirim ve güvenlik ayarları
+									</Text>
+								</View>
+
+								<View className="gap-2">
+									<ThemeToggleRow />
+								</View>
+							</View>
+
+							<View>
 								<View className="mb-2">
 									<Text className="text-foreground font-semibold text-base">
 										Hesap Ayarları
@@ -167,7 +183,29 @@ export default function AccountScreen() {
 				</ScrollView>
 			)}
 
-			{!isLoggedIn && <LoginAndRegisterFormsWrapper onSuccess={fetchUserPage} />}
+			{!isLoggedIn && (
+				<ScrollView
+					className="bg-background"
+					contentContainerClassName="p-2"
+				>
+					<View className="bg-background p-3 gap-4">
+						<View className="mt-4">
+							<View className="mb-2">
+								<Text className="text-foreground font-semibold text-base">
+									Uygulama Ayarları
+								</Text>
+								<Text className="text-muted-foreground text-xs mt-1">
+									Görünümü giriş yapmadan da değiştirebilirsiniz
+								</Text>
+							</View>
+
+							<ThemeToggleRow />
+						</View>
+					</View>
+
+					<LoginAndRegisterFormsWrapper onSuccess={fetchUserPage} />
+				</ScrollView>
+			)}
 		</>
 	);
 }

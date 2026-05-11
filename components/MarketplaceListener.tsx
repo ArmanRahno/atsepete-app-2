@@ -8,6 +8,7 @@ import addMarketplaceListener from "@/lib/addMarketplaceListener";
 import AppTouchableOpacity from "./AppTouchableOpacity";
 import { useNotificationPermission } from "@/hooks/useNotificationPermission";
 import { router } from "expo-router";
+import { useThemePalette } from "@/hooks/useThemePalette";
 
 const MarketplaceListener = ({
 	is_user_subscribed,
@@ -22,8 +23,20 @@ const MarketplaceListener = ({
 	size?: number;
 	onListenerSuccess?: () => void;
 }) => {
+	const { isDark } = useThemePalette();
 	const [isUserSubscribed, setIsUserSubscribed] = useState<boolean>(is_user_subscribed || false);
 	const [isListenerPending, setIsListenerPending] = useState<boolean>(false);
+	const buttonColors = isUserSubscribed
+		? {
+				backgroundColor: isDark ? "rgba(6,78,59,0.72)" : "#ECFDF5",
+				borderColor: isDark ? "rgba(52,211,153,0.45)" : "rgba(16,185,129,0.45)",
+				iconColor: isDark ? "#A7F3D0" : "#047857"
+			}
+		: {
+				backgroundColor: isDark ? "rgba(127,29,29,0.72)" : "#FEF2F2",
+				borderColor: isDark ? "rgba(248,113,113,0.45)" : "rgba(239,68,68,0.45)",
+				iconColor: isDark ? "#FECACA" : "#B91C1C"
+			};
 
 	const { ensureNotificationPermission, registerAccountPushTokenIfNeeded } =
 		useNotificationPermission();
@@ -31,10 +44,13 @@ const MarketplaceListener = ({
 	return (
 		<AppTouchableOpacity
 			className={cn(
-				"px-4 py-1 rounded border border-border disabled:opacity-75 disabled:brightness-75 justify-center items-center",
-				isUserSubscribed ? "bg-emerald-500" : "bg-destructive",
+				"px-4 py-1 rounded-full border disabled:opacity-75 disabled:brightness-75 justify-center items-center",
 				className
 			)}
+			style={{
+				backgroundColor: buttonColors.backgroundColor,
+				borderColor: buttonColors.borderColor
+			}}
 			hitSlop={16}
 			disabled={isListenerPending}
 			onPress={async () => {
@@ -111,18 +127,18 @@ const MarketplaceListener = ({
 			{!isListenerPending && isUserSubscribed && (
 				<BellMinus
 					size={size}
-					color="#fff"
+					color={buttonColors.iconColor}
 				/>
 			)}
 			{!isListenerPending && !isUserSubscribed && (
 				<BellPlus
 					size={size}
-					color="#fff"
+					color={buttonColors.iconColor}
 				/>
 			)}
 			{isListenerPending && (
 				<ActivityIndicator
-					className="text-white"
+					color={buttonColors.iconColor}
 					size={size}
 				/>
 			)}

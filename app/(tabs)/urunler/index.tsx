@@ -21,6 +21,7 @@ import { ChevronUp } from "lucide-react-native";
 import AppTouchableOpacity from "@/components/AppTouchableOpacity";
 import HeaderFirstRow from "@/components/header/HeaderFirstRow";
 import ItemCard from "@/components/item/item-card/ItemCard";
+import { useThemePalette } from "@/hooks/useThemePalette";
 
 const API_URL = "https://atsepete.net/api/application/page/all-items";
 
@@ -36,6 +37,7 @@ const defaultFilters = {
 const MemoizedItemCard = memo(ItemCard);
 
 export default function UrunlerScreen() {
+	const { colors } = useThemePalette();
 	const [items, setItems] = useState<Item[]>([]);
 	const [totalItems, setTotalItems] = useState<number>(0);
 
@@ -257,7 +259,7 @@ export default function UrunlerScreen() {
 					onPress={handleScrollToTop}
 				>
 					<Text>
-						<ChevronUp />
+						<ChevronUp color={colors.text} />
 					</Text>
 				</AppTouchableOpacity>
 			)}

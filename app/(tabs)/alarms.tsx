@@ -1,17 +1,10 @@
 import LoginAndRegisterFormsWrapper from "@/components/forms/LoginAndRegisterFormsWrapper";
 import LoadingIndicator from "@/components/LoadingIndicator";
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { StyleSheet, Text, View } from "react-native";
 import Header from "@/components/header/Header";
 import { Dropdown } from "react-native-element-dropdown";
-import {
-	lightBackground,
-	lightBorder,
-	lightDestructive,
-	lightForeground,
-	lightMutedForeground
-} from "@/constants/Colors";
 import { router, useFocusEffect } from "expo-router";
 import addMarketplaceListener from "@/lib/addMarketplaceListener";
 import addCategoryListener from "@/lib/addCategoryListener";
@@ -22,6 +15,7 @@ import AppTouchableOpacity from "@/components/AppTouchableOpacity";
 import { ChevronRight } from "lucide-react-native";
 import HeaderSecondRow from "@/components/header/HeaderSecondRow";
 import HeaderFirstRow from "@/components/header/HeaderFirstRow";
+import { useThemePalette } from "@/hooks/useThemePalette";
 
 const REFERRER_CODE_KEY = "user-referrer-code";
 
@@ -57,6 +51,7 @@ export type AccountAPIResponse =
 type Mode = "ITEMS" | "CATEGORIES" | "MARKETPLACES";
 
 export default function AlarmScreen() {
+	const { colors } = useThemePalette();
 	const [userData, setUserData] = useState<AccountAPIResponse | null>(null);
 	const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
 	const [loading, setLoading] = useState<boolean>(true);
@@ -67,6 +62,28 @@ export default function AlarmScreen() {
 		{ label: "Pazaryerleri", value: "MARKETPLACES" },
 		{ label: "Kategoriler", value: "CATEGORIES" }
 	];
+
+	const themedStyles = useMemo(
+		() =>
+			StyleSheet.create({
+				dropdown: {
+					backgroundColor: colors.background,
+					paddingHorizontal: 16,
+					paddingVertical: 8,
+					borderRadius: 8,
+					borderWidth: 1,
+					borderColor: colors.border
+				},
+				dropdownContainer: {
+					borderRadius: 8,
+					overflow: "hidden",
+					backgroundColor: colors.popover
+				},
+				dropdownText: { color: colors.popoverText },
+				selectedText: { color: colors.text, fontWeight: "600", fontSize: 16 }
+			}),
+		[colors]
+	);
 
 	const fetchUserPage = useCallback(async () => {
 		try {
@@ -139,10 +156,12 @@ export default function AlarmScreen() {
 			{isLoggedIn && (
 				<View className="p-2.5 bg-background shadow-lg gap-2">
 					<Dropdown
-						style={styles.dropdown}
-						containerStyle={styles.dropdownContainer}
-						itemTextStyle={styles.dropdownText}
-						selectedTextStyle={styles.selectedText}
+						style={themedStyles.dropdown}
+						containerStyle={themedStyles.dropdownContainer}
+						itemTextStyle={themedStyles.dropdownText}
+						selectedTextStyle={themedStyles.selectedText}
+						activeColor={colors.secondary}
+						iconColor={colors.mutedForeground}
 						data={dropDownData}
 						labelField="label"
 						valueField="value"
@@ -152,12 +171,12 @@ export default function AlarmScreen() {
 
 					<AppTouchableOpacity
 						onPress={() => router.push("/(modals)/notification-settings")}
-						style={styles.dropdown}
+						style={themedStyles.dropdown}
 						className="w-full flex-row items-center justify-between"
 					>
 						<View className="flex-1 pr-3">
 							<Text
-								style={styles.selectedText}
+								style={themedStyles.selectedText}
 								className="font-semibold"
 							>
 								Bildirim Ayarları
@@ -166,7 +185,7 @@ export default function AlarmScreen() {
 						<ChevronRight
 							size={16}
 							strokeWidth={2.6}
-							color={lightMutedForeground}
+							color={colors.mutedForeground}
 						/>
 					</AppTouchableOpacity>
 				</View>
@@ -263,44 +282,3 @@ export default function AlarmScreen() {
 		</>
 	);
 }
-
-const styles = StyleSheet.create({
-	dropdown: {
-		backgroundColor: lightBackground,
-		paddingHorizontal: 16,
-		paddingVertical: 8,
-		borderRadius: 8,
-		borderWidth: 1,
-		borderColor: lightBorder
-	},
-	dropdownContainer: { borderRadius: 8, overflow: "hidden" },
-	dropdownText: { color: lightForeground },
-	selectedText: { fontWeight: "600", fontSize: 16 },
-	summaryText: {
-		fontSize: 16,
-		fontWeight: "600",
-		color: lightForeground
-	},
-	tableHeader: {
-		flexDirection: "row",
-		backgroundColor: lightBackground,
-		padding: 8,
-		borderBottomWidth: 1,
-		borderColor: lightBorder
-	},
-	tableHeaderCell: {
-		fontWeight: "bold",
-		color: lightForeground,
-		textAlign: "center"
-	},
-	tableRow: {
-		flexDirection: "row",
-		padding: 8,
-		borderBottomWidth: 1,
-		borderColor: lightBorder
-	},
-	tableCell: {
-		textAlign: "center"
-	},
-	emptyListText: { fontWeight: "600", color: lightDestructive }
-});

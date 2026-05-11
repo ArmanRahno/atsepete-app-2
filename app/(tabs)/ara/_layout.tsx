@@ -3,14 +3,15 @@ import { Stack, useRouter } from "expo-router";
 import { Search } from "lucide-react-native";
 import { useState } from "react";
 import { Keyboard, Text, TextInput, TouchableOpacity, View } from "react-native";
-import { lightMutedForeground } from "../../../constants/Colors";
 import HeaderIcon from "@/components/header/HeaderIcon";
 import AppTouchableOpacity from "@/components/AppTouchableOpacity";
+import { useThemePalette } from "@/hooks/useThemePalette";
 
 const endpoint = "https://atsepete.net/api/application/action/search-suggestion";
 
 export default function SearchPageLayout() {
 	const router = useRouter();
+	const { colors } = useThemePalette();
 	const [query, setQuery] = useState("");
 	const [suggestions, setSuggestions] = useState<{ name: string; url_slug: string }[]>([]);
 	const [showSuggestions, setShowSuggestions] = useState(false);
@@ -98,12 +99,12 @@ export default function SearchPageLayout() {
 									return (
 										<AppTouchableOpacity
 											onPress={() => handleSuggestionPress(suggestion)}
-											className="px-2 py-2 border-b border-gray-200"
+											className="px-2 py-2 border-b border-border"
 										>
-											<Text
-												numberOfLines={1}
-												className="text-gray-800"
-											>
+					<Text
+						numberOfLines={1}
+						className="text-foreground"
+					>
 												{suggestion.name}
 											</Text>
 										</AppTouchableOpacity>
@@ -118,7 +119,7 @@ export default function SearchPageLayout() {
 					>
 						<Search
 							size={20}
-							color={lightMutedForeground}
+							color={colors.mutedForeground}
 						/>
 					</AppTouchableOpacity>
 				</View>

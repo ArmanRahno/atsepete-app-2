@@ -4,14 +4,14 @@ import { BadgePercent } from "lucide-react-native";
 
 export default function CheapestBadge() {
 	return (
-		<View className="absolute left-3 top-3 z-10 rounded-full border border-emerald-100 bg-emerald-50 px-3 py-1.5">
+		<View className="absolute left-3 top-3 z-10 rounded-full bg-foreground px-3 py-1.5">
 			<View className="flex-row items-center gap-1.5">
 				<BadgePercent
 					size={14}
-					color="#34d399"
+					color="#7C3AED"
 				/>
 				<Text
-					className="text-xs text-emerald-400"
+					className="text-xs text-background"
 					style={{ fontFamily: "Roboto_700Bold" }}
 				>
 					En Ucuz
