@@ -12,9 +12,17 @@ const HeaderIcon = () => {
 
 	return (
 		<Pressable
-			className="self-center flex-row items-center gap-2"
 			onPress={handlePress}
 			hitSlop={8}
+			accessibilityRole="link"
+			style={{
+				alignSelf: "center",
+				flexDirection: "row",
+				alignItems: "center",
+				gap: 8,
+				flexShrink: 0,
+				overflow: "visible"
+			}}
 		>
 			<View className="rounded-full bg-primary/10 p-1">
 				<View
@@ -30,28 +38,38 @@ const HeaderIcon = () => {
 					/>
 				</View>
 			</View>
+
 			<View
-				className="flex-row items-baseline"
-				style={{ minWidth: 80 }}
+				style={{
+					minWidth: 92,
+					flexShrink: 0,
+					overflow: "visible",
+					paddingRight: 8,
+					flexDirection: "row",
+					alignItems: "baseline"
+				}}
 			>
 				<Text
-					className="text-lg italic"
+					allowFontScaling={false}
 					style={{
-						fontFamily: "Roboto_700Bold",
-						includeFontPadding: false,
+						fontFamily: "Roboto_500Medium",
+						fontSize: 18,
 						lineHeight: 24,
-						color: isDark ? "#FFFFFF" : colors.text
+						color: isDark ? "#FFFFFF" : colors.text,
+						includeFontPadding: true,
+						fontStyle: "italic"
 					}}
 				>
 					At
 				</Text>
 				<Text
-					className="text-lg text-primary"
+					allowFontScaling={false}
 					style={{
-						fontFamily: "Roboto_700Bold",
-						includeFontPadding: false,
+						fontFamily: "Roboto_500Medium",
+						fontSize: 18,
 						lineHeight: 24,
-						paddingRight: 3
+						color: colors.primary,
+						includeFontPadding: true
 					}}
 				>
 					Sepete

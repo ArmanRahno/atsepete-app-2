@@ -15,7 +15,16 @@ import {
 import { Stack, useRouter } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { LinearGradient } from "expo-linear-gradient";
-import { Check, ChevronRight, Play } from "lucide-react-native";
+import {
+	BellRing,
+	Check,
+	ChevronRight,
+	CirclePlay,
+	PartyPopper,
+	Play,
+	ScanBarcode,
+	Search
+} from "lucide-react-native";
 import Svg, { G, Path } from "react-native-svg";
 
 import AppTouchableOpacity from "@/components/AppTouchableOpacity";
@@ -33,10 +42,14 @@ type Slide = {
 	gradient: [string, string];
 	accent: string;
 	youtubeId?: string;
+	icon: "welcome" | "discover" | "barcode" | "alerts" | "video";
 };
 
 const HERO_TEXT = "#FFFFFF";
 const HERO_MUTED = "rgba(255,255,255,0.78)";
+const DOT_WIDTH = 8;
+const ACTIVE_DOT_WIDTH = 18;
+const INACTIVE_DOT_SCALE = DOT_WIDTH / ACTIVE_DOT_WIDTH;
 
 function lightenHex(color: string, amount = 0.1) {
 	if (!color?.startsWith("#") || (color.length !== 7 && color.length !== 4)) return color;
@@ -83,6 +96,27 @@ function YoutubeLogoBadge(props: { width?: number; height?: number }) {
 	);
 }
 
+function SlideEyebrowIcon({ icon }: { icon: Slide["icon"] }) {
+	const iconProps = {
+		size: 14,
+		color: HERO_TEXT,
+		strokeWidth: 2.4
+	};
+
+	switch (icon) {
+		case "welcome":
+			return <PartyPopper {...iconProps} />;
+		case "discover":
+			return <Search {...iconProps} />;
+		case "barcode":
+			return <ScanBarcode {...iconProps} />;
+		case "alerts":
+			return <BellRing {...iconProps} />;
+		case "video":
+			return <CirclePlay {...iconProps} />;
+	}
+}
+
 export default function OnboardingScreen() {
 	const router = useRouter();
 	const { width } = useWindowDimensions();
@@ -100,7 +134,8 @@ export default function OnboardingScreen() {
 				"Hızlı ve temiz liste"
 			],
 			gradient: [colors.primary, "#0B1220"],
-			accent: "#8F00FF"
+			accent: "#8F00FF",
+			icon: "welcome"
 		},
 		{
 			key: "discover",
@@ -113,7 +148,22 @@ export default function OnboardingScreen() {
 				"Tarihe / indirim oranına göre sıralayın"
 			],
 			gradient: ["#166534", "#0B1220"],
-			accent: "#4ADE80"
+			accent: "#4ADE80",
+			icon: "discover"
+		},
+		{
+			key: "barcode",
+			eyebrow: "BARKOD TARAMA",
+			title: "Barkodu okutun, ürünü bulun",
+			desc: "Mağazada gördüğünüz ürünün barkodunu kamerayla tarayın; ürün sayfasına hızlıca ulaşın.",
+			bullets: [
+				"Kamera ikonuyla hızlı tarama",
+				"Barkoddan ürün sayfasına geçiş",
+				"Fiyatları kolayca karşılaştırın"
+			],
+			gradient: ["#0F766E", "#0B1220"],
+			accent: "#2DD4BF",
+			icon: "barcode"
 		},
 		{
 			key: "alerts",
@@ -122,7 +172,8 @@ export default function OnboardingScreen() {
 			desc: "Ürün, kategori veya pazaryeri seçin. İndirim çıktığında size haber verelim.",
 			bullets: ["Ürün alarmı kurun", "Kategori alarmı kurun", "İndirim olunca bildirim alın"],
 			gradient: ["#9A3412", "#0B1220"],
-			accent: "#FF2A00"
+			accent: "#FF2A00",
+			icon: "alerts"
 		},
 		{
 			key: "video",
@@ -132,7 +183,8 @@ export default function OnboardingScreen() {
 			bullets: ["Kısa kullanım videosu", "Alarm kurmayı görün", "Hazırsanız başlayın"],
 			gradient: ["#1D4ED8", "#0B1220"],
 			accent: "#3F3FFF",
-			youtubeId: "WmkMVadrug4"
+			youtubeId: "WmkMVadrug4",
+			icon: "video"
 		}
 	];
 
@@ -144,17 +196,36 @@ export default function OnboardingScreen() {
 	const progress = (index + 1) / slides.length;
 
 	const [trackW, setTrackW] = useState(0);
-	const animatedW = useRef(new Animated.Value(0)).current;
+	const progressScale = useRef(new Animated.Value(1 / slides.length)).current;
+	const dotScales = useRef(
+		slides.map((_, i) => new Animated.Value(i === 0 ? 1 : INACTIVE_DOT_SCALE))
+	).current;
 
 	useEffect(() => {
-		if (!trackW) return;
-		Animated.timing(animatedW, {
-			toValue: trackW * progress,
-			duration: 420,
+		Animated.timing(progressScale, {
+			toValue: progress,
+			duration: 360,
 			easing: Easing.out(Easing.cubic),
-			useNativeDriver: false
+			useNativeDriver: true
 		}).start();
-	}, [animatedW, progress, trackW]);
+	}, [progress, progressScale]);
+
+	useEffect(() => {
+		const animation = Animated.parallel(
+			dotScales.map((dotScale, i) =>
+				Animated.timing(dotScale, {
+					toValue: i === index ? 1 : INACTIVE_DOT_SCALE,
+					duration: 240,
+					easing: Easing.out(Easing.cubic),
+					useNativeDriver: true
+				})
+			)
+		);
+
+		animation.start();
+
+		return () => animation.stop();
+	}, [dotScales, index]);
 
 	const finish = useCallback(async () => {
 		await AsyncStorage.setItem(ONBOARDING_KEY, "true");
@@ -236,6 +307,7 @@ export default function OnboardingScreen() {
 									<View
 										style={[styles.eyebrowPill, { borderColor: accentBright }]}
 									>
+										<SlideEyebrowIcon icon={item.icon} />
 										<Text style={[styles.eyebrowText, { color: HERO_TEXT }]}>
 											{item.eyebrow}
 										</Text>
@@ -359,27 +431,41 @@ export default function OnboardingScreen() {
 					<Animated.View
 						style={[
 							styles.progressFill,
-							{ width: animatedW, backgroundColor: primaryBright }
+							{
+								backgroundColor: primaryBright,
+								transform: [
+									{
+										translateX: progressScale.interpolate({
+											inputRange: [0, 1],
+											outputRange: [-trackW / 2, 0]
+										})
+									},
+									{ scaleX: progressScale }
+								]
+							}
 						]}
 					/>
 				</View>
 
 				<View style={styles.dotsRow}>
 					{slides.map((s, i) => {
-						const active = i === index;
 						const dotColor = lightenHex(s.accent, 0.08);
 
 						return (
 							<View
 								key={s.key}
-								style={[
-									styles.dot,
-									{
-										width: active ? 18 : 8,
-										backgroundColor: dotColor
-									}
-								]}
-							/>
+								style={styles.dotSlot}
+							>
+								<Animated.View
+									style={[
+										styles.dot,
+										{
+											backgroundColor: dotColor,
+											transform: [{ scaleX: dotScales[i] }]
+										}
+									]}
+								/>
+							</View>
 						);
 					})}
 				</View>
@@ -437,7 +523,10 @@ const styles = StyleSheet.create({
 		paddingVertical: 6,
 		borderRadius: 999,
 		marginBottom: 10,
-		backgroundColor: "rgba(255,255,255,0.14)"
+		backgroundColor: "rgba(255,255,255,0.14)",
+		flexDirection: "row",
+		alignItems: "center",
+		gap: 6
 	},
 	eyebrowText: { fontWeight: "900", fontSize: 11, letterSpacing: 0.6 },
 	title: { fontSize: 24, fontWeight: "900", letterSpacing: -0.3 },
@@ -514,7 +603,7 @@ const styles = StyleSheet.create({
 
 	bottom: { paddingHorizontal: 16, paddingBottom: 16, paddingTop: 10 },
 	progressTrack: { height: 6, borderRadius: 999, overflow: "hidden" },
-	progressFill: { height: 6, borderRadius: 999 },
+	progressFill: { width: "100%", height: 6, borderRadius: 999 },
 
 	dotsRow: {
 		flexDirection: "row",
@@ -523,7 +612,13 @@ const styles = StyleSheet.create({
 		marginTop: 10,
 		marginBottom: 10
 	},
-	dot: { height: 8, borderRadius: 999 },
+	dotSlot: {
+		width: ACTIVE_DOT_WIDTH,
+		height: 8,
+		alignItems: "center",
+		justifyContent: "center"
+	},
+	dot: { width: ACTIVE_DOT_WIDTH, height: 8, borderRadius: 999 },
 
 	primaryBtn: {
 		borderRadius: 14,

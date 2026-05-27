@@ -4,7 +4,7 @@ import { Text } from "react-native";
 const VersionInfo = () => {
 	return (
 		<Text className="mt-1 text-xs text-muted-foreground">
-			AtSepete @2025, v{Constants.expoConfig?.version} - 12.05.2026
+			AtSepete @2025, v{Constants.expoConfig?.version} - 24.05.2026
 		</Text>
 	);
 };
