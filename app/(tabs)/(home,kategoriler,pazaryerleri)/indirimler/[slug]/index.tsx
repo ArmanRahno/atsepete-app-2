@@ -20,7 +20,7 @@ import { useThemePalette } from "@/hooks/useThemePalette";
 function HeroSquare({ item, scrollY }: { item: Item; scrollY: SharedValue<number> }) {
 	const { width } = useWindowDimensions();
 	const { colors, isDark } = useThemePalette();
-	const size = width;
+	const size = width >= 768 ? Math.min(width * 0.58, 560) : width;
 
 	const squareAnimatedStyle = useAnimatedStyle(() => ({
 		transform: [
