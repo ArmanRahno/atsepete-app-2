@@ -1,13 +1,10 @@
 import LoginAndRegisterFormsWrapper from "@/components/forms/LoginAndRegisterFormsWrapper";
 import LoadingIndicator from "@/components/LoadingIndicator";
-import { useCallback, useMemo, useState } from "react";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useMemo, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import Header from "@/components/header/Header";
 import { Dropdown } from "react-native-element-dropdown";
-import { router, useFocusEffect } from "expo-router";
-import addMarketplaceListener from "@/lib/addMarketplaceListener";
-import addCategoryListener from "@/lib/addCategoryListener";
+import { router } from "expo-router";
 import CategoriesList from "@/components/account-page/CategoriesList";
 import MarketplacesList from "@/components/account-page/MarketplacesList";
 import ItemsList from "@/components/account-page/ItemsList";
@@ -16,8 +13,7 @@ import { ChevronRight } from "lucide-react-native";
 import HeaderSecondRow from "@/components/header/HeaderSecondRow";
 import HeaderFirstRow from "@/components/header/HeaderFirstRow";
 import { useThemePalette } from "@/hooks/useThemePalette";
-
-const REFERRER_CODE_KEY = "user-referrer-code";
+import { SharedUserPageData, useAlarmSubscriptions } from "@/hooks/useAlarmSubscriptions";
 
 export type AccountAPIResponse =
 	| {
@@ -52,10 +48,17 @@ type Mode = "ITEMS" | "CATEGORIES" | "MARKETPLACES";
 
 export default function AlarmScreen() {
 	const { colors } = useThemePalette();
-	const [userData, setUserData] = useState<AccountAPIResponse | null>(null);
-	const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
-	const [loading, setLoading] = useState<boolean>(true);
+	const {
+		userPage,
+		isLoggedIn,
+		loading,
+		removeItemSubscription,
+		setCategorySubscribed,
+		setMarketplaceSubscribed,
+		refreshUserPage
+	} = useAlarmSubscriptions();
 	const [mode, setMode] = useState<Mode>("ITEMS");
+	const userData: SharedUserPageData | null = userPage;
 
 	const dropDownData = [
 		{ label: "Ürünler", value: "ITEMS" },
@@ -85,63 +88,6 @@ export default function AlarmScreen() {
 		[colors]
 	);
 
-	const fetchUserPage = useCallback(async () => {
-		try {
-			setLoading(true);
-			setIsLoggedIn(false);
-			setUserData(null);
-
-			const curSession = await AsyncStorage.getItem("user-session-token");
-			if (!curSession) {
-				await AsyncStorage.removeItem(REFERRER_CODE_KEY);
-				return;
-			}
-
-			const response = await fetch("https://atsepete.net/api/application/page/user-page");
-
-			if (!response.ok) {
-				throw new Error("Error fetching items");
-			}
-
-			const data: AccountAPIResponse = await response.json();
-
-			if (data.status === "error" || data.code === "LOGIN_REQUIRED") {
-				setIsLoggedIn(false);
-				await AsyncStorage.removeItem(REFERRER_CODE_KEY);
-				return;
-			}
-
-			setIsLoggedIn(true);
-
-			if (
-				"referrer_code" in data &&
-				typeof data.referrer_code === "string" &&
-				data.referrer_code
-			) {
-				await AsyncStorage.setItem(REFERRER_CODE_KEY, data.referrer_code);
-			} else {
-				await AsyncStorage.removeItem(REFERRER_CODE_KEY);
-			}
-
-			if ("items" in data && data.items) {
-				setUserData({
-					...data,
-					items: data.items.map(item => ({ ...item, is_user_subscribed: true }))
-				});
-			}
-		} catch (error) {
-			console.error("Error fetching user data:", error);
-		} finally {
-			setLoading(false);
-		}
-	}, []);
-
-	useFocusEffect(
-		useCallback(() => {
-			fetchUserPage();
-		}, [fetchUserPage])
-	);
-
 	if (loading) {
 		return <LoadingIndicator />;
 	}
@@ -154,7 +100,7 @@ export default function AlarmScreen() {
 			</Header>
 
 			{isLoggedIn && (
-				<View className="p-2.5 bg-background shadow-lg gap-2">
+				<View className="p-2.5 bg-background shadow-lg gap-2 border-b border-border">
 					<Dropdown
 						style={themedStyles.dropdown}
 						containerStyle={themedStyles.dropdownContainer}
@@ -198,16 +144,8 @@ export default function AlarmScreen() {
 				userData.items && (
 					<ItemsList
 						items={userData.items}
-						onListenerSuccess={itemId => {
-							setUserData(prevState => {
-								if (!prevState || !("items" in prevState) || !prevState.items) {
-									return prevState;
-								}
-								return {
-									...prevState,
-									items: prevState.items.filter(item => item._id !== itemId)
-								};
-							});
+						onListenerSuccess={(itemId, finalState) => {
+							if (!finalState) removeItemSubscription(itemId);
 						}}
 					/>
 				)}
@@ -218,28 +156,8 @@ export default function AlarmScreen() {
 				"marketplaces" in userData &&
 				userData.marketplaces && (
 					<MarketplacesList
-						onRemoveMarketplace={async item => {
-							setUserData(prevState => {
-								if (
-									!prevState ||
-									!("marketplaces" in prevState) ||
-									!prevState.marketplaces
-								) {
-									return prevState;
-								}
-
-								return {
-									...prevState,
-									marketplaces: prevState.marketplaces.filter(
-										marketplace => marketplace !== item
-									)
-								};
-							});
-
-							await addMarketplaceListener({
-								marketplace: item,
-								isUserSubscribed: true
-							});
+						onRemoveMarketplace={item => {
+							setMarketplaceSubscribed(item, false);
 						}}
 						marketplaces={userData.marketplaces}
 					/>
@@ -252,33 +170,13 @@ export default function AlarmScreen() {
 				userData.categories && (
 					<CategoriesList
 						categories={userData.categories}
-						onRemoveCategory={async item => {
-							await addCategoryListener({
-								category: item,
-								isUserSubscribed: true
-							});
-
-							setUserData(prevState => {
-								if (
-									!prevState ||
-									!("categories" in prevState) ||
-									!prevState.categories
-								) {
-									return prevState;
-								}
-
-								return {
-									...prevState,
-									categories: prevState.categories.filter(
-										category => category !== item
-									)
-								};
-							});
+						onRemoveCategory={item => {
+							setCategorySubscribed(item, false);
 						}}
 					/>
 				)}
 
-			{!isLoggedIn && <LoginAndRegisterFormsWrapper onSuccess={fetchUserPage} />}
+			{!isLoggedIn && <LoginAndRegisterFormsWrapper onSuccess={refreshUserPage} />}
 		</>
 	);
 }

@@ -12,6 +12,7 @@ import DeleteAccountBtn from "@/components/account-page/DeleteAccountBtn";
 import VersionInfo from "@/components/VersionInfo";
 import HeaderFirstRow from "@/components/header/HeaderFirstRow";
 import ThemeToggleRow from "@/components/account-page/ThemeToggleRow";
+import ReviewDemoNotificationButton from "@/components/account-page/ReviewDemoNotificationButton";
 
 const REFERRER_CODE_KEY = "user-referrer-code";
 
@@ -103,6 +104,10 @@ export default function AccountScreen() {
 		return Boolean((userData as any)?.auth?.canChangePassword);
 	}, [userData]);
 
+	const accountEmail = useMemo(() => {
+		return (userData as any)?.user?.email ?? (userData as any)?.email ?? null;
+	}, [userData]);
+
 	const goNotificationSettings = useCallback(() => {
 		router.push("/(modals)/notification-settings");
 	}, []);
@@ -157,6 +162,8 @@ export default function AccountScreen() {
 										subtitle="Uygulama ve e-posta bildirimlerini yönet"
 										onPress={goNotificationSettings}
 									/>
+
+									<ReviewDemoNotificationButton accountEmail={accountEmail} />
 
 									{canChangePassword && (
 										<RowButton

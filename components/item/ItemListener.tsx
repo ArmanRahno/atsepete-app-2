@@ -12,6 +12,7 @@ import { openSettings } from "expo-linking";
 import * as Notifications from "expo-notifications";
 import { router } from "expo-router";
 import { useThemePalette } from "@/hooks/useThemePalette";
+import { useAlarmSubscriptions } from "@/hooks/useAlarmSubscriptions";
 
 const isGranted = (perm: any) => perm?.granted === true || perm?.status === "granted";
 
@@ -23,16 +24,24 @@ type ListenerItem = Item & {
 type ItemListenerProps = {
 	item: ListenerItem;
 	className?: ClassNameValue;
-	onListenerSuccess?: (itemId: string) => void;
+	onListenerSuccess?: (itemId: string, finalState: boolean) => void;
 	initIsActive?: boolean;
 };
 
 const ItemListener = ({ item, className, onListenerSuccess, initIsActive }: ItemListenerProps) => {
 	const { colors } = useThemePalette();
+	const { isItemSubscribed, setItemSubscribed } = useAlarmSubscriptions();
+	const itemId = item._id.toString();
+	const itemPropSubscribed = initIsActive ?? !!(item.is_user_subscribed || item.isUserNotificationActive);
+	const sharedSubscriptionState = isItemSubscribed(itemId);
 	const [isUserSubscribed, setIsUserSubscribed] = useState<boolean>(
-		initIsActive ?? !!(item.is_user_subscribed || item.isUserNotificationActive)
+		sharedSubscriptionState ?? itemPropSubscribed
 	);
 	const [isListenerPending, setIsListenerPending] = useState<boolean>(false);
+
+	useEffect(() => {
+		setIsUserSubscribed(sharedSubscriptionState ?? itemPropSubscribed);
+	}, [itemPropSubscribed, sharedSubscriptionState]);
 
 	const isDarkMode =
 		colors.background?.toLowerCase?.() === "#0c0a08" ||
@@ -40,15 +49,15 @@ const ItemListener = ({ item, className, onListenerSuccess, initIsActive }: Item
 
 	const listenerButtonColors = isUserSubscribed
 		? {
-				backgroundColor: isDarkMode ? "rgba(2,44,34,0.70)" : "#ECFDF5",
-				borderColor: isDarkMode ? "rgba(52,211,153,0.45)" : "rgba(16,185,129,0.45)",
-				iconColor: isDarkMode ? "#A7F3D0" : "#047857",
+				backgroundColor: isDarkMode ? "rgba(16,185,129,0.25)" : "rgba(209,250,229,0.90)",
+				borderColor: isDarkMode ? "rgba(52,211,153,0.30)" : "rgba(5,150,105,0.45)",
+				iconColor: isDarkMode ? "#6EE7B7" : "#047857",
 				shadowColor: "rgba(16,185,129,0.20)"
 			}
 		: {
-				backgroundColor: isDarkMode ? "rgba(69,10,10,0.70)" : "#FEF2F2",
-				borderColor: isDarkMode ? "rgba(248,113,113,0.45)" : "rgba(239,68,68,0.45)",
-				iconColor: isDarkMode ? "#FECACA" : "#B91C1C",
+				backgroundColor: isDarkMode ? "rgba(239,68,68,0.25)" : "rgba(255,228,230,0.90)",
+				borderColor: isDarkMode ? "rgba(248,113,113,0.30)" : "rgba(225,29,72,0.40)",
+				iconColor: isDarkMode ? "#FCA5A5" : "#BE123C",
 				shadowColor: "rgba(239,68,68,0.20)"
 			};
 
@@ -231,7 +240,8 @@ const ItemListener = ({ item, className, onListenerSuccess, initIsActive }: Item
 						await askAndStoreAccountPushToken("listener");
 					}
 
-					onListenerSuccess?.(item._id.toString());
+					setItemSubscribed(item, res.finalState);
+					onListenerSuccess?.(itemId, res.finalState);
 				} catch (err) {
 					console.error(err);
 					Toast.show({

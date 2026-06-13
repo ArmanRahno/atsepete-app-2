@@ -11,7 +11,7 @@ import UrunlerItemCardBottomRow from "./UrunlerItemCardBottomRow";
 export type ItemCardProps = {
 	item: Item;
 	className?: ClassNameValue;
-	onListenerSuccess?: (itemId: string) => void;
+	onListenerSuccess?: (itemId: string, finalState: boolean) => void;
 };
 
 export default function UrunlerItemCard({ item, className, onListenerSuccess }: ItemCardProps) {

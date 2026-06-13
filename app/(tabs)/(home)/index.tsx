@@ -1,9 +1,11 @@
 import FilterAndSortDialog, { Filters, SORT_OPTIONS } from "@/components/FilterAndSortDialog";
+import BarcodeScanButton from "@/components/barcode-scan/BarcodeScanButton";
 import Header from "@/components/header/Header";
 import HeaderText from "@/components/header/HeaderText";
 import ItemCard from "@/components/item/item-card/ItemCard";
 import LoadingIndicator from "@/components/LoadingIndicator";
 import React, { useState, useCallback, memo, useRef, useEffect } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import formatPrice from "@/lib/formatPrice";
 import {
 	RefreshControl,
@@ -18,15 +20,25 @@ import {
 	FlatList
 } from "react-native";
 import FilterAndSortAppliedFilter from "@/components/FilterAndSortAppliedFilter";
-import HeaderIcon from "@/components/header/HeaderIcon";
 import HeaderSecondRow from "@/components/header/HeaderSecondRow";
-import { ChevronUp } from "lucide-react-native";
+import {
+	Bell,
+	ChartNoAxesCombined,
+	ChevronUp,
+	ListChecks,
+	ScanBarcode,
+	Search,
+	X
+} from "lucide-react-native";
 import AppTouchableOpacity from "@/components/AppTouchableOpacity";
 import { useIsFocused } from "@react-navigation/native";
 import HeaderFirstRow from "@/components/header/HeaderFirstRow";
 import { useThemePalette } from "@/hooks/useThemePalette";
+import { useRouter } from "expo-router";
 
 const API_URL = "https://atsepete.net/api/application/page/homepage";
+const HOMEPAGE_CONTENT_URL = "https://atsepete.net/api/application/page/homepage-content";
+const PRICE_ASSISTANT_DISMISSED_KEY = "home-price-assistant-dismissed";
 
 const AUTO_REFRESH_BASE_MS = 30_000;
 const AUTO_JITTER_MIN = 0.9;
@@ -39,6 +51,14 @@ const BACK_TO_TOP_Y = 800;
 type HomepageData = {
 	items: Item[];
 	totalItems: number;
+};
+
+type HomepageContentData = {
+	summary?: {
+		deal_count: number | null;
+		last_24_hours_count: number | null;
+		marketplace_count: number | null;
+	};
 };
 
 const defaultFilters: Filters = {
@@ -63,9 +83,11 @@ const concatUniqueById = (first: Item[], second: Item[]) => {
 export default function HomeScreen() {
 	const isFocused = useIsFocused();
 	const { colors } = useThemePalette();
+	const router = useRouter();
 
 	const [items, setItems] = useState<Item[]>([]);
 	const [totalItems, setTotalItems] = useState<number>(0);
+	const [homepageContent, setHomepageContent] = useState<HomepageContentData | null>(null);
 
 	const [loading, setLoading] = useState<boolean>(false);
 	const [loadingMore, setLoadingMore] = useState<boolean>(false);
@@ -85,6 +107,7 @@ export default function HomeScreen() {
 
 	const [pendingNew, setPendingNew] = useState<Item[]>([]);
 	const [isNearTop, setIsNearTop] = useState<boolean>(true);
+	const [isAssistantDismissed, setIsAssistantDismissed] = useState<boolean>(false);
 
 	const [maintain, setMaintain] = useState<boolean>(false);
 	const maintainOnce = useCallback(() => {
@@ -132,6 +155,19 @@ export default function HomeScreen() {
 
 	const autoLabelTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+	useEffect(() => {
+		AsyncStorage.getItem(PRICE_ASSISTANT_DISMISSED_KEY)
+			.then(value => {
+				if (value === "true") setIsAssistantDismissed(true);
+			})
+			.catch(() => {});
+	}, []);
+
+	const dismissAssistant = useCallback(() => {
+		setIsAssistantDismissed(true);
+		void AsyncStorage.setItem(PRICE_ASSISTANT_DISMISSED_KEY, "true");
+	}, []);
+
 	const clearAutoTimer = useCallback(() => {
 		if (autoTimerRef.current) {
 			clearTimeout(autoTimerRef.current);
@@ -143,6 +179,18 @@ export default function HomeScreen() {
 		if (autoLabelTimeoutRef.current) {
 			clearTimeout(autoLabelTimeoutRef.current);
 			autoLabelTimeoutRef.current = null;
+		}
+	}, []);
+
+	const fetchHomepageContent = useCallback(async () => {
+		try {
+			const response = await fetch(HOMEPAGE_CONTENT_URL);
+			if (!response.ok) throw new Error("Error fetching homepage content");
+
+			const content = (await response.json()) as HomepageContentData;
+			setHomepageContent(content);
+		} catch (error) {
+			console.error("Error fetching homepage content:", error);
 		}
 	}, []);
 
@@ -469,8 +517,20 @@ export default function HomeScreen() {
 			});
 		}
 
+		if (!homepageContent) {
+			void fetchHomepageContent();
+		}
+
 		return () => stopAutoRefresh();
-	}, [fetchPage, isFocused, resetCounter, startAutoRefresh, stopAutoRefresh]);
+	}, [
+		fetchHomepageContent,
+		fetchPage,
+		homepageContent,
+		isFocused,
+		resetCounter,
+		startAutoRefresh,
+		stopAutoRefresh
+	]);
 
 	const onRefresh = useCallback(async () => {
 		resetCounter();
@@ -480,10 +540,20 @@ export default function HomeScreen() {
 		remainingMsRef.current = null;
 		nextAutoTickAtRef.current = null;
 
-		await headRefresh({ silent: false, reason: "manual" });
+		await Promise.all([
+			headRefresh({ silent: false, reason: "manual" }),
+			fetchHomepageContent()
+		]);
 
 		if (isHomeVisibleNow()) startAutoRefresh();
-	}, [headRefresh, isHomeVisibleNow, resetCounter, startAutoRefresh, stopAutoRefresh]);
+	}, [
+		fetchHomepageContent,
+		headRefresh,
+		isHomeVisibleNow,
+		resetCounter,
+		startAutoRefresh,
+		stopAutoRefresh
+	]);
 
 	const handleLoadMore = useCallback(() => {
 		if (loadingMore) return;
@@ -587,6 +657,65 @@ export default function HomeScreen() {
 		});
 	}, [pendingNew]);
 
+	const goToProducts = useCallback(() => router.push("/urunler"), [router]);
+	const goToCategories = useCallback(() => router.push("/kategoriler"), [router]);
+	const goToAlerts = useCallback(() => router.push("/alarms"), [router]);
+
+	const formatCount = useCallback(
+		(value: number | null | undefined) =>
+			typeof value === "number" && Number.isFinite(value) ? value.toLocaleString("tr-TR") : "-",
+		[]
+	);
+
+	const assistantSummary = React.useMemo(() => {
+		const summary = homepageContent?.summary;
+
+		return [
+			{
+				label: "Fırsat havuzu",
+				value: formatCount(summary?.deal_count)
+			},
+			{
+				label: "Son 24 saat",
+				value: formatCount(summary?.last_24_hours_count)
+			},
+			{
+				label: "Pazaryeri",
+				value: formatCount(summary?.marketplace_count)
+			}
+		];
+	}, [formatCount, homepageContent]);
+
+	const renderAssistantAction = useCallback(
+		({
+			icon,
+			label,
+			onPress
+		}: {
+			icon: React.ReactNode;
+			label: string;
+			onPress: () => void;
+		}) => (
+			<AppTouchableOpacity
+				key={label}
+				onPress={onPress}
+				className="flex-1 rounded-lg border border-border bg-background px-3 py-3"
+				style={styles.assistantAction}
+			>
+				<View style={styles.assistantActionIcon}>{icon}</View>
+				<Text
+					className="text-foreground text-sm font-semibold"
+					numberOfLines={2}
+					adjustsFontSizeToFit
+					minimumFontScale={0.86}
+				>
+					{label}
+				</Text>
+			</AppTouchableOpacity>
+		),
+		[]
+	);
+
 	return (
 		<View style={styles.root}>
 			<Header>
@@ -618,6 +747,131 @@ export default function HomeScreen() {
 					}
 					ListHeaderComponent={
 						<>
+							{!isAssistantDismissed && (
+								<View
+									className="rounded-lg border border-border bg-card p-4 mb-3"
+									style={styles.assistantPanel}
+								>
+									<View style={styles.assistantHeaderRow}>
+										<View className="flex-1 pr-3">
+											<Text className="text-foreground text-lg font-bold">
+												Fiyat Takip Merkezi
+											</Text>
+											<Text className="text-muted-foreground text-sm mt-1">
+												Ürünü bulun, fiyat geçmişini inceleyin, doğru alarmı
+												kurun.
+											</Text>
+										</View>
+										<AppTouchableOpacity
+											onPress={dismissAssistant}
+											className="mr-2 h-8 w-8 items-center justify-center rounded-full bg-secondary"
+											hitSlop={10}
+										>
+											<X
+												size={16}
+												color={colors.mutedForeground}
+												strokeWidth={2.4}
+											/>
+										</AppTouchableOpacity>
+										<View
+											className="rounded-full bg-primary/10"
+											style={styles.assistantBadge}
+										>
+											<ChartNoAxesCombined
+												size={22}
+												color={colors.primary}
+												strokeWidth={2.3}
+											/>
+										</View>
+									</View>
+
+									<View style={styles.assistantGrid}>
+										<BarcodeScanButton
+											hitSlop={0}
+											className="flex-1 rounded-lg border border-border bg-background px-3 py-3"
+										>
+											<View style={styles.assistantAction}>
+												<View style={styles.assistantActionIcon}>
+													<ScanBarcode
+														size={19}
+														color={colors.primary}
+														strokeWidth={2.4}
+													/>
+												</View>
+												<Text
+													className="text-foreground text-sm font-semibold"
+													numberOfLines={2}
+													adjustsFontSizeToFit
+													minimumFontScale={0.86}
+												>
+													Barkodla Karşılaştır
+												</Text>
+											</View>
+										</BarcodeScanButton>
+
+										{renderAssistantAction({
+											icon: (
+												<Search
+													size={19}
+													color={colors.primary}
+													strokeWidth={2.4}
+												/>
+											),
+											label: "Alarm Kurulacak Ürün Bul",
+											onPress: goToProducts
+										})}
+									</View>
+
+									<View style={styles.assistantGrid}>
+										{renderAssistantAction({
+											icon: (
+												<Bell
+													size={19}
+													color={colors.primary}
+													strokeWidth={2.4}
+												/>
+											),
+											label: "Kategoriyle Takip Kur",
+											onPress: goToCategories
+										})}
+
+										{renderAssistantAction({
+											icon: (
+												<ListChecks
+													size={19}
+													color={colors.primary}
+													strokeWidth={2.4}
+												/>
+											),
+											label: "Takip Listem",
+											onPress: goToAlerts
+										})}
+									</View>
+
+									<View className="mt-4 rounded-lg border border-border bg-secondary p-3">
+										<Text className="text-foreground text-sm font-bold mb-3">
+											Bugünün Özeti
+										</Text>
+										<View style={styles.summaryGrid}>
+											{assistantSummary.map(item => (
+												<View
+													key={item.label}
+													className="rounded-lg bg-background px-3 py-2"
+													style={styles.summaryCell}
+												>
+													<Text className="text-muted-foreground text-xs">
+														{item.label}
+													</Text>
+													<Text className="text-foreground text-base font-bold mt-1">
+														{item.value}
+													</Text>
+												</View>
+											))}
+										</View>
+									</View>
+								</View>
+							)}
+
 							<HeaderText className="mt-2 mb-2">
 								4 Milyon Üründe Yakalanan İndirimler
 							</HeaderText>
@@ -746,6 +1000,47 @@ const styles = StyleSheet.create({
 		paddingHorizontal: 8,
 		paddingTop: 8,
 		paddingBottom: 24
+	},
+	assistantPanel: {
+		shadowColor: "#000",
+		shadowOffset: { width: 0, height: 4 },
+		shadowOpacity: 0.08,
+		shadowRadius: 10,
+		elevation: 2
+	},
+	assistantHeaderRow: {
+		flexDirection: "row",
+		alignItems: "center",
+		marginBottom: 14
+	},
+	assistantBadge: {
+		width: 44,
+		height: 44,
+		alignItems: "center",
+		justifyContent: "center"
+	},
+	assistantGrid: {
+		flexDirection: "row",
+		gap: 8,
+		marginTop: 8
+	},
+	assistantAction: {
+		minHeight: 72,
+		justifyContent: "center",
+		gap: 8
+	},
+	assistantActionIcon: {
+		height: 24,
+		justifyContent: "center"
+	},
+	summaryGrid: {
+		flexDirection: "row",
+		gap: 8
+	},
+	summaryCell: {
+		flex: 1,
+		minHeight: 58,
+		justifyContent: "center"
 	},
 	newBanner: { top: 96 },
 	statusRow: {

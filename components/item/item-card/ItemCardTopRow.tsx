@@ -10,7 +10,7 @@ const ItemCardTopRow = ({
 }: {
 	item: Item;
 	className?: ClassNameValue;
-	onListenerSuccess: ((itemId: string) => void) | undefined;
+	onListenerSuccess: ((itemId: string, finalState: boolean) => void) | undefined;
 }) => {
 	return (
 		<Link

@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ActivityIndicator } from "react-native";
 import Toast from "react-native-toast-message";
 import { BellMinus, BellPlus } from "lucide-react-native";
@@ -21,21 +21,26 @@ const MarketplaceListener = ({
 	marketplace: Item["marketplace"];
 	className?: ClassNameValue;
 	size?: number;
-	onListenerSuccess?: () => void;
+	onListenerSuccess?: (finalState: boolean) => void;
 }) => {
 	const { isDark } = useThemePalette();
 	const [isUserSubscribed, setIsUserSubscribed] = useState<boolean>(is_user_subscribed || false);
 	const [isListenerPending, setIsListenerPending] = useState<boolean>(false);
+
+	useEffect(() => {
+		setIsUserSubscribed(Boolean(is_user_subscribed));
+	}, [is_user_subscribed]);
+
 	const buttonColors = isUserSubscribed
 		? {
-				backgroundColor: isDark ? "rgba(6,78,59,0.72)" : "#ECFDF5",
-				borderColor: isDark ? "rgba(52,211,153,0.45)" : "rgba(16,185,129,0.45)",
-				iconColor: isDark ? "#A7F3D0" : "#047857"
+				backgroundColor: isDark ? "rgba(16,185,129,0.25)" : "rgba(209,250,229,0.90)",
+				borderColor: isDark ? "rgba(52,211,153,0.30)" : "rgba(5,150,105,0.45)",
+				iconColor: isDark ? "#6EE7B7" : "#047857"
 			}
 		: {
-				backgroundColor: isDark ? "rgba(127,29,29,0.72)" : "#FEF2F2",
-				borderColor: isDark ? "rgba(248,113,113,0.45)" : "rgba(239,68,68,0.45)",
-				iconColor: isDark ? "#FECACA" : "#B91C1C"
+				backgroundColor: isDark ? "rgba(239,68,68,0.25)" : "rgba(255,228,230,0.90)",
+				borderColor: isDark ? "rgba(248,113,113,0.30)" : "rgba(225,29,72,0.40)",
+				iconColor: isDark ? "#FCA5A5" : "#BE123C"
 			};
 
 	const { ensureNotificationPermission, registerAccountPushTokenIfNeeded } =
@@ -51,7 +56,7 @@ const MarketplaceListener = ({
 				backgroundColor: buttonColors.backgroundColor,
 				borderColor: buttonColors.borderColor
 			}}
-			hitSlop={16}
+			hitSlop={22}
 			disabled={isListenerPending}
 			onPress={async () => {
 				if (isListenerPending) return;
@@ -111,7 +116,7 @@ const MarketplaceListener = ({
 						await registerAccountPushTokenIfNeeded();
 					}
 
-					onListenerSuccess?.();
+					onListenerSuccess?.(res.finalState);
 				} catch (err) {
 					console.error(err);
 					Toast.show({

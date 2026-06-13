@@ -26,7 +26,7 @@ export type ItemCardProps = {
 	className?: ClassNameValue;
 	displayItemListener?: boolean;
 	detailHrefPrefix?: "/indirimler" | "/urunler";
-	onListenerTrigger?: (itemId: string) => void;
+	onListenerTrigger?: (itemId: string, finalState: boolean) => void;
 };
 
 const fontStyles = StyleSheet.create({
@@ -178,7 +178,7 @@ export default function ItemCard({
 				>
 					<Pressable className="shrink-0 flex-row items-center">
 						{hasMarketplaceIcon && MarketplaceIcon ? (
-							<View className="rounded-lg bg-white px-2 py-1">
+							<View className="h-7 min-w-16 items-center justify-center overflow-hidden rounded-lg bg-white px-2">
 								<MarketplaceIcon />
 							</View>
 						) : (

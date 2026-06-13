@@ -36,6 +36,7 @@ import { useNotificationPermission } from "@/hooks/useNotificationPermission";
 import { ResetOnAuthContext } from "@/hooks/useResetOnAuth";
 import { OnboardingGate } from "@/components/onboarding/OnboardingGate";
 import { AppThemeProvider, useAppTheme } from "@/components/AppThemeProvider";
+import { AlarmSubscriptionsProvider } from "@/hooks/useAlarmSubscriptions";
 
 const INITIAL_LAUNCH_API_URL = "https://atsepete.net/api/application/initial-launch";
 
@@ -195,27 +196,29 @@ function RootLayoutContent() {
 			<NavigationThemeProvider value={navigationTheme}>
 				<StatusBar style={isDark ? "light" : "dark"} />
 				<NotificationColdStartNav />
-				<Stack
-					screenOptions={{
-						headerShown: false,
-						gestureEnabled: true,
-						fullScreenGestureEnabled: true
-					}}
-				>
-					<Stack.Screen
-						name="(tabs)"
-						options={{ headerShown: false }}
-					/>
-					<Stack.Screen
-						name="(modals)"
-						options={{ headerShown: false, presentation: "modal" }}
-					/>
-					<Stack.Screen
-						name="(onboarding)"
-						options={{ headerShown: false }}
-					/>
-					<Stack.Screen name="+not-found" />
-				</Stack>
+				<AlarmSubscriptionsProvider>
+					<Stack
+						screenOptions={{
+							headerShown: false,
+							gestureEnabled: true,
+							fullScreenGestureEnabled: true
+						}}
+					>
+						<Stack.Screen
+							name="(tabs)"
+							options={{ headerShown: false }}
+						/>
+						<Stack.Screen
+							name="(modals)"
+							options={{ headerShown: false, presentation: "modal" }}
+						/>
+						<Stack.Screen
+							name="(onboarding)"
+							options={{ headerShown: false }}
+						/>
+						<Stack.Screen name="+not-found" />
+					</Stack>
+				</AlarmSubscriptionsProvider>
 				<Toast config={toastConfig} />
 			</NavigationThemeProvider>
 		</SafeAreaProvider>

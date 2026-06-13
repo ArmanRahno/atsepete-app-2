@@ -1,5 +1,6 @@
 import { Camera as CameraIcon } from "lucide-react-native";
 import { AppState, Text, View } from "react-native";
+import type { ReactNode } from "react";
 import { useEffect, useRef, useState } from "react";
 import BarcodeScanCameraModal from "./BarcodeScanCameraModal";
 import { usePermissionWarmup } from "../PermissionWarmupDialog";
@@ -8,7 +9,21 @@ import AppTouchableOpacity from "../AppTouchableOpacity";
 import { Camera } from "expo-camera";
 import { useThemePalette } from "@/hooks/useThemePalette";
 
-const BarcodeScanButton = () => {
+type BarcodeScanButtonProps = {
+	children?: ReactNode;
+	className?: string;
+	hitSlop?: number;
+	iconColor?: string;
+	iconSize?: number;
+};
+
+const BarcodeScanButton = ({
+	children,
+	className,
+	hitSlop = 10,
+	iconColor,
+	iconSize = 24
+}: BarcodeScanButtonProps) => {
 	const { colors } = useThemePalette();
 	const [isCamViewOpen, setIsCamViewOpen] = useState<boolean>(false);
 
@@ -105,14 +120,17 @@ const BarcodeScanButton = () => {
 		<View>
 			<AppTouchableOpacity
 				onPress={handleCameraPress}
-				hitSlop={10}
+				hitSlop={hitSlop}
+				className={className}
 			>
-				<Text className="mx-1 p-2.5">
-					<CameraIcon
-						size={24}
-						color={colors.mutedForeground}
-					/>
-				</Text>
+				{children ?? (
+					<Text className="mx-1 p-2.5">
+						<CameraIcon
+							size={iconSize}
+							color={iconColor ?? colors.mutedForeground}
+						/>
+					</Text>
+				)}
 			</AppTouchableOpacity>
 			<BarcodeScanCameraModal
 				isCamViewOpen={isCamViewOpen}

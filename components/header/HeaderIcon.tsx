@@ -1,24 +1,27 @@
 import { Pressable, Text, View } from "react-native";
 import AtSepeteIcon from "@/assets/icons/AtSepeteIcon";
-import * as Linking from "expo-linking";
+import { useRouter } from "expo-router";
 import { useThemePalette } from "@/hooks/useThemePalette";
 
 const HeaderIcon = () => {
 	const { colors, isDark } = useThemePalette();
+	const router = useRouter();
 
 	const handlePress = () => {
-		Linking.openURL("https://atsepete.net/");
+		router.replace("/");
 	};
 
 	return (
 		<Pressable
 			onPress={handlePress}
 			hitSlop={8}
-			accessibilityRole="link"
+			accessibilityRole="button"
+			accessibilityLabel="Ana sayfaya git"
 			style={{
 				alignSelf: "center",
 				flexDirection: "row",
 				alignItems: "center",
+				justifyContent: "center",
 				gap: 8,
 				flexShrink: 0,
 				overflow: "visible"
@@ -27,11 +30,11 @@ const HeaderIcon = () => {
 			<View className="rounded-full bg-primary/10 p-1">
 				<View
 					className="bg-primary justify-center items-center rounded-full"
-					style={{ height: 22, width: 22 }}
+					style={{ height: 24, width: 24 }}
 				>
 					<AtSepeteIcon
-						height={14}
-						width={14}
+						height={15}
+						width={15}
 						fill="white"
 						stroke="white"
 						strokeWidth={4}
@@ -41,12 +44,10 @@ const HeaderIcon = () => {
 
 			<View
 				style={{
-					minWidth: 92,
 					flexShrink: 0,
 					overflow: "visible",
-					paddingRight: 8,
 					flexDirection: "row",
-					alignItems: "baseline"
+					alignItems: "center"
 				}}
 			>
 				<Text
@@ -56,7 +57,7 @@ const HeaderIcon = () => {
 						fontSize: 18,
 						lineHeight: 24,
 						color: isDark ? "#FFFFFF" : colors.text,
-						includeFontPadding: true,
+						includeFontPadding: false,
 						fontStyle: "italic"
 					}}
 				>
@@ -69,7 +70,7 @@ const HeaderIcon = () => {
 						fontSize: 18,
 						lineHeight: 24,
 						color: colors.primary,
-						includeFontPadding: true
+						includeFontPadding: false
 					}}
 				>
 					Sepete

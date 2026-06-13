@@ -126,12 +126,12 @@ export default function OnboardingScreen() {
 		{
 			key: "welcome",
 			eyebrow: "HOŞ GELDİNİZ",
-			title: "Fırsatları tek ekranda yakalayın",
-			desc: "Birçok sitedeki indirimli ürünleri sizin için tarar, tek listede gösteririz.",
+			title: "Fiyatları otomatik takip edin",
+			desc: "Ürünleri izleyin, barkod tarayın ve hedef fiyatınızın altına düşünce haberdar olun.",
 			bullets: [
-				"Farklı siteler tek yerde",
-				"Yeni indirimler sürekli eklenir",
-				"Hızlı ve temiz liste"
+				"Ürün ve kategori alarmları kurun",
+				"Barkodla online fiyatları karşılaştırın",
+				"Fiyat değişimlerini düzenli izleyin"
 			],
 			gradient: [colors.primary, "#0B1220"],
 			accent: "#8F00FF",
@@ -140,12 +140,12 @@ export default function OnboardingScreen() {
 		{
 			key: "discover",
 			eyebrow: "KEŞFEDİN",
-			title: "Aradığınızı hızlı bulun",
-			desc: "Kategorilere göz atın, filtreleyin, sıralayın — indirimi kaçırmayın.",
+			title: "Fiyat sinyallerini hızlı bulun",
+			desc: "Kategorilere göz atın, filtreleyin ve fiyat hareketlerini tek tek inceleyin.",
 			bullets: [
 				"Kategori bazlı gezinin",
 				"Fiyata göre filtreleyin",
-				"Tarihe / indirim oranına göre sıralayın"
+				"Son değişime göre sıralayın"
 			],
 			gradient: ["#166534", "#0B1220"],
 			accent: "#4ADE80",
@@ -154,12 +154,12 @@ export default function OnboardingScreen() {
 		{
 			key: "barcode",
 			eyebrow: "BARKOD TARAMA",
-			title: "Barkodu okutun, ürünü bulun",
-			desc: "Mağazada gördüğünüz ürünün barkodunu kamerayla tarayın; ürün sayfasına hızlıca ulaşın.",
+			title: "Barkodu okutun, fiyatı izleyin",
+			desc: "Mağazada gördüğünüz ürünün barkodunu tarayın; online fiyatları ve ürün detayını açın.",
 			bullets: [
 				"Kamera ikonuyla hızlı tarama",
 				"Barkoddan ürün sayfasına geçiş",
-				"Fiyatları kolayca karşılaştırın"
+				"Fiyatları ve geçmişi kolayca karşılaştırın"
 			],
 			gradient: ["#0F766E", "#0B1220"],
 			accent: "#2DD4BF",
@@ -168,9 +168,9 @@ export default function OnboardingScreen() {
 		{
 			key: "alerts",
 			eyebrow: "ALARM KURUN",
-			title: "İndirim olunca haberiniz olsun",
-			desc: "Ürün, kategori veya pazaryeri seçin. İndirim çıktığında size haber verelim.",
-			bullets: ["Ürün alarmı kurun", "Kategori alarmı kurun", "İndirim olunca bildirim alın"],
+			title: "Hedef fiyatı kaçırmayın",
+			desc: "Ürün, kategori veya pazaryeri seçin. Fiyat düştüğünde bildirim alın.",
+			bullets: ["Ürün alarmı kurun", "Kategori alarmı kurun", "Fiyat düşünce bildirim alın"],
 			gradient: ["#9A3412", "#0B1220"],
 			accent: "#FF2A00",
 			icon: "alerts"
@@ -179,8 +179,8 @@ export default function OnboardingScreen() {
 			key: "video",
 			eyebrow: "HIZLI TUR",
 			title: "Hemen başlayın",
-			desc: "Nasıl kullanıldığını izleyin.",
-			bullets: ["Kısa kullanım videosu", "Alarm kurmayı görün", "Hazırsanız başlayın"],
+			desc: "Barkod tarama, alarm ve fiyat geçmişi akışını hızlıca görün.",
+			bullets: ["Kısa kullanım videosu", "Alarm kurmayı görün", "Fiyat geçmişini inceleyin"],
 			gradient: ["#1D4ED8", "#0B1220"],
 			accent: "#3F3FFF",
 			youtubeId: "WmkMVadrug4",

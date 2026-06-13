@@ -85,7 +85,7 @@ export default function ItemSuggestionCard(props: ItemSuggestionCardProps) {
 							marketplace={marketplace}
 							router={router}
 						>
-							<View className="h-7 min-w-16 items-center justify-center overflow-hidden rounded-lg bg-white px-2 py-1">
+							<View className="h-7 min-w-16 items-center justify-center overflow-hidden rounded-lg bg-white px-2">
 								<MarketplaceIcon />
 							</View>
 						</ToMarketplacePagePressable>

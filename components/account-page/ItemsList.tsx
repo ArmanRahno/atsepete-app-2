@@ -4,7 +4,7 @@ import ItemCard from "@/components/item/item-card/ItemCard";
 
 type ItemsListProps = {
 	items: Item[];
-	onListenerSuccess: (itemId: string) => void;
+	onListenerSuccess: (itemId: string, finalState: boolean) => void;
 };
 
 const MemoizedItemCard = memo(ItemCard);
@@ -20,6 +20,7 @@ export default function ItemsList({ items, onListenerSuccess }: ItemsListProps) 
 						<MemoizedItemCard
 							key={item._id.toString()}
 							item={item}
+							displayItemListener
 							onListenerTrigger={onListenerSuccess}
 						/>
 					);
@@ -29,6 +30,7 @@ export default function ItemsList({ items, onListenerSuccess }: ItemsListProps) 
 					<MemoizedItemCard
 						key={item._id.toString()}
 						item={item}
+						displayItemListener
 						onListenerTrigger={onListenerSuccess}
 						detailHrefPrefix="/urunler"
 					/>

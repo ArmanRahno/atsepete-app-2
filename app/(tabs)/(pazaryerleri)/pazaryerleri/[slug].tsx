@@ -1,12 +1,12 @@
 import Header from "@/components/header/Header";
 import HeaderFirstRow from "@/components/header/HeaderFirstRow";
-import HeaderIcon from "@/components/header/HeaderIcon";
 import HeaderSecondRow from "@/components/header/HeaderSecondRow";
 import HeaderText from "@/components/header/HeaderText";
 import ItemCard from "@/components/item/item-card/ItemCard";
 import LoadingIndicator from "@/components/LoadingIndicator";
 import MarketplaceListener from "@/components/MarketplaceListener";
 import findMarketplaceLabel from "@/lib/findMarketplaceLabel";
+import { useAlarmSubscriptions } from "@/hooks/useAlarmSubscriptions";
 import { useFocusEffect } from "expo-router";
 import { useSearchParams } from "expo-router/build/hooks";
 import React, { useState, useCallback, memo, useRef } from "react";
@@ -28,6 +28,7 @@ const MarketplaceScreen = () => {
 	const params = useSearchParams();
 	const marketplace = params.get("slug");
 	const marketplaceLabel = findMarketplaceLabel(marketplace!);
+	const { setMarketplaceSubscribed } = useAlarmSubscriptions();
 
 	const [items, setItems] = useState<Item[]>([]);
 	const [totalItems, setTotalItems] = useState<number>(0);
@@ -141,7 +142,12 @@ const MarketplaceScreen = () => {
 				data={items}
 				keyExtractor={item => item._id.toString()}
 				renderItem={({ item }) => {
-					return <MemoizedItemCard item={item} />;
+					return (
+						<MemoizedItemCard
+							item={item}
+							displayItemListener
+						/>
+					);
 				}}
 				ItemSeparatorComponent={() => <View className="h-2" />}
 				refreshControl={
@@ -164,6 +170,10 @@ const MarketplaceScreen = () => {
 							className="px-4 py-2"
 							marketplace={marketplace}
 							is_user_subscribed={userIsSubscribed}
+							onListenerSuccess={finalState => {
+								setUserIsSubscribed(finalState);
+								setMarketplaceSubscribed(marketplace, finalState);
+							}}
 						/>
 					</View>
 				}

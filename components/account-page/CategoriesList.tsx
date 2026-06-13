@@ -1,12 +1,14 @@
 import React from "react";
-import { FlatList, Pressable, Text } from "react-native";
+import { FlatList, Text, View } from "react-native";
 import Categories from "@/constants/Categories";
 import findCategoryLabel from "@/lib/findCategoryLabel";
 import { router } from "expo-router";
 import { IconSymbol } from "../ui/IconSymbol";
-import { Card } from "../shad-cn/card";
 import CategoryListener from "../CategoryListener";
 import { useThemePalette } from "@/hooks/useThemePalette";
+import AppTouchableOpacity from "../AppTouchableOpacity";
+import { ChevronRight } from "lucide-react-native";
+import CategoryIconAura from "../CategoryIconAura";
 
 type CategoriesListProps = {
 	categories: string[];
@@ -14,7 +16,8 @@ type CategoriesListProps = {
 };
 
 export default function CategoriesList({ categories, onRemoveCategory }: CategoriesListProps) {
-	const { colors } = useThemePalette();
+	const { colors, isDark } = useThemePalette();
+	const cardBackgroundColor = isDark ? "#1E1914" : "#FFFDF7";
 
 	return (
 		<FlatList
@@ -25,32 +28,66 @@ export default function CategoriesList({ categories, onRemoveCategory }: Categor
 				const label = findCategoryLabel(item);
 
 				return (
-					<Card
+					<View
 						key={item}
-						className="px-6 py-3 flex-row gap-3 justify-between items-center"
+						className="h-[72px] flex-row items-center overflow-hidden border border-border rounded-lg px-6 py-3"
+						style={{
+							backgroundColor: cardBackgroundColor,
+							shadowColor: "#000",
+							shadowOffset: { width: 0, height: 1 },
+							shadowOpacity: isDark ? 0.22 : 0.06,
+							shadowRadius: 4,
+							elevation: 1
+						}}
 					>
-						<Pressable
+						<AppTouchableOpacity
 							onPress={() => router.push(`/kategoriler/${item}`)}
-							className="flex-row items-center gap-4"
+							className="h-full flex-1 flex-row gap-3 items-center pr-3"
 						>
-							<IconSymbol
-								// @ts-expect-error Expect error instead of type assertion
-								name={categoryIconName}
-								size={40}
-								color={colors.mutedForeground}
-							/>
+							<View className="relative h-10 w-10 items-center justify-center">
+								<CategoryIconAura
+									category={item}
+									isDark={isDark}
+								/>
+								<IconSymbol
+									// @ts-expect-error Expect error instead of type assertion
+									name={categoryIconName}
+									size={28}
+									color={colors.mutedForeground}
+								/>
+							</View>
 
-							<Text className="pr-2 text-primary text-lg font-bold">{label}</Text>
-						</Pressable>
+							<Text
+								className="flex-1 text-base font-semibold text-foreground"
+								numberOfLines={2}
+								adjustsFontSizeToFit
+								minimumFontScale={0.88}
+							>
+								{label}
+							</Text>
+
+							<View
+								className="h-8 w-8 items-center justify-center rounded-full"
+								style={{ backgroundColor: isDark ? "#2A241E" : "#F1E8DD" }}
+							>
+								<ChevronRight
+									size={17}
+									color={colors.mutedForeground}
+									strokeWidth={2.4}
+								/>
+							</View>
+						</AppTouchableOpacity>
 
 						<CategoryListener
-							className="rounded-[0.65rem] px-4 py-2"
+							className="ml-2 w-12 h-10 rounded-[0.65rem] px-0 py-0"
 							category={item}
-							onListenerSuccess={() => onRemoveCategory(item)}
-							size={24}
+							onListenerSuccess={finalState => {
+								if (!finalState) onRemoveCategory(item);
+							}}
+							size={22}
 							is_user_subscribed
 						/>
-					</Card>
+					</View>
 				);
 			}}
 			ListEmptyComponent={
@@ -58,7 +95,7 @@ export default function CategoriesList({ categories, onRemoveCategory }: Categor
 					Alarm eklediğiniz kategori bulunmamaktadır.
 				</Text>
 			}
-			contentContainerClassName="p-2 gap-2"
+			contentContainerStyle={{ padding: 12, gap: 8 }}
 		/>
 	);
 }

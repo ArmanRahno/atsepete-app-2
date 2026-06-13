@@ -19,7 +19,7 @@ const SIDE_W = "w-[46px]";
 const HeaderFirstRow = ({ displaySortTouchable, setDisplayDialog }: Props) => {
 	return (
 		<View className="flex-row items-center">
-			<View className={`${SIDE_W} items-start`}>
+			<View className={`${SIDE_W} items-center`}>
 				<HeaderProfileTouchable />
 			</View>
 
@@ -27,7 +27,7 @@ const HeaderFirstRow = ({ displaySortTouchable, setDisplayDialog }: Props) => {
 				<HeaderIcon />
 			</View>
 
-			<View className={`${SIDE_W} items-end`}>
+			<View className={`${SIDE_W} items-center`}>
 				{displaySortTouchable ? (
 					<HeaderFilterAndSortTouchable setDisplayDialog={setDisplayDialog} />
 				) : (
