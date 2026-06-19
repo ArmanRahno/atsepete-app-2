@@ -3,7 +3,7 @@ const IS_DEV = process.env.APP_VARIANT === "development";
 export default {
 	"name": "AtSepete",
 	"slug": "atsepete",
-	"version": "1.3.4",
+	"version": "1.3.5",
 	"orientation": "portrait",
 	"icon": "./assets/images/icon.png",
 	"scheme": "atsepete",
@@ -61,7 +61,18 @@ export default {
 			"expo-build-properties",
 			{
 				"android": {},
-				"ios": {}
+				"ios": {
+					"extraPods": [
+						{
+							"name": "GoogleUtilities",
+							"modular_headers": true
+						},
+						{
+							"name": "RecaptchaInterop",
+							"modular_headers": true
+						}
+					]
+				}
 			}
 		],
 		[

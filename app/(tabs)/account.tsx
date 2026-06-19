@@ -128,8 +128,11 @@ export default function AccountScreen() {
 			</Header>
 
 			{isLoggedIn && userData && (
-				<ScrollView className="bg-background">
-					<View className="p-2">
+				<ScrollView
+					className="bg-background"
+					contentContainerClassName="flex-grow"
+				>
+					<View className="flex-1 justify-between p-2">
 						<View className="bg-background p-3 gap-4">
 							<View className="mt-4">
 								<View className="mb-2">
@@ -185,7 +188,9 @@ export default function AccountScreen() {
 								/>
 							</View>
 						</View>
-						<VersionInfo />
+						<View className="px-3 mt-6 mb-2">
+							<VersionInfo />
+						</View>
 					</View>
 				</ScrollView>
 			)}

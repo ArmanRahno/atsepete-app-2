@@ -42,40 +42,31 @@ const HeaderIcon = () => {
 				</View>
 			</View>
 
-			<View
+			<Text
+				allowFontScaling={false}
+				numberOfLines={1}
 				style={{
+					minWidth: 82,
+					paddingRight: 4,
 					flexShrink: 0,
 					overflow: "visible",
-					flexDirection: "row",
-					alignItems: "center"
+					fontFamily: "Roboto_500Medium",
+					fontSize: 18,
+					lineHeight: 24,
+					color: colors.primary,
+					includeFontPadding: false
 				}}
 			>
 				<Text
-					allowFontScaling={false}
 					style={{
-						fontFamily: "Roboto_500Medium",
-						fontSize: 18,
-						lineHeight: 24,
 						color: isDark ? "#FFFFFF" : colors.text,
-						includeFontPadding: false,
 						fontStyle: "italic"
 					}}
 				>
 					At
 				</Text>
-				<Text
-					allowFontScaling={false}
-					style={{
-						fontFamily: "Roboto_500Medium",
-						fontSize: 18,
-						lineHeight: 24,
-						color: colors.primary,
-						includeFontPadding: false
-					}}
-				>
-					Sepete
-				</Text>
-			</View>
+				Sepete
+			</Text>
 		</Pressable>
 	);
 };

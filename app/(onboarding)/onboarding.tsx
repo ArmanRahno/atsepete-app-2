@@ -6,8 +6,6 @@ import {
 	FlatList,
 	NativeScrollEvent,
 	NativeSyntheticEvent,
-	Image,
-	Linking,
 	useWindowDimensions,
 	Animated,
 	Easing
@@ -19,13 +17,10 @@ import {
 	BellRing,
 	Check,
 	ChevronRight,
-	CirclePlay,
 	PartyPopper,
-	Play,
 	ScanBarcode,
 	Search
 } from "lucide-react-native";
-import Svg, { G, Path } from "react-native-svg";
 
 import AppTouchableOpacity from "@/components/AppTouchableOpacity";
 import AtSepeteIcon from "@/assets/icons/AtSepeteIcon";
@@ -41,8 +36,7 @@ type Slide = {
 	bullets: string[];
 	gradient: [string, string];
 	accent: string;
-	youtubeId?: string;
-	icon: "welcome" | "discover" | "barcode" | "alerts" | "video";
+	icon: "welcome" | "discover" | "barcode" | "alerts";
 };
 
 const HERO_TEXT = "#FFFFFF";
@@ -71,31 +65,6 @@ function lightenHex(color: string, amount = 0.1) {
 	return `#${rr}${gg}${bb}`;
 }
 
-function YoutubeLogoBadge(props: { width?: number; height?: number }) {
-	const width = props.width ?? 34;
-	const height = props.height ?? 24;
-
-	return (
-		<Svg
-			viewBox="0 0 28.57 20"
-			width={width}
-			height={height}
-			preserveAspectRatio="xMidYMid meet"
-		>
-			<G>
-				<Path
-					d="M27.9727 3.12324C27.6435 1.89323 26.6768 0.926623 25.4468 0.597366C23.2197 2.24288e-07 14.285 0 14.285 0C14.285 0 5.35042 2.24288e-07 3.12323 0.597366C1.89323 0.926623 0.926623 1.89323 0.597366 3.12324C2.24288e-07 5.35042 0 10 0 10C0 10 2.24288e-07 14.6496 0.597366 16.8768C0.926623 18.1068 1.89323 19.0734 3.12323 19.4026C5.35042 20 14.285 20 14.285 20C14.285 20 23.2197 20 25.4468 19.4026C26.6768 19.0734 27.6435 18.1068 27.9727 16.8768C28.5701 14.6496 28.5701 10 28.5701 10C28.5701 10 28.5677 5.35042 27.9727 3.12324Z"
-					fill="#FF0000"
-				/>
-				<Path
-					d="M11.4253 14.2854L18.8477 10.0004L11.4253 5.71533V14.2854Z"
-					fill="#FFFFFF"
-				/>
-			</G>
-		</Svg>
-	);
-}
-
 function SlideEyebrowIcon({ icon }: { icon: Slide["icon"] }) {
 	const iconProps = {
 		size: 14,
@@ -112,8 +81,6 @@ function SlideEyebrowIcon({ icon }: { icon: Slide["icon"] }) {
 			return <ScanBarcode {...iconProps} />;
 		case "alerts":
 			return <BellRing {...iconProps} />;
-		case "video":
-			return <CirclePlay {...iconProps} />;
 	}
 }
 
@@ -174,17 +141,6 @@ export default function OnboardingScreen() {
 			gradient: ["#9A3412", "#0B1220"],
 			accent: "#FF2A00",
 			icon: "alerts"
-		},
-		{
-			key: "video",
-			eyebrow: "HIZLI TUR",
-			title: "Hemen başlayın",
-			desc: "Barkod tarama, alarm ve fiyat geçmişi akışını hızlıca görün.",
-			bullets: ["Kısa kullanım videosu", "Alarm kurmayı görün", "Fiyat geçmişini inceleyin"],
-			gradient: ["#1D4ED8", "#0B1220"],
-			accent: "#3F3FFF",
-			youtubeId: "WmkMVadrug4",
-			icon: "video"
 		}
 	];
 
@@ -251,11 +207,6 @@ export default function OnboardingScreen() {
 		if (!isLast) goTo(index + 1);
 		else void finish();
 	}, [finish, goTo, index, isLast]);
-
-	const openYoutube = useCallback((id?: string) => {
-		if (!id) return;
-		Linking.openURL(`https://www.youtube.com/watch?v=${id}`).catch(() => {});
-	}, []);
 
 	return (
 		<View style={[styles.root, { backgroundColor: colors.background }]}>
@@ -366,57 +317,6 @@ export default function OnboardingScreen() {
 									</View>
 								))}
 
-								{item.youtubeId && (
-									<AppTouchableOpacity
-										onPress={() => openYoutube(item.youtubeId)}
-										style={[styles.youtubeRow, { borderColor: colors.border }]}
-									>
-										<View style={styles.youtubeThumbWrap}>
-											<Image
-												source={{
-													uri: `https://img.youtube.com/vi/${item.youtubeId}/hqdefault.jpg`
-												}}
-												style={styles.youtubeThumb}
-											/>
-											<LinearGradient
-												colors={["rgba(0,0,0,0.08)", "rgba(0,0,0,0.50)"]}
-												start={{ x: 0, y: 0 }}
-												end={{ x: 0, y: 1 }}
-												style={styles.youtubeOverlay}
-											/>
-											<View style={styles.youtubeBadge}>
-												<YoutubeLogoBadge />
-											</View>
-										</View>
-
-										<View style={styles.youtubeMeta}>
-											<Text
-												style={[
-													styles.youtubeTitle,
-													{ color: colors.text }
-												]}
-											>
-												Kullanım videosu
-											</Text>
-											<View style={styles.youtubePillRow}>
-												<View style={styles.pill}>
-													<Play
-														size={14}
-														color={colors.primary}
-													/>
-													<Text
-														style={[
-															styles.pillText,
-															{ color: colors.primary }
-														]}
-													>
-														YouTube’da izle
-													</Text>
-												</View>
-											</View>
-										</View>
-									</AppTouchableOpacity>
-								)}
 							</View>
 						</View>
 					);
@@ -553,53 +453,6 @@ const styles = StyleSheet.create({
 	},
 
 	bulletText: { fontSize: 14, fontWeight: "800" },
-
-	youtubeRow: {
-		marginTop: 12,
-		paddingHorizontal: 12,
-		paddingVertical: 8,
-		borderWidth: 1,
-		borderRadius: 14,
-		overflow: "hidden",
-		flexDirection: "row",
-		backgroundColor: "#FFFFFF",
-		alignItems: "center"
-	},
-
-	youtubeThumbWrap: {
-		width: 128,
-		aspectRatio: 16 / 9,
-		borderRadius: 12,
-		overflow: "hidden",
-		alignSelf: "center"
-	},
-
-	youtubeThumb: {
-		width: "100%",
-		height: "100%",
-		resizeMode: "cover",
-		transform: [{ scale: 1.05 }] // Scale so that thumbnail's black borders are not visible.
-	},
-
-	youtubeOverlay: {
-		...StyleSheet.absoluteFillObject
-	},
-	youtubeBadge: { position: "absolute", left: 10, bottom: 10 },
-	youtubeMeta: { flex: 1, padding: 12, justifyContent: "center" },
-	youtubeTitle: { fontWeight: "900", fontSize: 14 },
-	youtubePillRow: { marginTop: 8, flexDirection: "row" },
-	pill: {
-		flexDirection: "row",
-		alignItems: "center",
-		gap: 6,
-		paddingHorizontal: 10,
-		paddingVertical: 6,
-		borderRadius: 999,
-		backgroundColor: "#EEF2FF",
-		borderWidth: 1,
-		borderColor: "#DDE3FF"
-	},
-	pillText: { fontWeight: "900", fontSize: 12 },
 
 	bottom: { paddingHorizontal: 16, paddingBottom: 16, paddingTop: 10 },
 	progressTrack: { height: 6, borderRadius: 999, overflow: "hidden" },

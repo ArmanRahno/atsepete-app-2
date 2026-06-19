@@ -15,7 +15,7 @@ const LoginAndRegisterFormsWrapper = ({ onSuccess }: { onSuccess: () => void }) 
 				style={{ flex: 1 }}
 				behavior="padding"
 			> */}
-			<View className="flex-1 p-4 justify-center">
+			<View className="flex-1 p-3 justify-center">
 				<Card className="p-4">
 					{isRegisterMode && <RegisterForm onSuccess={onSuccess} />}
 					{!isRegisterMode && <LoginForm onSuccess={onSuccess} />}
@@ -31,7 +31,7 @@ const LoginAndRegisterFormsWrapper = ({ onSuccess }: { onSuccess: () => void }) 
 				</Card>
 			</View>
 			{/* </KeyboardAvoidingView> */}
-			<View className="p-2">
+			<View className="p-3">
 				<VersionInfo />
 			</View>
 		</>

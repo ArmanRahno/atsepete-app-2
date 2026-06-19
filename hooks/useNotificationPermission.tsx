@@ -118,6 +118,7 @@ export function useNotificationPermission() {
 				return await new Promise<EnsurePermissionResult>(resolve => {
 					showPermissionDialog({
 						mode: "request",
+						primaryLabel: "Bildirimlere Devam Et",
 						title: "Bildirimleri Açmak İster misiniz?",
 						description:
 							"Alarm ekleyebilmeniz için bildirim izni gereklidir. Böylece takip ettiğiniz ürünlerdeki fiyat değişikliklerini anında size iletebiliriz.",

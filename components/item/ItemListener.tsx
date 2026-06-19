@@ -111,6 +111,7 @@ const ItemListener = ({ item, className, onListenerSuccess, initIsActive }: Item
 
 				showPermissionDialog({
 					mode: "request",
+					primaryLabel: "Bildirimlere Devam Et",
 					title: "Bildirimleri Açmak İster misiniz?",
 					description:
 						"Ürün alarmı ekleyebilmeniz için bildirim izni gereklidir. Böylece takip ettiğiniz ürünlerdeki fiyat değişikliklerini anında size iletebiliriz.",

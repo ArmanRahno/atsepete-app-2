@@ -68,6 +68,7 @@ const BarcodeScanButton = ({
 		if (perm.canAskAgain) {
 			showPermissionDialog({
 				mode: "request",
+				primaryLabel: "Devam Et",
 				title: "Kamera İzni Gerekli",
 				description:
 					"Barkod tarama özelliğini kullanabilmeniz için kameraya erişim izni gereklidir.",
