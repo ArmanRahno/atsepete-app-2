@@ -2,7 +2,7 @@ import Header from "@/components/header/Header";
 import { Stack, useRouter } from "expo-router";
 import { Search } from "lucide-react-native";
 import { useState } from "react";
-import { Keyboard, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Keyboard, Text, TextInput, View } from "react-native";
 import HeaderIcon from "@/components/header/HeaderIcon";
 import AppTouchableOpacity from "@/components/AppTouchableOpacity";
 import { useThemePalette } from "@/hooks/useThemePalette";
@@ -63,7 +63,7 @@ export default function SearchPageLayout() {
 	};
 
 	const handleSuggestionPress = (suggestion: { name: string; url_slug: string }) => {
-		router.push(`/urunler/${suggestion.url_slug}`, { withAnchor: true });
+		router.push(`/(tabs)/ara/urunler/${suggestion.url_slug}`);
 		setShowSuggestions(false);
 		setSuggestions([]);
 		setQuery("");
@@ -98,13 +98,14 @@ export default function SearchPageLayout() {
 								{suggestions.slice(0, 5).map(suggestion => {
 									return (
 										<AppTouchableOpacity
+											key={suggestion.url_slug}
 											onPress={() => handleSuggestionPress(suggestion)}
 											className="px-2 py-2 border-b border-border"
 										>
-					<Text
-						numberOfLines={1}
-						className="text-foreground"
-					>
+											<Text
+												numberOfLines={1}
+												className="text-foreground"
+											>
 												{suggestion.name}
 											</Text>
 										</AppTouchableOpacity>

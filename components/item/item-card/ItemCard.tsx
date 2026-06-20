@@ -26,6 +26,7 @@ export type ItemCardProps = {
 	className?: ClassNameValue;
 	displayItemListener?: boolean;
 	detailHrefPrefix?: "/indirimler" | "/urunler";
+	detailHref?: Href;
 	onListenerTrigger?: (itemId: string, finalState: boolean) => void;
 };
 
@@ -46,13 +47,15 @@ export default function ItemCard({
 	className,
 	displayItemListener = false,
 	detailHrefPrefix = "/indirimler",
+	detailHref: detailHrefOverride,
 	onListenerTrigger
 }: ItemCardProps) {
 	const { colors, isDark } = useThemePalette();
 	const red = semanticRed(isDark);
 	const green = semanticGreen(isDark);
 	const detailHref: Href =
-		detailHrefPrefix === "/urunler"
+		detailHrefOverride ??
+		(detailHrefPrefix === "/urunler"
 			? {
 					pathname: "/urunler/[slug]",
 					params: { slug: item.url_slug }
@@ -60,7 +63,7 @@ export default function ItemCard({
 			: {
 					pathname: "/indirimler/[slug]",
 					params: { slug: item.url_slug }
-				};
+				});
 
 	const marketplaceValue = item.marketplace?.toLowerCase();
 	const marketplaceMeta = Marketplaces.find(val => val.value === marketplaceValue);

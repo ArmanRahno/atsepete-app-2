@@ -1,9 +1,8 @@
 import HeaderText from "@/components/header/HeaderText";
 import ItemCard from "@/components/item/item-card/ItemCard";
 import LoadingIndicator from "@/components/LoadingIndicator";
-import { useFocusEffect } from "expo-router";
 import { useSearchParams } from "expo-router/build/hooks";
-import React, { useState, useCallback, memo } from "react";
+import React, { useState, useCallback, memo, useEffect } from "react";
 import { FlatList, RefreshControl, ActivityIndicator, View, Text, StyleSheet } from "react-native";
 
 const API_URL = "https://atsepete.net/api/application/page/search";
@@ -26,12 +25,16 @@ const SearchScreen = () => {
 	const [page, setPage] = useState<number>(0);
 
 	const fetchItems = useCallback(
-		async (pageNum: number, append = false) => {
+		async (pageNum: number, append = false, isRefresh = false) => {
+			if (!searchTerm) return;
+
 			try {
-				if (pageNum === 0 && !refreshing) {
-					setLoading(true);
-				} else {
+				if (append) {
 					setLoadingMore(true);
+				} else if (isRefresh) {
+					setRefreshing(true);
+				} else {
+					setLoading(true);
 				}
 
 				const response = await fetch(API_URL, {
@@ -61,20 +64,17 @@ const SearchScreen = () => {
 				setRefreshing(false);
 			}
 		},
-		[refreshing, searchTerm]
+		[searchTerm]
 	);
 
-	useFocusEffect(
-		useCallback(() => {
-			setPage(0);
-			fetchItems(0);
-		}, [fetchItems])
-	);
-
-	const onRefresh = useCallback(() => {
-		setRefreshing(true);
+	useEffect(() => {
 		setPage(0);
 		fetchItems(0);
+	}, [fetchItems]);
+
+	const onRefresh = useCallback(() => {
+		setPage(0);
+		fetchItems(0, false, true);
 	}, [fetchItems]);
 
 	const handleLoadMore = useCallback(() => {
@@ -84,6 +84,20 @@ const SearchScreen = () => {
 			fetchItems(nextPage, true);
 		}
 	}, [items.length, totalItems, page, loadingMore, fetchItems]);
+
+	const handleListenerSuccess = useCallback((itemId: string, finalState: boolean) => {
+		setItems(prevItems =>
+			prevItems.map(item =>
+				item._id.toString() === itemId
+					? {
+							...item,
+							is_user_subscribed: finalState,
+							isUserNotificationActive: finalState
+						}
+					: item
+			)
+		);
+	}, []);
 
 	if (loading && items.length === 0) {
 		return <LoadingIndicator />;
@@ -108,7 +122,17 @@ const SearchScreen = () => {
 				data={items}
 				keyExtractor={item => item._id.toString()}
 				renderItem={({ item }) => {
-					return <MemoizedItemCard item={item} />;
+					return (
+						<MemoizedItemCard
+							item={item}
+							displayItemListener
+							detailHref={{
+								pathname: "/(tabs)/ara/indirimler/[slug]",
+								params: { slug: item.url_slug }
+							}}
+							onListenerTrigger={handleListenerSuccess}
+						/>
+					);
 				}}
 				ItemSeparatorComponent={() => <View className="h-2" />}
 				refreshControl={

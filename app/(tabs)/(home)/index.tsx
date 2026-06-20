@@ -25,7 +25,6 @@ import HeaderSecondRow from "@/components/header/HeaderSecondRow";
 import {
 	Bell,
 	CalendarDays,
-	ChartNoAxesCombined,
 	ChevronDown,
 	ChevronUp,
 	ListChecks,
@@ -872,16 +871,6 @@ export default function HomeScreen() {
 											</View>
 											<View style={styles.assistantHeaderActions}>
 												{renderAssistantToggle()}
-												<View
-													className="rounded-full bg-secondary"
-													style={styles.assistantBadge}
-												>
-													<ChartNoAxesCombined
-														size={22}
-														color={colors.mutedForeground}
-														strokeWidth={2.3}
-													/>
-												</View>
 											</View>
 										</View>
 
@@ -1246,12 +1235,6 @@ const styles = StyleSheet.create({
 		flexDirection: "row",
 		alignItems: "center",
 		gap: 8
-	},
-	assistantBadge: {
-		width: 44,
-		height: 44,
-		alignItems: "center",
-		justifyContent: "center"
 	},
 	assistantToggleIcon: {
 		backgroundColor: "rgba(148, 163, 184, 0.14)"
