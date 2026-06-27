@@ -11,7 +11,7 @@ export default function ThemeToggleRow() {
 		<TouchableOpacity
 			onPress={toggleScheme}
 			activeOpacity={0.85}
-			className="w-full flex-row items-center justify-between rounded-xl border border-border bg-card px-4 py-3"
+			className="w-full min-h-[72px] flex-row items-center justify-between rounded-xl border border-border bg-card px-4 py-3"
 		>
 			<View className="flex-row flex-1 items-center gap-3 pr-3">
 				<View className="h-10 w-10 items-center justify-center rounded-full bg-primary/10">
@@ -29,13 +29,15 @@ export default function ThemeToggleRow() {
 				</View>
 			</View>
 
-			<Switch
-				value={isDark}
-				onValueChange={value => setScheme(value ? "dark" : "light")}
-				trackColor={{ false: colors.border, true: colors.primary }}
-				thumbColor={colors.primaryForeground}
-				ios_backgroundColor={colors.border}
-			/>
+			<View className="h-10 items-center justify-center">
+				<Switch
+					value={isDark}
+					onValueChange={value => setScheme(value ? "dark" : "light")}
+					trackColor={{ false: colors.border, true: colors.primary }}
+					thumbColor={colors.primaryForeground}
+					ios_backgroundColor={colors.border}
+				/>
+			</View>
 		</TouchableOpacity>
 	);
 }

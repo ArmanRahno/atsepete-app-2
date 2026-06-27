@@ -1,10 +1,11 @@
 import React, { useState } from "react";
-import { ActivityIndicator, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, Text, TextInput, View } from "react-native";
 import { useForm, Controller } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import ContinueWithGoogleBtn from "../account-page/ContinueWithGoogleBtn";
+import ContinueWithAppleBtn from "../account-page/ContinueWithAppleBtn";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "@/lib/auth/firebase";
 import AppTouchableOpacity from "../AppTouchableOpacity";
@@ -137,14 +138,14 @@ export default function RegisterForm({ onSuccess }: { onSuccess: () => void }) {
 	return (
 		<>
 			<Text
-				className="text-xl font-semibold mb-3 text-center"
+				className="text-xl font-semibold mb-4 text-center"
 				style={{ color: colors.text }}
 			>
 				Hesap Oluşturma
 			</Text>
 
 			<Text
-				className="mt-3"
+				className="mt-3 text-sm font-medium"
 				style={{ color: colors.text }}
 			>
 				E-posta
@@ -154,7 +155,7 @@ export default function RegisterForm({ onSuccess }: { onSuccess: () => void }) {
 				name="email"
 				render={({ field: { onChange, onBlur, value } }) => (
 					<TextInput
-						className="border border-border bg-card p-2 rounded mt-1 text-foreground"
+						className="h-12 border border-border bg-background px-4 rounded-xl mt-2 text-foreground"
 						placeholder="E-posta adresi"
 						placeholderTextColor={colors.mutedForeground}
 						style={{ color: colors.text }}
@@ -167,11 +168,11 @@ export default function RegisterForm({ onSuccess }: { onSuccess: () => void }) {
 				)}
 			/>
 			{errors.email && (
-				<Text className="text-red-500 mt-1 text-sm">{errors.email.message as string}</Text>
+				<Text className="text-red-500 mt-2 text-sm">{errors.email.message as string}</Text>
 			)}
 
 			<Text
-				className="mt-3"
+				className="mt-4 text-sm font-medium"
 				style={{ color: colors.text }}
 			>
 				Şifre
@@ -181,7 +182,7 @@ export default function RegisterForm({ onSuccess }: { onSuccess: () => void }) {
 				name="password"
 				render={({ field: { onChange, onBlur, value } }) => (
 					<TextInput
-						className="border border-border bg-card p-2 rounded mt-1 text-foreground"
+						className="h-12 border border-border bg-background px-4 rounded-xl mt-2 text-foreground"
 						placeholder="Şifreniz"
 						placeholderTextColor={colors.mutedForeground}
 						style={{ color: colors.text }}
@@ -194,13 +195,13 @@ export default function RegisterForm({ onSuccess }: { onSuccess: () => void }) {
 				)}
 			/>
 			{errors.password && (
-				<Text className="text-red-500 mt-1 text-sm">
+				<Text className="text-red-500 mt-2 text-sm">
 					{errors.password.message as string}
 				</Text>
 			)}
 
 			<Text
-				className="mt-3"
+				className="mt-4 text-sm font-medium"
 				style={{ color: colors.text }}
 			>
 				Şifre Tekrar
@@ -210,7 +211,7 @@ export default function RegisterForm({ onSuccess }: { onSuccess: () => void }) {
 				name="confirmPassword"
 				render={({ field: { onChange, onBlur, value } }) => (
 					<TextInput
-						className="border border-border bg-card p-2 rounded mt-1 text-foreground"
+						className="h-12 border border-border bg-background px-4 rounded-xl mt-2 text-foreground"
 						placeholder="Şifre tekrar"
 						placeholderTextColor={colors.mutedForeground}
 						style={{ color: colors.text }}
@@ -223,14 +224,14 @@ export default function RegisterForm({ onSuccess }: { onSuccess: () => void }) {
 				)}
 			/>
 			{errors.confirmPassword && (
-				<Text className="text-red-500 mt-1 text-sm">
+				<Text className="text-red-500 mt-2 text-sm">
 					{errors.confirmPassword.message as string}
 				</Text>
 			)}
 
 			{serverMessage ? (
 				<Text
-					className="text-destructive-foreground p-2 rounded mt-4 text-center"
+					className="text-destructive-foreground px-4 py-3 rounded-xl mt-4 text-center"
 					style={{ backgroundColor: serverStatus === "success" ? "#10b981" : "#ef4444" }}
 				>
 					{serverMessage}
@@ -238,7 +239,7 @@ export default function RegisterForm({ onSuccess }: { onSuccess: () => void }) {
 			) : null}
 
 			<AppTouchableOpacity
-				className="bg-primary rounded py-2 mt-4 disabled:bg-primary/80 items-center"
+				className="h-12 bg-primary rounded-xl mt-4 disabled:bg-primary/80 items-center justify-center"
 				onPress={handleSubmit(onSubmit)}
 				disabled={isSubmitting}
 			>
@@ -268,6 +269,10 @@ export default function RegisterForm({ onSuccess }: { onSuccess: () => void }) {
 			</View>
 
 			<ContinueWithGoogleBtn
+				onSuccess={onSuccess}
+				setServerMessage={setServerMessage}
+			/>
+			<ContinueWithAppleBtn
 				onSuccess={onSuccess}
 				setServerMessage={setServerMessage}
 			/>

@@ -14,7 +14,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 import AppTouchableOpacity from "@/components/AppTouchableOpacity";
 import Header from "@/components/header/Header";
-import HeaderIcon from "@/components/header/HeaderIcon";
 import HeaderSecondRow from "@/components/header/HeaderSecondRow";
 import { Card } from "@/components/shad-cn/card";
 import HeaderFirstRow from "@/components/header/HeaderFirstRow";
@@ -146,7 +145,7 @@ export default function ChangePasswordScreen() {
 						</Text>
 
 						<AppTouchableOpacity
-							className="bg-primary rounded py-2 mt-4"
+							className="h-12 bg-primary rounded-xl mt-4 items-center justify-center"
 							onPress={closeAndGoBack}
 						>
 							<Text className="text-primary-foreground text-center font-semibold">
@@ -161,17 +160,17 @@ export default function ChangePasswordScreen() {
 				className="flex-1 p-4 justify-center"
 				behavior="padding"
 			>
-				<Card className="p-4">
+				<Card className="p-5 rounded-xl">
 					<Text
-						className="text-xl font-semibold mb-3 text-center"
+						className="text-xl font-semibold mb-4 text-center"
 						style={{ color: colors.text }}
 					>
 						Şifre Değiştir
 					</Text>
 
-					<View className="flex-row justify-between">
+					<View className="flex-row items-center justify-between">
 						<Text
-							className="mt-2"
+							className="text-sm font-medium"
 							style={{ color: colors.text }}
 						>
 							Mevcut Şifre
@@ -195,7 +194,7 @@ export default function ChangePasswordScreen() {
 						name="oldPassword"
 						render={({ field: { onChange, onBlur, value } }) => (
 							<TextInput
-								className="border border-border bg-card p-2 rounded mt-1 text-foreground"
+								className="h-12 border border-border bg-background px-4 rounded-xl mt-2 text-foreground"
 								placeholder="Mevcut şifreniz"
 								placeholderTextColor={colors.mutedForeground}
 								style={{ color: colors.text }}
@@ -208,7 +207,7 @@ export default function ChangePasswordScreen() {
 						)}
 					/>
 					{errors.oldPassword && (
-						<Text className="text-red-500 mt-1 text-sm">
+						<Text className="text-red-500 mt-2 text-sm">
 							{errors.oldPassword.message}
 						</Text>
 					)}
@@ -216,7 +215,7 @@ export default function ChangePasswordScreen() {
 					<View className="h-[1px] bg-border mt-4" />
 
 					<Text
-						className="mt-4"
+						className="mt-4 text-sm font-medium"
 						style={{ color: colors.text }}
 					>
 						Yeni Şifre
@@ -226,7 +225,7 @@ export default function ChangePasswordScreen() {
 						name="newPassword"
 						render={({ field: { onChange, onBlur, value } }) => (
 							<TextInput
-								className="border border-border bg-card p-2 rounded mt-1 text-foreground"
+								className="h-12 border border-border bg-background px-4 rounded-xl mt-2 text-foreground"
 								placeholder="Yeni şifre"
 								placeholderTextColor={colors.mutedForeground}
 								style={{ color: colors.text }}
@@ -239,13 +238,13 @@ export default function ChangePasswordScreen() {
 						)}
 					/>
 					{errors.newPassword && (
-						<Text className="text-red-500 mt-1 text-sm">
+						<Text className="text-red-500 mt-2 text-sm">
 							{errors.newPassword.message}
 						</Text>
 					)}
 
 					<Text
-						className="mt-3"
+						className="mt-4 text-sm font-medium"
 						style={{ color: colors.text }}
 					>
 						Yeni Şifre (Tekrar)
@@ -255,7 +254,7 @@ export default function ChangePasswordScreen() {
 						name="confirmNewPassword"
 						render={({ field: { onChange, onBlur, value } }) => (
 							<TextInput
-								className="border border-border bg-card p-2 rounded mt-1 text-foreground"
+								className="h-12 border border-border bg-background px-4 rounded-xl mt-2 text-foreground"
 								placeholder="Yeni şifre tekrar"
 								placeholderTextColor={colors.mutedForeground}
 								style={{ color: colors.text }}
@@ -268,19 +267,19 @@ export default function ChangePasswordScreen() {
 						)}
 					/>
 					{errors.confirmNewPassword && (
-						<Text className="text-red-500 mt-1 text-sm">
+						<Text className="text-red-500 mt-2 text-sm">
 							{errors.confirmNewPassword.message}
 						</Text>
 					)}
 
 					{serverError ? (
-						<Text className="bg-destructive text-destructive-foreground p-2 rounded mt-4 text-center">
+						<Text className="bg-destructive text-destructive-foreground px-4 py-3 rounded-xl mt-4 text-center">
 							{serverError}
 						</Text>
 					) : null}
 
 					<AppTouchableOpacity
-						className="bg-primary rounded py-2 mt-4 items-center disabled:bg-primary/80"
+						className="h-12 bg-primary rounded-xl mt-4 items-center justify-center disabled:bg-primary/80"
 						onPress={handleSubmit(onSubmit)}
 						disabled={isSubmitting}
 					>

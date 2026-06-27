@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { ActivityIndicator, Text, TouchableOpacity } from "react-native";
+import { ActivityIndicator, Text } from "react-native";
 import GoogleIcon from "@/assets/icons/Google";
 
 import { GoogleSignin, statusCodes } from "@react-native-google-signin/google-signin";
@@ -9,7 +9,6 @@ import { auth } from "@/lib/auth/firebase";
 import AppTouchableOpacity from "../AppTouchableOpacity";
 import { useNotificationPermission } from "@/hooks/useNotificationPermission";
 import { useResetOnAuth } from "@/hooks/useResetOnAuth";
-import { useThemePalette } from "@/hooks/useThemePalette";
 
 type Props = {
 	onSuccess: () => void;
@@ -17,7 +16,6 @@ type Props = {
 };
 
 const ContinueWithGoogleBtn = ({ onSuccess, setServerMessage }: Props) => {
-	const { colors } = useThemePalette();
 	const [loading, setLoading] = useState(false);
 
 	const { askAndStoreAccountPushToken } = useNotificationPermission();
@@ -101,13 +99,18 @@ const ContinueWithGoogleBtn = ({ onSuccess, setServerMessage }: Props) => {
 
 	return (
 		<AppTouchableOpacity
-			className="flex-row items-center justify-center gap-2 bg-background border border-border rounded py-2 mt-4 disabled:bg-gray-100"
+			className="mt-4 h-12 flex-row items-center justify-center gap-2 rounded-xl disabled:opacity-65"
+			style={{
+				backgroundColor: "#000",
+				borderColor: "rgba(255,255,255,0.24)",
+				borderWidth: 1
+			}}
 			onPress={handlePress}
 			disabled={loading}
 		>
 			{loading ? (
 				<ActivityIndicator
-					color={colors.text}
+					color="#fff"
 					size={20}
 				/>
 			) : (
@@ -116,7 +119,10 @@ const ContinueWithGoogleBtn = ({ onSuccess, setServerMessage }: Props) => {
 						height={18}
 						width={18}
 					/>
-					<Text className="text-foreground text-center font-semibold">
+					<Text
+						className="text-white text-center"
+						style={{ fontSize: 15, fontWeight: "600", letterSpacing: 0 }}
+					>
 						Google ile devam et
 					</Text>
 				</>

@@ -1,4 +1,10 @@
 const IS_DEV = process.env.APP_VARIANT === "development";
+const BUILD_DATE = new Intl.DateTimeFormat("tr-TR", {
+	day: "2-digit",
+	month: "2-digit",
+	year: "numeric",
+	timeZone: "Europe/Istanbul"
+}).format(new Date());
 
 export default {
 	"name": "AtSepete",
@@ -13,7 +19,11 @@ export default {
 		"supportsTablet": true,
 		"bundleIdentifier": "com.atsepete.atsepete",
 		"googleServicesFile": "GoogleService-Info.plist",
+		"usesAppleSignIn": true,
 		"infoPlist": {
+			"CFBundleAllowMixedLocalizations": true,
+			"CFBundleDevelopmentRegion": "tr",
+			"CFBundleLocalizations": ["tr", "en"],
 			"LSApplicationQueriesSchemes": ["fb", "instagram", "twitter", "tiktoksharesdk"],
 			"ITSAppUsesNonExemptEncryption": false
 		}
@@ -78,11 +88,13 @@ export default {
 		[
 			"expo-camera",
 			{
+				"cameraPermission": "Kamera erişimi, ürün barkodlarını tarayıp At Sepete’de ürün ve fiyat bilgilerini göstermek için gereklidir. Ambalajdaki barkodu okutarak ilgili ürünü bulabilirsiniz.",
 				"recordAudioAndroid": false
 			}
 		],
 		"expo-font",
 		"expo-web-browser",
+		"expo-apple-authentication",
 		"@react-native-google-signin/google-signin",
 		[
 			"react-native-share",
@@ -96,29 +108,17 @@ export default {
 				],
 				"enableBase64ShareAndroid": true
 			}
-		],
-		[
-			"expo-media-library",
-			{
-				// iOS: add-only message (needed for saving)
-				savePhotosPermission: "QR kodunu galeriye kaydetmek için izin gerekir.",
-
-				// Android: don't add READ_MEDIA_IMAGES/VIDEO/AUDIO
-				granularPermissions: [],
-
-				// Android: don't request ACCESS_MEDIA_LOCATION either
-				isAccessMediaLocationEnabled: false
-			}
 		]
 	],
 	"experiments": {
 		"typedRoutes": true
 	},
-	"runtimeVersion": "1.1.0",
+	"runtimeVersion": "1.3.6",
 	"updates": {
 		"url": "https://u.expo.dev/d06355ea-e79c-4ea1-90b1-cfaee031fd22"
 	},
 	"extra": {
+		"buildDate": process.env.EXPO_PUBLIC_BUILD_DATE || BUILD_DATE,
 		"router": {
 			"origin": false
 		},

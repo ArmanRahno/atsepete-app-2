@@ -5,6 +5,8 @@ import AppTouchableOpacity from "./AppTouchableOpacity";
 const PRIVACY_POLICY_URL = "https://atsepete.net/gizlilik-politikasi";
 
 const VersionInfo = () => {
+	const buildDate = Constants.expoConfig?.extra?.buildDate;
+
 	return (
 		<View className="mt-1 items-start gap-2">
 			<AppTouchableOpacity
@@ -22,7 +24,8 @@ const VersionInfo = () => {
 			</AppTouchableOpacity>
 
 			<Text className="text-xs text-muted-foreground">
-				AtSepete @2025, v{Constants.expoConfig?.version} - 18.06.2026
+				AtSepete @2025, v{Constants.expoConfig?.version}
+				{buildDate ? ` - ${buildDate}` : ""}
 			</Text>
 		</View>
 	);

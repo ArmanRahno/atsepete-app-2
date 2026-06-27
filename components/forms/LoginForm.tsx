@@ -5,6 +5,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import ContinueWithGoogleBtn from "../account-page/ContinueWithGoogleBtn";
+import ContinueWithAppleBtn from "../account-page/ContinueWithAppleBtn";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "@/lib/auth/firebase";
 import AppTouchableOpacity from "../AppTouchableOpacity";
@@ -99,14 +100,14 @@ export default function LoginForm({ onSuccess }: { onSuccess: () => void }) {
 	return (
 		<>
 			<Text
-				className="text-xl font-semibold mb-3 text-center"
+				className="text-xl font-semibold mb-4 text-center"
 				style={{ color: colors.text }}
 			>
 				Giriş
 			</Text>
 
 			<Text
-				className="mt-3"
+				className="mt-3 text-sm font-medium"
 				style={{ color: colors.text }}
 			>
 				E-posta
@@ -116,7 +117,7 @@ export default function LoginForm({ onSuccess }: { onSuccess: () => void }) {
 				name="email"
 				render={({ field: { onChange, onBlur, value } }) => (
 					<TextInput
-						className="border border-border bg-card p-2 rounded mt-1 text-foreground"
+						className="h-12 border border-border bg-background px-4 rounded-xl mt-2 text-foreground"
 						placeholder="E-posta adresi"
 						placeholderTextColor={colors.mutedForeground}
 						style={{ color: colors.text }}
@@ -129,11 +130,11 @@ export default function LoginForm({ onSuccess }: { onSuccess: () => void }) {
 				)}
 			/>
 			{errors.email && (
-				<Text className="text-red-500 mt-1 text-sm">{errors.email.message as string}</Text>
+				<Text className="text-red-500 mt-2 text-sm">{errors.email.message as string}</Text>
 			)}
 
 			<Text
-				className="mt-3"
+				className="mt-4 text-sm font-medium"
 				style={{ color: colors.text }}
 			>
 				Şifre
@@ -144,7 +145,7 @@ export default function LoginForm({ onSuccess }: { onSuccess: () => void }) {
 				render={({ field: { onChange, onBlur, value } }) => (
 					<>
 						<TextInput
-							className="border border-border bg-card p-2 rounded mt-1 text-foreground"
+							className="h-12 border border-border bg-background px-4 rounded-xl mt-2 text-foreground"
 							placeholder="Şifreniz"
 							placeholderTextColor={colors.mutedForeground}
 							style={{ color: colors.text }}
@@ -170,19 +171,19 @@ export default function LoginForm({ onSuccess }: { onSuccess: () => void }) {
 				)}
 			/>
 			{errors.password && (
-				<Text className="text-red-500 mt-1 text-sm">
+				<Text className="text-red-500 mt-2 text-sm">
 					{errors.password.message as string}
 				</Text>
 			)}
 
 			{serverMessage ? (
-				<Text className="bg-destructive text-destructive-foreground p-2 rounded mt-4 text-center">
+				<Text className="bg-destructive text-destructive-foreground px-4 py-3 rounded-xl mt-4 text-center">
 					{serverMessage}
 				</Text>
 			) : null}
 
 			<AppTouchableOpacity
-				className="bg-primary rounded py-2 mt-4 disabled:bg-primary/80 items-center"
+				className="h-12 bg-primary rounded-xl mt-4 disabled:bg-primary/80 items-center justify-center"
 				onPress={handleSubmit(onSubmit)}
 				disabled={isSubmitting}
 			>
@@ -212,6 +213,10 @@ export default function LoginForm({ onSuccess }: { onSuccess: () => void }) {
 			</View>
 
 			<ContinueWithGoogleBtn
+				onSuccess={onSuccess}
+				setServerMessage={setServerMessage}
+			/>
+			<ContinueWithAppleBtn
 				onSuccess={onSuccess}
 				setServerMessage={setServerMessage}
 			/>

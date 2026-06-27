@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { KeyboardAvoidingView, Text, TouchableOpacity, View } from "react-native";
+import { Text, View } from "react-native";
 import { Card } from "@/components/shad-cn/card";
 import RegisterForm from "@/components/forms/RegisterForm";
 import LoginForm from "@/components/forms/LoginForm";
@@ -16,12 +16,12 @@ const LoginAndRegisterFormsWrapper = ({ onSuccess }: { onSuccess: () => void }) 
 				behavior="padding"
 			> */}
 			<View className="flex-1 p-3 justify-center">
-				<Card className="p-4">
+				<Card className="p-5 rounded-xl">
 					{isRegisterMode && <RegisterForm onSuccess={onSuccess} />}
 					{!isRegisterMode && <LoginForm onSuccess={onSuccess} />}
 
 					<AppTouchableOpacity
-						className="mt-4"
+						className="mt-4 h-10 items-center justify-center"
 						onPress={() => setIsRegisterMode(!isRegisterMode)}
 					>
 						<Text className="text-primary text-center">
