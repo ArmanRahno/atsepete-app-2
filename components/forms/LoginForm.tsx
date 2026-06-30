@@ -157,7 +157,7 @@ export default function LoginForm({ onSuccess }: { onSuccess: () => void }) {
 						/>
 						<AppTouchableOpacity
 							className="p-1 self-end"
-							onPress={() => router.push("/(tabs)/account-forgot-password")}
+							onPress={() => router.push("/account-forgot-password")}
 							hitSlop={8}
 						>
 							<Text

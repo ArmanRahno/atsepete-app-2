@@ -15,7 +15,7 @@ const HeaderProfileTouchable = () => {
 	return (
 		<AppTouchableOpacity
 			className="border border-border p-2.5 rounded-xl"
-			onPress={() => router.push("/(tabs)/account")}
+			onPress={() => router.push("/account")}
 			hitSlop={10}
 		>
 			<User

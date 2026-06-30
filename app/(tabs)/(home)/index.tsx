@@ -32,10 +32,9 @@ import {
 	Search
 } from "lucide-react-native";
 import AppTouchableOpacity from "@/components/AppTouchableOpacity";
-import { useIsFocused } from "@react-navigation/native";
 import HeaderFirstRow from "@/components/header/HeaderFirstRow";
 import { useThemePalette } from "@/hooks/useThemePalette";
-import { useRouter } from "expo-router";
+import { useIsFocused, useRouter } from "expo-router";
 import { MotiText, MotiView } from "moti";
 
 const API_URL = "https://atsepete.net/api/application/page/homepage";

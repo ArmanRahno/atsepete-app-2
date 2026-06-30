@@ -9,7 +9,7 @@ const BUILD_DATE = new Intl.DateTimeFormat("tr-TR", {
 export default {
 	"name": "AtSepete",
 	"slug": "atsepete",
-	"version": "1.3.5",
+	"version": "1.3.6",
 	"orientation": "portrait",
 	"icon": "./assets/images/icon.png",
 	"scheme": "atsepete",
@@ -58,6 +58,7 @@ export default {
 	},
 	"plugins": [
 		"expo-router",
+		"expo-status-bar",
 		[
 			"expo-splash-screen",
 			{
@@ -88,27 +89,16 @@ export default {
 		[
 			"expo-camera",
 			{
-				"cameraPermission": "Kamera erişimi, ürün barkodlarını tarayıp At Sepete’de ürün ve fiyat bilgilerini göstermek için gereklidir. Ambalajdaki barkodu okutarak ilgili ürünü bulabilirsiniz.",
+				"cameraPermission":
+					"Kamera erişimi, ürün barkodlarını tarayıp At Sepete’de ürün ve fiyat bilgilerini göstermek için gereklidir. Ambalajdaki barkodu okutarak ilgili ürünü bulabilirsiniz.",
+				"microphonePermission": false,
 				"recordAudioAndroid": false
 			}
 		],
 		"expo-font",
 		"expo-web-browser",
 		"expo-apple-authentication",
-		"@react-native-google-signin/google-signin",
-		[
-			"react-native-share",
-			{
-				"ios": ["fb", "instagram", "twitter", "tiktoksharesdk"],
-				"android": [
-					"com.facebook.katana",
-					"com.instagram.android",
-					"com.twitter.android",
-					"com.zhiliaoapp.musically"
-				],
-				"enableBase64ShareAndroid": true
-			}
-		]
+		"@react-native-google-signin/google-signin"
 	],
 	"experiments": {
 		"typedRoutes": true

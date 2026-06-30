@@ -1,10 +1,9 @@
-import { Pressable, Text, View } from "react-native";
+import { Pressable, View } from "react-native";
 import AtSepeteIcon from "@/assets/icons/AtSepeteIcon";
 import { useRouter } from "expo-router";
-import { useThemePalette } from "@/hooks/useThemePalette";
+import HeaderBrandText from "./HeaderBrandText";
 
 const HeaderIcon = () => {
-	const { colors, isDark } = useThemePalette();
 	const router = useRouter();
 
 	const handlePress = () => {
@@ -42,31 +41,7 @@ const HeaderIcon = () => {
 				</View>
 			</View>
 
-			<Text
-				allowFontScaling={false}
-				numberOfLines={1}
-				style={{
-					minWidth: 82,
-					paddingRight: 4,
-					flexShrink: 0,
-					overflow: "visible",
-					fontFamily: "Roboto_500Medium",
-					fontSize: 18,
-					lineHeight: 24,
-					color: colors.primary,
-					includeFontPadding: false
-				}}
-			>
-				<Text
-					style={{
-						color: isDark ? "#FFFFFF" : colors.text,
-						fontStyle: "italic"
-					}}
-				>
-					At
-				</Text>
-				Sepete
-			</Text>
+			<HeaderBrandText />
 		</Pressable>
 	);
 };

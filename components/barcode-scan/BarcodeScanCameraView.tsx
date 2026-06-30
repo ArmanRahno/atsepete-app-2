@@ -34,7 +34,7 @@ const BarcodeScanCameraView = ({
 
 			try {
 				router.navigate({
-					pathname: "/(tabs)/barkod/[slug]",
+					pathname: "/barkod/[slug]",
 					params: { slug: barcode.data }
 				});
 
@@ -141,7 +141,7 @@ const styles = StyleSheet.create({
 	},
 	svgContainer: { fontSize: 28, fontWeight: "bold", color: "white", padding: 4 },
 	activityIndicatorContainer: {
-		...StyleSheet.absoluteFillObject,
+		...StyleSheet.absoluteFill,
 		justifyContent: "center",
 		alignItems: "center",
 		backgroundColor: "rgba(0,0,0,0.5)"

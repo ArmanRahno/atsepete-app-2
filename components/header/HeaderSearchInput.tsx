@@ -27,7 +27,7 @@ const HeaderSearchInput = () => {
 
 	const handleSubmit = () => {
 		if (query.trim().length > 0) {
-			router.push(`/(tabs)/ara/${encodeURIComponent(query)}`);
+			router.push(`/ara/${encodeURIComponent(query)}`);
 			setShowSuggestions(false);
 			setSuggestions([]);
 			Keyboard.dismiss();

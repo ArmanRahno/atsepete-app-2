@@ -2,7 +2,7 @@ import React from "react";
 import { View, Text } from "react-native";
 import { Card } from "../shad-cn/card";
 import { Pressable } from "react-native";
-import { router, Router } from "expo-router";
+import { router } from "expo-router";
 import ReviewStars from "./ReviewStars";
 
 type ItemReviewCardProps = { slug: Item["url_slug"]; review: NonNullable<Item["reviews"]>[0] };

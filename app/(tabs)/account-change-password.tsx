@@ -84,7 +84,7 @@ export default function ChangePasswordScreen() {
 			const res = (await r.json().catch(() => null)) as ChangeRes | null;
 
 			if (res && res.status === "error" && res.code === "LOGIN_REQUIRED") {
-				router.replace("/(tabs)/account");
+				router.replace("/account");
 				return;
 			}
 
@@ -101,7 +101,7 @@ export default function ChangePasswordScreen() {
 					}
 
 					if (res.code === "LOGIN_REQUIRED") {
-						router.replace("/(tabs)/account");
+						router.replace("/account");
 						return;
 					}
 
@@ -177,7 +177,7 @@ export default function ChangePasswordScreen() {
 						</Text>
 						<AppTouchableOpacity
 							className="p-1"
-							onPress={() => router.push("/(tabs)/account-forgot-password")}
+							onPress={() => router.push("/account-forgot-password")}
 							hitSlop={8}
 						>
 							<Text

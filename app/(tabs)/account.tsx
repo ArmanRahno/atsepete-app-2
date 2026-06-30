@@ -113,7 +113,7 @@ export default function AccountScreen() {
 	}, []);
 
 	const goChangePassword = useCallback(() => {
-		router.push("/(tabs)/account-change-password");
+		router.push("/account-change-password");
 	}, []);
 
 	if (loading) {

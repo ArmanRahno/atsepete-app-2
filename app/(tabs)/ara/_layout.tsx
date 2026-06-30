@@ -18,7 +18,7 @@ export default function SearchPageLayout() {
 
 	const handleSubmit = () => {
 		if (query.trim().length > 0) {
-			router.push(`/(tabs)/ara/${encodeURIComponent(query)}`);
+			router.push(`/ara/${encodeURIComponent(query)}`);
 			setShowSuggestions(false);
 			setSuggestions([]);
 			Keyboard.dismiss();
@@ -63,7 +63,7 @@ export default function SearchPageLayout() {
 	};
 
 	const handleSuggestionPress = (suggestion: { name: string; url_slug: string }) => {
-		router.push(`/(tabs)/ara/urunler/${suggestion.url_slug}`);
+		router.push(`/ara/urunler/${suggestion.url_slug}`);
 		setShowSuggestions(false);
 		setSuggestions([]);
 		setQuery("");

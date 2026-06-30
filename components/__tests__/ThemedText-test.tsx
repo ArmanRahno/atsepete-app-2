@@ -1,10 +1,19 @@
 import * as React from 'react';
-import renderer from 'react-test-renderer';
+import renderer, { act } from 'react-test-renderer';
 
+import { AppThemeProvider } from '../AppThemeProvider';
 import { ThemedText } from '../ThemedText';
 
 it(`renders correctly`, () => {
-  const tree = renderer.create(<ThemedText>Snapshot test!</ThemedText>).toJSON();
+  let tree: renderer.ReactTestRenderer | undefined;
 
-  expect(tree).toMatchSnapshot();
+  act(() => {
+    tree = renderer.create(
+      <AppThemeProvider>
+        <ThemedText>Snapshot test!</ThemedText>
+      </AppThemeProvider>
+    );
+  });
+
+  expect(tree?.toJSON()).toMatchSnapshot();
 });

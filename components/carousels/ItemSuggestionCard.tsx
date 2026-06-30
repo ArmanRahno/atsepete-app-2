@@ -5,7 +5,7 @@ import { Card } from "../shad-cn/card";
 import Marketplaces from "@/constants/Marketplaces";
 import formatPrice from "@/lib/formatPrice";
 import { Pressable } from "react-native";
-import { Router, useRouter } from "expo-router";
+import { useRouter } from "expo-router";
 import getPreviousPrice from "@/lib/getPreviousPrice";
 import { useThemePalette } from "@/hooks/useThemePalette";
 import { semanticGreen, semanticRed } from "@/constants/SemanticColors";
@@ -15,6 +15,8 @@ import { cn } from "@/lib/utils";
 type ItemSuggestionCardProps = {
 	item: Item;
 };
+
+type AppRouter = ReturnType<typeof useRouter>;
 
 export default function ItemSuggestionCard(props: ItemSuggestionCardProps) {
 	const router = useRouter();
@@ -166,7 +168,7 @@ const ToItemPagePressable = ({
 	fill = false
 }: {
 	children: React.ReactNode;
-	router: Router;
+	router: AppRouter;
 	url_slug: string;
 	fill?: boolean;
 }) => {
@@ -188,7 +190,7 @@ const ToMarketplacePagePressable = ({
 	marketplace
 }: {
 	children: React.ReactNode;
-	router: Router;
+	router: AppRouter;
 	marketplace: string;
 }) => {
 	return (

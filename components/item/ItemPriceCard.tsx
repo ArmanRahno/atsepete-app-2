@@ -44,32 +44,21 @@ export default function ItemPriceCard({ item }: ItemPriceCardProps) {
 	const { colors, isDark } = useThemePalette();
 	const red = semanticRed(isDark);
 	const green = semanticGreen(isDark);
-
-	if (!item) return null;
-
-	const marketplaceValue =
-		typeof item.marketplace === "string" ? item.marketplace.toLowerCase() : undefined;
-
-	const marketplaceMeta = Marketplaces.find(val => val.value === marketplaceValue);
-	const MarketplaceIcon = marketplaceMeta?.Icon;
-
-	const categoryMeta = item.category ? Categories.find(val => val.value === item.category) : null;
-
-	const categoryLabel = categoryMeta?.label || item.category || null;
-	const categoryIconName = categoryMeta?.icon || null;
+	const priceHistory = item?.price_history ?? [];
+	const itemUrlSlug = item?.url_slug ?? "";
 
 	const sortedPriceHistory = useMemo(() => {
-		return [...item.price_history]
+		return [...priceHistory]
 			.filter(pricePoint => !!pricePoint && !!pricePoint.date_time)
 			.sort(
 				(a, b) =>
 					new Date(String(a.date_time)).getTime() -
 					new Date(String(b.date_time)).getTime()
 			);
-	}, [item.price_history]);
+	}, [priceHistory]);
 
 	const previousPrice = getPreviousPrice(sortedPriceHistory);
-	const currentPrice = item.last_price;
+	const currentPrice = item?.last_price ?? 0;
 
 	const recent30History = useMemo(() => {
 		const now = Date.now();
@@ -98,20 +87,22 @@ export default function ItemPriceCard({ item }: ItemPriceCardProps) {
 	const changeIsUp = changeAmountFromPrevious !== null && changeAmountFromPrevious > 0;
 
 	const lastActionPercent =
-		typeof item.last_price_action_percent_magnitude === "number" &&
+		typeof item?.last_price_action_percent_magnitude === "number" &&
 		item.last_price_action_percent_magnitude > 0
 			? Math.round(item.last_price_action_percent_magnitude)
 			: null;
-	const isUnavailable = !!item.is_discount_unavailable && !!item.discount_unavailability_cause;
+	const isUnavailable = !!item?.is_discount_unavailable && !!item.discount_unavailability_cause;
 	const statusColor = isUnavailable ? red : green;
 
-	const [shareUrl, setShareUrl] = useState(`https://atsepete.net/indirimler/${item.url_slug}`);
+	const [shareUrl, setShareUrl] = useState(`https://atsepete.net/indirimler/${itemUrlSlug}`);
 
 	useEffect(() => {
+		if (!itemUrlSlug) return;
+
 		(async () => {
 			try {
 				const referrerCode = await AsyncStorage.getItem(REFERRER_CODE_KEY);
-				const baseUrl = `https://atsepete.net/indirimler/${item.url_slug}`;
+				const baseUrl = `https://atsepete.net/indirimler/${itemUrlSlug}`;
 
 				const finalUrl = referrerCode
 					? `${baseUrl}${baseUrl.includes("?") ? "&" : "?"}r=${encodeURIComponent(
@@ -121,10 +112,23 @@ export default function ItemPriceCard({ item }: ItemPriceCardProps) {
 
 				setShareUrl(finalUrl);
 			} catch {
-				setShareUrl(`https://atsepete.net/indirimler/${item.url_slug}`);
+				setShareUrl(`https://atsepete.net/indirimler/${itemUrlSlug}`);
 			}
 		})();
-	}, [item.url_slug]);
+	}, [itemUrlSlug]);
+
+	if (!item) return null;
+
+	const marketplaceValue =
+		typeof item.marketplace === "string" ? item.marketplace.toLowerCase() : undefined;
+
+	const marketplaceMeta = Marketplaces.find(val => val.value === marketplaceValue);
+	const MarketplaceIcon = marketplaceMeta?.Icon;
+
+	const categoryMeta = item.category ? Categories.find(val => val.value === item.category) : null;
+
+	const categoryLabel = categoryMeta?.label || item.category || null;
+	const categoryIconName = categoryMeta?.icon || null;
 
 	const marketplaceHref: Href | null =
 		item.marketplace && marketplaceValue

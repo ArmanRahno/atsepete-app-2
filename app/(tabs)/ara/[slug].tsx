@@ -127,7 +127,7 @@ const SearchScreen = () => {
 							item={item}
 							displayItemListener
 							detailHref={{
-								pathname: "/(tabs)/ara/indirimler/[slug]",
+								pathname: "/ara/indirimler/[slug]",
 								params: { slug: item.url_slug }
 							}}
 							onListenerTrigger={handleListenerSuccess}

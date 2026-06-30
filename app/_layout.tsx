@@ -1,8 +1,13 @@
 import toastConfig from "@/lib/toastConfig";
 import "../global.css";
 
-import { DefaultTheme, ThemeProvider as NavigationThemeProvider } from "@react-navigation/native";
-import { SplashScreen, Stack, useRouter } from "expo-router";
+import {
+	DefaultTheme,
+	SplashScreen,
+	Stack,
+	ThemeProvider as NavigationThemeProvider,
+	useRouter
+} from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { useEffect, useMemo, useRef, useState } from "react";
 import "react-native-reanimated";

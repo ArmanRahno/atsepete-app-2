@@ -72,7 +72,7 @@ function HeroSquare({ item, scrollY }: { item: Item; scrollY: SharedValue<number
 			className="overflow-hidden"
 			style={{ height: size, backgroundColor: "#FFFFFF" }}
 		>
-			<Animated.View style={[StyleSheet.absoluteFillObject, squareAnimatedStyle]}>
+			<Animated.View style={[StyleSheet.absoluteFill, squareAnimatedStyle]}>
 				<View
 					className="flex-1"
 					style={{ backgroundColor: "#FFFFFF" }}
@@ -92,19 +92,19 @@ function HeroSquare({ item, scrollY }: { item: Item; scrollY: SharedValue<number
 
 			<Animated.View
 				pointerEvents="none"
-				style={[StyleSheet.absoluteFillObject, blurOverlayStyle]}
+				style={[StyleSheet.absoluteFill, blurOverlayStyle]}
 			>
 				<BlurView
 					intensity={48}
 					tint={isDark ? "dark" : "light"}
-					style={StyleSheet.absoluteFillObject}
+					style={StyleSheet.absoluteFill}
 				/>
 			</Animated.View>
 
 			<Animated.View
 				pointerEvents="none"
 				style={[
-					StyleSheet.absoluteFillObject,
+					StyleSheet.absoluteFill,
 					{ backgroundColor: colors.background },
 					dimOverlayStyle
 				]}
