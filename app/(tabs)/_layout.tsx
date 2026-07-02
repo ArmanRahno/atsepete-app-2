@@ -31,9 +31,6 @@ export default function TabLayout() {
 							TabBarBackground
 					),
 					popToTopOnBlur: true,
-					tabBarItemStyle: {
-						backgroundColor: colors.background
-					},
 					tabBarStyle: {
 						...(Platform.select({
 							ios: {

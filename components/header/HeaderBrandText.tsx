@@ -8,20 +8,26 @@ type Props = {
 
 const HeaderBrandText = ({ fontSize = 18, lineHeight = 24 }: Props) => {
 	const { colors, isDark } = useThemePalette();
-	const textStyle = {
-		fontFamily: "Roboto_500Medium",
+
+	const baseStyle = {
 		fontSize,
-		lineHeight,
-		includeFontPadding: false
-	} as const;
+		lineHeight
+	};
 
 	return (
-		<View style={[styles.container, { minWidth: fontSize * 4.6, height: lineHeight }]}>
+		<View
+			style={[
+				styles.container,
+				{
+					minHeight: lineHeight
+				}
+			]}
+		>
 			<Text
 				allowFontScaling={false}
 				style={[
-					textStyle,
-					styles.atText,
+					styles.brandText,
+					baseStyle,
 					{
 						color: isDark ? "#FFFFFF" : colors.text
 					}
@@ -29,9 +35,16 @@ const HeaderBrandText = ({ fontSize = 18, lineHeight = 24 }: Props) => {
 			>
 				At
 			</Text>
+
 			<Text
 				allowFontScaling={false}
-				style={[textStyle, { color: colors.primary }]}
+				style={[
+					styles.brandText,
+					baseStyle,
+					{
+						color: colors.primary
+					}
+				]}
 			>
 				Sepete
 			</Text>
@@ -44,11 +57,13 @@ const styles = StyleSheet.create({
 		flexDirection: "row",
 		alignItems: "center",
 		flexShrink: 0,
-		overflow: "visible",
-		paddingRight: 4
+		flexGrow: 0,
+		paddingRight: 4,
+		overflow: "visible"
 	},
-	atText: {
-		transform: [{ skewX: "-10deg" }]
+	brandText: {
+		fontFamily: "Roboto_500Medium",
+		includeFontPadding: true
 	}
 });
 
